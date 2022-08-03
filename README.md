@@ -1,22 +1,16 @@
-# [Django React Purity Dashboard](https://appseed.us/product/django-react-purity-dashboard)
+# React Berry Dashboard
 
-Start your Development with an Innovative Admin Template for **Chakra UI** and **React**. Purity UI Dashboard is built with over 70 frontend individual elements, like buttons, inputs, navbars, navtabs, cards or alerts, giving you the freedom of choosing and combining. The product comes with a simple JWT authentication flow: login/register/logout. 
+Start your Development with an Innovative Admin Template for **Mui(berry-dashboard) UI** and **React**. react-berry UI Dashboard is built with over 70 frontend individual elements, like buttons, inputs, navbars, navtabs, cards or alerts, giving you the freedom of choosing and combining. The product comes with a simple JWT authentication flow: login/register/logout. 
 
 > Features
 
-- Innovative **Chakra UI** Design - Creafted by [Creative-Tim](https://bit.ly/3fKQZaL)
+- Innovative **Mui(berry-dashboard) UI** Design - Creafted by [Creative-Tim](https://bit.ly/3fKQZaL)
 - React, Redux, Redux-persist
 - Authentication: JWT Login/Register/Logout
 - **Full-stack Ready** using a **Django API Server** (open-source project) - Server Features
   - Django / DRF / SQLite3 - a simple, easy to use backend
   - Authentication with JWT (login, logout, register)
   - Docker, Unitary tests
-
-> Links
-
-- [Django React Purity Dashboard](https://appseed.us/product/django-react-purity-dashboard) - product page
-- [Django React Purity Dashboard](https://django-react-purity-dashboard.appseed-srv1.com/#/auth/signin) - LIVE Demo
-- Free Support via Github (issues tracker) and [Discord](https://discord.gg/fZC6hup).
 
 <br />
 
@@ -25,7 +19,7 @@ Start your Development with an Innovative Admin Template for **Chakra UI** and *
 > Clone/Download the source code
 
 ```bash
-$ git clone  https://github.com/app-generator/django-react-purity-dashboard.git
+$ git clone  https://github.com/app-generator/react-berry-dashboard.git
 ```
 
 <br />
@@ -56,10 +50,6 @@ Once all the above commands are executed, the `React UI` should be visible in th
 After we register a new user and Sign IN, all the private pages become accessible. 
 
 <br />
-
-![React Purity Dashboard - Open-source full-stack product with Django API Backend.](https://user-images.githubusercontent.com/51070104/142229301-fb70f20d-913d-496d-822e-e170cc8c8573.gif)
-
-<br >
 
 ## General Information
 
@@ -183,27 +173,3 @@ authorization: JWT_TOKEN (returned by Login request)
 ```
 
 <br />
-
-## Product UI
-
-> **Django React Purity** - Login 
-
-![Django React Purity Dashboard - Login.](https://user-images.githubusercontent.com/51070104/142229429-c3a3d8eb-f535-4d0c-9a01-e59bc74e08db.png)
-
-<br />
-
-> **Django React Purity** - User Profile
-
-![Django React Purity Dashboard - User Profile](https://user-images.githubusercontent.com/51070104/142229572-a313ac1c-e798-49cc-a86c-2e0ab9ead00a.png)
-
-<br />
-
-## Links & Resources
-
-- Ask for [Support](https://appseed.us/support) on [Discord](https://discord.gg/fZC6hup)
-- See for [React Starters](https://appseed.us/apps/react) - index provided by AppSeed
-
-<br />
-
----
-**[Django React Purity Dashboard](https://appseed.us/product/django-react-purity-dashboard)** - Open-source full-stack seed project provided by **AppSeed [App Generator](https://appseed.us/)**
