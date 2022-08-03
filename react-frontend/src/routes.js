@@ -1,8 +1,8 @@
 // import
 import Dashboard from "views/Dashboard/Dashboard.js";
 import Tables from "views/Dashboard/Tables.js";
+import Booktype from "views/Dashboard/Booktype/Booktypelist.js";
 import Billing from "views/Dashboard/Billing.js";
-import RTLPage from "views/RTL/RTLPage.js";
 import Profile from "views/Dashboard/Profile.js";
 import SignIn from "views/Pages/SignIn.js";
 import SignUp from "views/Pages/SignUp.js";
@@ -28,6 +28,14 @@ var dashRoutes = [
     layout: "/admin",
   },
   {
+    path: "/booktype",
+    name: "Book Type",
+    rtlName: "لوحة القيادة",
+    icon: <StatsIcon color="inherit" />,
+    component: Booktype,
+    layout: "/admin",
+  },
+  {
     path: "/tables",
     name: "Tables",
     rtlName: "لوحة القيادة",
@@ -42,14 +50,6 @@ var dashRoutes = [
     icon: <CreditIcon color="inherit" />,
     component: Billing,
     layout: "/admin",
-  },
-  {
-    path: "/rtl-support-page",
-    name: "RTL",
-    rtlName: "آرتيإل",
-    icon: <SupportIcon color="inherit" />,
-    component: RTLPage,
-    layout: "/rtl",
   },
   {
     name: "ACCOUNT PAGES",

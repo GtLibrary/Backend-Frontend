@@ -238,9 +238,6 @@ function SignUp() {
             maxW="100%"
             mt="0px"
           >
-            <Text color={textColor} fontWeight="medium">
-              Open-source Full-Stack Seed Project
-            </Text>
           </Flex>
         </Flex>
       </Flex>

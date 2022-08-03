@@ -7,11 +7,9 @@ from api.authentication.models import ActiveSession
 
 
 class LogoutViewSet(viewsets.GenericViewSet, mixins.CreateModelMixin):
-    http_method_names = ["post"]
     permission_classes = (IsAuthenticated,)
 
     def create(self, request, *args, **kwargs):
-        print("session -----------", request)
         user = request.user
 
         session = ActiveSession.objects.get(user=user)

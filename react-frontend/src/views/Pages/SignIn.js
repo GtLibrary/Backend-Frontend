@@ -14,7 +14,7 @@ import {
   useColorModeValue,
 } from "@chakra-ui/react";
 // Assets
-import signInImage from "assets/img/signInImage.png";
+import signInImage from "assets/img/signInImage.jpg";
 
 import { useAuth } from "../../auth-context/auth.context";
 import AuthApi from "../../api/auth";
@@ -98,7 +98,7 @@ function SignIn() {
             <div>
               <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
                 Welcome Back
-            </Heading>
+              </Heading>
               <h3 style={{ textAlign: "center" }}>You are already signed in.</h3>
               <Button
                 fontSize="15px"
@@ -128,8 +128,8 @@ function SignIn() {
               mt={{ md: "150px", lg: "80px" }}
             >
               <Heading color={titleColor} fontSize="32px" mt="10px" mb="10px">
-                Django React Purity
-            </Heading>
+                The Great Library
+              </Heading>
               <Text
                 mb="36px"
                 ms="4px"
@@ -221,9 +221,6 @@ function SignIn() {
                 maxW="100%"
                 mt="0px"
               >
-                <Text color={textColor} fontWeight="medium">
-                  Open-source Full-Stack Seed Project 
-                </Text>
               </Flex>
             </Flex>
           }
