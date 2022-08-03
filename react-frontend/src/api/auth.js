@@ -10,7 +10,7 @@ class AuthApi {
   };
 
   static Logout = (data) => {
-    return axios.post(`${base}/logout`, data, { headers: { Authorization: `${data.token}` } } );
+    return axios.post(`${base}/logout`, data, { headers: { Authorization: `Bearer ${data.token}` } } );
   };
 }
 

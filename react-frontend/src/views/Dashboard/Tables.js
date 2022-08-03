@@ -60,46 +60,6 @@ function Tables() {
           </Table>
         </CardBody>
       </Card>
-      <Card
-        my="22px"
-        overflowX={{ sm: "scroll", xl: "hidden" }}
-      >
-        <CardHeader p="6px 0px 22px 0px">
-          <Flex direction="column">
-            <Text fontSize="lg" color={textColor} fontWeight="bold" pb=".5rem">
-              Projects Table
-            </Text>
-          </Flex>
-        </CardHeader>
-        <CardBody>
-          <Table variant="simple" color={textColor}>
-            <Thead>
-              <Tr my=".8rem" pl="0px">
-                <Th pl="0px" color="gray.400">
-                  Companies
-                </Th>
-                <Th color="gray.400">Budget</Th>
-                <Th color="gray.400">Status</Th>
-                <Th color="gray.400">Completion</Th>
-                <Th></Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {tablesProjectData.map((row) => {
-                return (
-                  <TablesProjectRow
-                    name={row.name}
-                    logo={row.logo}
-                    status={row.status}
-                    budget={row.budget}
-                    progression={row.progression}
-                  />
-                );
-              })}
-            </Tbody>
-          </Table>
-        </CardBody>
-      </Card>
     </Flex>
   );
 }
