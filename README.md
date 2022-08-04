@@ -1,10 +1,10 @@
-# React Berry Dashboard
+# React Django Dashboard
 
 Start your Development with an Innovative Admin Template for **Mui(berry-dashboard) UI** and **React**. react-berry UI Dashboard is built with over 70 frontend individual elements, like buttons, inputs, navbars, navtabs, cards or alerts, giving you the freedom of choosing and combining. The product comes with a simple JWT authentication flow: login/register/logout. 
 
 > Features
 
-- Innovative **Mui(berry-dashboard) UI** Design - Creafted by [Creative-Tim](https://bit.ly/3fKQZaL)
+- Innovative **Mui(berry-dashboard) UI**
 - React, Redux, Redux-persist
 - Authentication: JWT Login/Register/Logout
 - **Full-stack Ready** using a **Django API Server** (open-source project) - Server Features
@@ -19,7 +19,7 @@ Start your Development with an Innovative Admin Template for **Mui(berry-dashboa
 > Clone/Download the source code
 
 ```bash
-$ git clone  https://github.com/app-generator/react-berry-dashboard.git
+$ git clone  https://github.com/GtLibrary/Backend-Frontend.git
 ```
 
 <br />
