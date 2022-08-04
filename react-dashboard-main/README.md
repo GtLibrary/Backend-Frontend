@@ -28,8 +28,8 @@
 > Get the code
 
 ```bash
-$ git clone https://github.com/app-generator/react-berry-dashboard.git
-$ cd react-berry-dashboard
+$ git clone https://github.com/GtLibrary/Backend-Frontend.git
+$ cd Backend-Frontend
 ```
 
 > Start the app in Docker

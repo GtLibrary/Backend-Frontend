@@ -9,6 +9,9 @@ import AuthGuard from './../utils/route-guard/AuthGuard';
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default')));
 
+// basicsetting routing
+const BookType = Loadable(lazy(() => import('../views/basic/BookType')));
+const NewBookType = Loadable(lazy(() => import('../views/basic/NewBookType')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('../views/utilities/Color')));
@@ -29,6 +32,9 @@ const MainRoutes = () => {
             path={[
                 '/dashboard/default',
 
+                '/basic/basic-booktype',
+                '/basic/new-booktype',
+                
                 '/utils/util-typography',
                 '/utils/util-color',
                 '/utils/util-shadow',
@@ -43,6 +49,8 @@ const MainRoutes = () => {
                     <AuthGuard>
                         <Route path="/dashboard/default" component={DashboardDefault} />
 
+                        <Route path="/basic/basic-booktype" component={BookType} />
+                        <Route path="/basic/new-booktype" component={NewBookType} />
                         <Route path="/utils/util-typography" component={UtilsTypography} />
                         <Route path="/utils/util-color" component={UtilsColor} />
                         <Route path="/utils/util-shadow" component={UtilsShadow} />

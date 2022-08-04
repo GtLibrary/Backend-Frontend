@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline, StyledEngineProvider } from '@material-ui/core';
+import "bootstrap/dist/css/bootstrap.min.css";
 
 // routing
 import Routes from './routes';
