@@ -19,7 +19,24 @@ const Icons = {
 }
 
 const NewBookType = () => {
-    const [ employees, setEmployees ] = useState([]);
+    const [ booktype, setBooktype ] = useState('');
+
+    const saveBooktype = () => {
+        axios
+            .post( configData.API_SERVER + 'booktype/save', {
+                booktype: booktype
+            })
+            .then(function (response) {
+                if (response.data.success) {
+                    console.log(response.data.success)
+                } else {
+                    console.log("error page")
+                }
+            })
+            .catch(function (error) {
+                console.log("catch error === ")
+            });
+    }
 
     return (
         <MainCard title="Book Type">
@@ -43,10 +60,11 @@ const NewBookType = () => {
                                 shrink: true,
                             }}
                             variant="outlined"
+                            onChange={(e)=> { setBooktype(e.target.value) }}
                         />
                     </Box>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                        <Button variant="contained" onClick="">Save</Button>
+                        <Button variant="contained" onClick={saveBooktype()}>Save</Button>
                     </Box>
                 </Grid>
             </Grid>
