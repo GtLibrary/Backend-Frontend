@@ -4,8 +4,10 @@ from api.authentication.viewsets import (
     ActiveSessionViewSet,
     LogoutViewSet,
 )
+from api.booktype.api import BookTypeCreateApi, BookTypeDeleteApi, BookTypeUpdateApi, BookTypeApi
 from rest_framework import routers
 from api.user.viewsets import UserViewSet
+from django.urls import path, include
 
 router = routers.SimpleRouter(trailing_slash=False)
 
@@ -19,8 +21,10 @@ router.register(r"users/checkSession", ActiveSessionViewSet, basename="check-ses
 
 router.register(r"users/logout", LogoutViewSet, basename="logout")
 
-router.register(r"booktype/save", LoginViewSet, basename="booktype")
+# router.register(r"booktype/save", BookTypeCreateApi.as_view(), basename="save")
 
 urlpatterns = [
     *router.urls,
+    path("booktype/save", BookTypeCreateApi.as_view()),
+    path("booktype/list", BookTypeApi.as_view()),
 ]

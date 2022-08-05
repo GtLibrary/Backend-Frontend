@@ -19,22 +19,26 @@ const Icons = {
 }
 
 const BookType = () => {
-    const [ employees, setEmployees ] = useState([]);
+    const [ booktypes, setBooktypes ] = useState([]);
 
     useEffect(() => {
         axios
             .get( configData.API_SERVER + 'booktype/list' )
             .then(function (response) {
-                if (response.data.success) {
-                    setEmployees(response.data.booktypelist)
+                if (response.status == '200') {
+                    setBooktypes(response.data)
                 } else {
-                    setEmployees([])
+                    setBooktypes([])
                 }
             })
             .catch(function (error) {
                 
             });
     }, [])
+
+    const editBooktype = () => {
+        
+    }
 
     return (
         <MainCard title="Book Type">
@@ -45,7 +49,7 @@ const BookType = () => {
                             <Button variant="contained">New Book Type</Button>
                         </Link>
                     </Box>
-                    <div className = "row">
+                    <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
                         <table className = "table table-striped table-bordered table-responsive">
 
                             <thead>
@@ -56,13 +60,12 @@ const BookType = () => {
                             </thead>
                             <tbody>
                                 {
-                                    employees && employees.map(
-                                        employee => 
-                                        <tr key = {employee.id}>
-                                             <td> { employee.firstName} </td>
+                                    booktypes && booktypes.map(
+                                        item => 
+                                        <tr key = {item.id}>
+                                             <td> { item.booktype} </td>
                                              <td>
-                                                 <Button variant="contained"><IconEye /></Button>
-                                                 <Button style={{marginLeft: "10px"}} variant="contained"><IconEdit /></Button>
+                                                 <Button style={{marginLeft: "10px"}} variant="contained" onClick={() => editBooktype()}><IconEdit /></Button>
                                                  <Button style={{marginLeft: "10px"}} variant="contained" color="error"><IconTrash /></Button>
                                              </td>
                                         </tr>
@@ -71,7 +74,7 @@ const BookType = () => {
                             </tbody>
                         </table>
 
-                 </div>
+                    </Box>
                 </Grid>
             </Grid>
         </MainCard>
