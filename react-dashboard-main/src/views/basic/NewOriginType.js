@@ -11,51 +11,51 @@ import MainCard from '../../ui-component/cards/MainCard';
 import { gridSpacing } from '../../store/constant';
 import configData from '../../config';
 
-//==============================|| Book Type ||==============================//
+//==============================|| Origin Type ||==============================//
 const Icons = {
     IconEye: IconEye, 
     IconEdit: IconEdit, 
     IconTrash: IconTrash
 }
 
-const NewBookType = (props) => {
+const NewOriginType = (props) => {
     const { id } = useParams();
-    const [ booktype, setBooktype ] = useState('');
-    const [ title, setTitle ] = useState('Book Type Add');
+    const [ origintype, setOrigintype ] = useState('');
+    const [ title, setTitle ] = useState('Origin Type Add');
 
-    const getBooktypesById = async () => {
+    const getOrigintypesById = async () => {
         const { data } = await axios
-            .get( configData.API_SERVER + 'booktype/edit/' + id)
-        setBooktype(data.booktype)
+            .get( configData.API_SERVER + 'origintype/edit/' + id)
+        setOrigintype(data.origintype)
     }
 
-    const updateBooktype = async () => {
+    const updateOrigintype = async () => {
         const { data } = await axios
-            .put( configData.API_SERVER + 'booktype/edit/' + id, {
-                booktype: booktype
+            .put( configData.API_SERVER + 'origintype/edit/' + id, {
+                Origintype: origintype
             })
     }
 
     useEffect(() => {
         if (id) {
-            getBooktypesById()
-            setTitle("Book Type Edit")
+            getOrigintypesById()
+            setTitle("Origin Type Edit")
         }
     }, [])
 
-    const saveBooktype = () => {
+    const saveOrigintype = () => {
         if(id) {
-            updateBooktype()
+            updateOrigintype()
         } else {
             axios
-                .post( configData.API_SERVER + 'booktype/save', {
-                    booktype: booktype
+                .post( configData.API_SERVER + 'origintype/save', {
+                    origintype: origintype
                 })
                 .then(function (response) {
                     if (response.success == 201) {
-                        setBooktype("")
+                        setOrigintype("")
                     } else {    
-                        setBooktype("")
+                        setOrigintype("")
                     }
                 })
                 .catch(function (error) {
@@ -69,29 +69,29 @@ const NewBookType = (props) => {
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12} sm={12}>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                        <Link to="/basic/basic-booktype">
+                        <Link to="/basic/basic-origintype">
                             <Button variant="outlined">Back To List</Button>
                         </Link>
                     </Box>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
                         <TextField
-                            id="booktype-name"
-                            // label="Book Type Name"
+                            id="origintype-name"
+                            // label="origin Type Name"
                             style={{ margin: 8 }}
-                            placeholder="Please input the book type name"
-                            helperText="Book Type Name"
+                            placeholder="Please input the origin type name"
+                            helperText="Origin Type Name"
                             fullWidth
                             margin="normal"
                             InputLabelProps={{
                                 shrink: true,
                             }}
                             variant="outlined"
-                            value={booktype}
-                            onChange={(e)=> { setBooktype(e.target.value) }}
+                            value={origintype}
+                            onChange={(e)=> { setOrigintype(e.target.value) }}
                         />
                     </Box>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                        <Button variant="contained" onClick={() => saveBooktype()}>Save</Button>
+                        <Button variant="contained" onClick={() => saveOrigintype()}>Save</Button>
                     </Box>
                 </Grid>
             </Grid>
@@ -99,4 +99,4 @@ const NewBookType = (props) => {
     );
 };
 
-export default NewBookType;
+export default NewOriginType;

@@ -12,6 +12,8 @@ const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default'
 // basicsetting routing
 const BookType = Loadable(lazy(() => import('../views/basic/BookType')));
 const NewBookType = Loadable(lazy(() => import('../views/basic/NewBookType')));
+const OriginType = Loadable(lazy(() => import('../views/basic/OriginType')));
+const NewOriginType = Loadable(lazy(() => import('../views/basic/NewOriginType')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('../views/utilities/Color')));
@@ -34,7 +36,10 @@ const MainRoutes = () => {
 
                 '/basic/basic-booktype',
                 '/basic/new-booktype',
-                '/basic/edit/:id',
+                '/basic/edit-booktype/:id',
+                '/basic/basic-origintype',
+                '/basic/new-origintype',
+                '/basic/edit-origintype/:id',
                 
                 '/utils/util-typography',
                 '/utils/util-color',
@@ -56,9 +61,20 @@ const MainRoutes = () => {
                             <NewBookType {...props} action="new" />
                         )
                         } />
-                        <Route path="/basic/edit/:id"  
+                        <Route path="/basic/edit-booktype/:id"  
                         render = {(props) => (
                             <NewBookType {...props} action="edit" />
+                        )
+                        }  />
+                        <Route path="/basic/basic-origintype" component={OriginType} />
+                        <Route path="/basic/new-origintype" 
+                        render = {(props) => (
+                            <NewOriginType {...props} action="new" />
+                        )
+                        } />
+                        <Route path="/basic/edit-origintype/:id"  
+                        render = {(props) => (
+                            <NewOriginType {...props} action="edit" />
                         )
                         }  />
                         <Route path="/utils/util-typography" component={UtilsTypography} />

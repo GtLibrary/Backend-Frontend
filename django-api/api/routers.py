@@ -5,6 +5,7 @@ from api.authentication.viewsets import (
     LogoutViewSet,
 )
 from api.booktype.api import BookTypeCreateApi, BookTypeDeleteApi, BookTypeUpdateApi, BookTypeApi
+from api.origintype.api import OriginTypeCreateApi, OriginTypeDeleteApi, OriginTypeUpdateApi, OriginTypeApi
 from rest_framework import routers
 from api.user.viewsets import UserViewSet
 from django.urls import path, include
@@ -29,4 +30,8 @@ urlpatterns = [
     path("booktype/list", BookTypeApi.as_view()),
     path("booktype/delete/<int:pk>", BookTypeDeleteApi.as_view()),
     path("booktype/edit/<int:pk>", BookTypeUpdateApi.as_view()),
+    path("origintype/save", OriginTypeCreateApi.as_view()),
+    path("origintype/list", OriginTypeApi.as_view()),
+    path("origintype/delete/<int:pk>", OriginTypeDeleteApi.as_view()),
+    path("origintype/edit/<int:pk>", OriginTypeUpdateApi.as_view()),
 ]

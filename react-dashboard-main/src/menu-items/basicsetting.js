@@ -21,5 +21,13 @@ export const basicsetting = {
             icon: icons['IconSettings'],
             breadcrumbs: false
         },
+        {
+            id: 'basic-origintype',
+            title: 'Origin Type',
+            type: 'item',
+            url: '/basic/basic-origintype',
+            icon: icons['IconSettings'],
+            breadcrumbs: false
+        },
     ]
 };
