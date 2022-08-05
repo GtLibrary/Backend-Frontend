@@ -11,38 +11,38 @@ import MainCard from '../../ui-component/cards/MainCard';
 import { gridSpacing } from '../../store/constant';
 import configData from '../../config';
 
-//==============================|| Book Type ||==============================//
+//==============================|| Origin Type ||==============================//
 const Icons = {
     IconEye: IconEye, 
     IconEdit: IconEdit, 
     IconTrash: IconTrash
 }
 
-const BookType = () => {
+const OriginType = () => {
     const history = useHistory();
-    const [ booktypes, setBooktypes ] = useState([]);
+    const [ origintypes, setOrigintypes ] = useState([]);
 
-    const getBooktypes = async () => {
+    const getOrigintypes = async () => {
         const { data } = await axios
-            .get( configData.API_SERVER + 'booktype/list')
-        setBooktypes(data)
+            .get( configData.API_SERVER + 'origintype/list')
+        setOrigintypes(data)
     }
 
     useEffect(() => {
-        getBooktypes()
+        getOrigintypes()
     }, [])
 
-    const editBooktype = (id) => {
-        history.push(`/basic/edit-booktype/${id}`)
+    const editOrigintype = (id) => {
+        history.push(`/basic/edit-origintype/${id}`)
     }
 
-    const deleteBooktype = (booktype_id) => {
-        axios.delete( configData.API_SERVER + 'booktype/delete/' + booktype_id)
+    const deleteOrigintype = (origintype_id) => {
+        axios.delete( configData.API_SERVER + 'origintype/delete/' + origintype_id)
             .then(function (response) {
                 if (response.status == '204') {
-                    getBooktypes()
+                    getOrigintypes()
                 } else {
-                    getBooktypes()
+                    getOrigintypes()
                 }
             })
             .catch(function (error) {
@@ -51,12 +51,12 @@ const BookType = () => {
     }
 
     return (
-        <MainCard title="Book Type">
+        <MainCard title="Origin Type">
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12} sm={12}>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                        <Link to="/basic/new-booktype">
-                            <Button variant="contained">New Book Type</Button>
+                        <Link to="/basic/new-origintype">
+                            <Button variant="contained">New Origin Type</Button>
                         </Link>
                     </Box>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
@@ -64,19 +64,19 @@ const BookType = () => {
 
                             <thead>
                                 <tr>
-                                    <th> Book Type Name </th>
+                                    <th> Origin Type Name </th>
                                     <th> Actions </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    booktypes && booktypes.map(
+                                    origintypes && origintypes.map(
                                         item => 
                                         <tr key = {item.id}>
-                                             <td> { item.booktype} </td>
+                                             <td> { item.origintype} </td>
                                              <td>
-                                                 <Button style={{marginLeft: "10px"}} variant="contained" onClick={() => editBooktype(item.id)}><IconEdit /></Button>
-                                                 <Button style={{marginLeft: "10px"}} variant="contained" color="error" onClick={() => deleteBooktype(item.id)}><IconTrash /></Button>
+                                                 <Button style={{marginLeft: "10px"}} variant="contained" onClick={() => editOrigintype(item.id)}><IconEdit /></Button>
+                                                 <Button style={{marginLeft: "10px"}} variant="contained" color="error" onClick={() => deleteOrigintype(item.id)}><IconTrash /></Button>
                                              </td>
                                         </tr>
                                     )
@@ -91,4 +91,4 @@ const BookType = () => {
     );
 };
 
-export default BookType;
+export default OriginType;
