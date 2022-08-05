@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from 'axios';
 
 // material-ui
@@ -19,25 +19,35 @@ const Icons = {
 }
 
 const BookType = () => {
+    const history = useHistory();
     const [ booktypes, setBooktypes ] = useState([]);
 
+    const getBooktypes = async () => {
+        const { data } = await axios
+            .get( configData.API_SERVER + 'booktype/list')
+        setBooktypes(data)
+    }
+
     useEffect(() => {
-        axios
-            .get( configData.API_SERVER + 'booktype/list' )
+        getBooktypes()
+    }, [])
+
+    const editBooktype = (id) => {
+        history.push(`/basic/edit/${id}`)
+    }
+
+    const deleteBooktype = (booktype_id) => {
+        axios.delete( configData.API_SERVER + 'booktype/delete/' + booktype_id)
             .then(function (response) {
-                if (response.status == '200') {
-                    setBooktypes(response.data)
+                if (response.status == '204') {
+                    getBooktypes()
                 } else {
-                    setBooktypes([])
+                    getBooktypes()
                 }
             })
             .catch(function (error) {
                 
             });
-    }, [])
-
-    const editBooktype = () => {
-        
     }
 
     return (
@@ -65,8 +75,8 @@ const BookType = () => {
                                         <tr key = {item.id}>
                                              <td> { item.booktype} </td>
                                              <td>
-                                                 <Button style={{marginLeft: "10px"}} variant="contained" onClick={() => editBooktype()}><IconEdit /></Button>
-                                                 <Button style={{marginLeft: "10px"}} variant="contained" color="error"><IconTrash /></Button>
+                                                 <Button style={{marginLeft: "10px"}} variant="contained" onClick={() => editBooktype(item.id)}><IconEdit /></Button>
+                                                 <Button style={{marginLeft: "10px"}} variant="contained" color="error" onClick={() => deleteBooktype(item.id)}><IconTrash /></Button>
                                              </td>
                                         </tr>
                                     )

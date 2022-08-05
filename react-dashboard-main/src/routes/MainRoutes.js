@@ -34,6 +34,7 @@ const MainRoutes = () => {
 
                 '/basic/basic-booktype',
                 '/basic/new-booktype',
+                '/basic/edit/:id',
                 
                 '/utils/util-typography',
                 '/utils/util-color',
@@ -50,7 +51,16 @@ const MainRoutes = () => {
                         <Route path="/dashboard/default" component={DashboardDefault} />
 
                         <Route path="/basic/basic-booktype" component={BookType} />
-                        <Route path="/basic/new-booktype" component={NewBookType} />
+                        <Route path="/basic/new-booktype" 
+                        render = {(props) => (
+                            <NewBookType {...props} action="new" />
+                        )
+                        } />
+                        <Route path="/basic/edit/:id"  
+                        render = {(props) => (
+                            <NewBookType {...props} action="edit" />
+                        )
+                        }  />
                         <Route path="/utils/util-typography" component={UtilsTypography} />
                         <Route path="/utils/util-color" component={UtilsColor} />
                         <Route path="/utils/util-shadow" component={UtilsShadow} />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 
 // material-ui
@@ -18,29 +18,56 @@ const Icons = {
     IconTrash: IconTrash
 }
 
-const NewBookType = () => {
+const NewBookType = (props) => {
+    const { id } = useParams();
     const [ booktype, setBooktype ] = useState('');
+    const [ title, setTitle ] = useState('Book Type Add');
 
+    const getBooktypesById = async () => {
+        const { data } = await axios
+            .get( configData.API_SERVER + 'booktype/edit/' + id)
+            console.log(data)
+        setBooktype(data.booktype)
+    }
 
-    const saveBooktype = () => {
-        axios
-            .post( configData.API_SERVER + 'booktype/save', {
+    const updateBooktype = async () => {
+        const { data } = await axios
+            .put( configData.API_SERVER + 'booktype/edit/' + id, {
                 booktype: booktype
             })
-            .then(function (response) {
-                if (response.success == 201) {
-                    setBooktype("")
-                } else {    
-                    setBooktype("")
-                }
-            })
-            .catch(function (error) {
-                console.log("catch error === ")
-            });
+        console.log(data)
+    }
+
+    useEffect(() => {
+        if (id) {
+            getBooktypesById()
+            setTitle("Book Type Edit")
+        }
+    }, [])
+
+    const saveBooktype = () => {
+        if(id) {
+            updateBooktype()
+        } else {
+            axios
+                .post( configData.API_SERVER + 'booktype/save', {
+                    booktype: booktype
+                })
+                .then(function (response) {
+                    if (response.success == 201) {
+                        setBooktype("")
+                    } else {    
+                        setBooktype("")
+                    }
+                })
+                .catch(function (error) {
+                    console.log("catch error === ")
+                });
+        }
     }
 
     return (
-        <MainCard title="Book Type Add">
+        <MainCard title={title}>
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12} sm={12}>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">

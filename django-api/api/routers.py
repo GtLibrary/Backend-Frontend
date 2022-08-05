@@ -27,4 +27,6 @@ urlpatterns = [
     *router.urls,
     path("booktype/save", BookTypeCreateApi.as_view()),
     path("booktype/list", BookTypeApi.as_view()),
+    path("booktype/delete/<int:pk>", BookTypeDeleteApi.as_view()),
+    path("booktype/edit/<int:pk>", BookTypeUpdateApi.as_view()),
 ]
