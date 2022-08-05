@@ -26,7 +26,6 @@ const NewBookType = (props) => {
     const getBooktypesById = async () => {
         const { data } = await axios
             .get( configData.API_SERVER + 'booktype/edit/' + id)
-            console.log(data)
         setBooktype(data.booktype)
     }
 
