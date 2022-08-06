@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     "api.user",
     "api.authentication",
     "api.booktype",
-    "api.origintype"
+    "api.origintype",
+    "api.books",
 ]
 
 MIDDLEWARE = [
