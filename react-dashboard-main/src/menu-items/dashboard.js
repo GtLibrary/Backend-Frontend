@@ -21,6 +21,14 @@ export const dashboard = {
             url: '/dashboard/default',
             icon: icons['IconDashboard'],
             breadcrumbs: false
+        },
+        {
+            id: 'booklist',
+            title: 'Books',
+            type: 'item',
+            url: '/dashboard/booklist',
+            icon: icons['IconDashboard'],
+            breadcrumbs: false
         }
     ]
 };
