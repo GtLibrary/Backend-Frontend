@@ -16,7 +16,7 @@ import configData from '../../config';
 
 const columns = [
     { id: 'name', label: 'Origin Type Name', minWidth: 170 },
-    { id: 'action', label: 'Actions', minWidth: 100 }
+    { id: 'action', label: 'Actions', minWidth: 100, align:'right' }
 ];
 
 const OriginType = () => {
@@ -81,7 +81,7 @@ const OriginType = () => {
                         <TableBody>
                             {origintypes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                         <TableCell>{row.origintype}</TableCell>
                                         <TableCell align={'right'}>
                                             <Button

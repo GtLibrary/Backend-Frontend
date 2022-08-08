@@ -14,7 +14,7 @@ import configData from '../../config';
 
 const columns = [
     { id: 'name', label: 'Book Type Name', minWidth: 170 },
-    { id: 'action', label: 'Actions', minWidth: 100 }
+    { id: 'action', label: 'Actions', minWidth: 100, align:'right' }
 ];
 
 const BookType = () => {
@@ -79,7 +79,7 @@ const BookType = () => {
                         <TableBody>
                             {booktypes.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                 return (
-                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
+                                    <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                         <TableCell>{row.booktype}</TableCell>
                                         <TableCell align={'right'}>
                                             <Button style={{ marginLeft: '10px' }} variant="contained" onClick={() => editBooktype(row.id)}>
