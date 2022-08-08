@@ -8,6 +8,8 @@ import AuthGuard from './../utils/route-guard/AuthGuard';
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default')));
+const Booklist = Loadable(lazy(() => import('../views/dashboard/books/Booklist')));
+const BookAdd = Loadable(lazy(() => import('../views/dashboard/books/BookAdd')));
 
 // basicsetting routing
 const BookType = Loadable(lazy(() => import('../views/basic/BookType')));
@@ -33,6 +35,8 @@ const MainRoutes = () => {
         <Route
             path={[
                 '/dashboard/default',
+                '/dashboard/booklist',
+                '/dashboard/books/addbook',
 
                 '/basic/basic-booktype',
                 '/basic/new-booktype',
@@ -40,6 +44,8 @@ const MainRoutes = () => {
                 '/basic/basic-origintype',
                 '/basic/new-origintype',
                 '/basic/edit-origintype/:id',
+                // 'books/edit/:id',
+                // 'books/add',
                 
                 '/utils/util-typography',
                 '/utils/util-color',
@@ -54,6 +60,12 @@ const MainRoutes = () => {
                 <Switch location={location} key={location.pathname}>
                     <AuthGuard>
                         <Route path="/dashboard/default" component={DashboardDefault} />
+                        <Route path="/dashboard/booklist" component={Booklist} />
+                        <Route path="/dashboard/books/addbook" 
+                        render = {(props) => (
+                            <BookAdd {...props} action="new" />
+                        )
+                        } />
 
                         <Route path="/basic/basic-booktype" component={BookType} />
                         <Route path="/basic/new-booktype" 
