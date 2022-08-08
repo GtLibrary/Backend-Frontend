@@ -10,6 +10,7 @@ import { IconEye, IconEdit, IconTrash } from '@tabler/icons';
 import MainCard from '../../../ui-component/cards/MainCard';
 import { gridSpacing } from '../../../store/constant';
 import configData from '../../../config';
+import Header from '../../../layout/MainLayout/Header';
 // import UploadFiles from '../../../ui-component/uploadfiles'
 
 //==============================|| Book  ||==============================//
@@ -21,7 +22,7 @@ const Icons = {
 
 const BookAdd = (props) => {
     const { id } = useParams();
-    const [ book, setBook ] = useState('');
+    const [ booktitle, setBooktitle ] = useState('');
     const [ title, setTitle ] = useState('Book Add');
     const [ brandimage, setBrandimage ] = useState(null);
     const [ authorwallet, setAuthorwallet ] = useState('');
@@ -31,18 +32,20 @@ const BookAdd = (props) => {
     const [ origintype, setOrigintype ] = useState('');
     const [ booktypes, setBooktypes ] = useState('');
     const [ origintypes, setOrigintypes ] = useState('');
+    const [ previosImg, setPreviosImg ] = useState('');
 
     const getBooksById = async () => {
         const { data } = await axios
             .get( configData.API_SERVER + 'books/edit/' + id)
-        setBook(data.book)
-    }
+        console.log(data.book_type_id)
 
-    const updateBook = async () => {
-        const { data } = await axios
-            .put( configData.API_SERVER + 'books/edit/' + id, {
-                book: book
-            })
+        setBooktitle(data.title);
+        // setBooktype(data.book_type_id);
+        // setOrigintype(data.origin_type_id);
+        setDatamine(data.datamine);
+        setCurserialnumber(data.curserial_number);
+        setAuthorwallet(data.author_wallet);
+        setPreviosImg(data.image_url);
     }
 
     useEffect(() => {
@@ -70,19 +73,61 @@ const BookAdd = (props) => {
         getOrigintypes();
     }, []);
 
-    const saveBook = () => {
+    const handleFileUpload = (event) => {
+        setBrandimage(event.target.files[0])
+        setPreviosImg(URL.createObjectURL(event.target.files[0]))
+    }
+
+    const saveBook = async () => {
+        let form_data = new FormData();
+        if (brandimage) {
+            form_data.append("image_url", brandimage, brandimage.name);
+        }
+        form_data.append("title", booktitle)
+        form_data.append("author_wallet", authorwallet)
+        form_data.append("curserial_number", curserialnumber)
+        form_data.append("datamine", datamine)
+        form_data.append("origin_type_id", origintype)
+        form_data.append("book_type_id", booktype)
         if(id) {
-            updateBook()
-        } else {
-            axios
-                .post( configData.API_SERVER + 'books/save', {
-                    book: book
-                })
+            const { data } = await axios
+                .put( configData.API_SERVER + 'books/edit/' + id,  form_data, {
+                    headers : {
+                    'content-type' : 'multipart/form-data'
+                }})
                 .then(function (response) {
                     if (response.success == 201) {
-                        setBook("")
+                        
                     } else {    
-                        setBook("")
+                        
+                    }
+                })
+                .catch(function (error) {
+                    console.log("catch error === ")
+                });
+        } else {
+            await axios
+                .post( configData.API_SERVER + 'books/save', form_data, {
+                    headers : {
+                    'content-type' : 'multipart/form-data'
+                }})
+                .then(function (response) {
+                    if (response.success == 201) {
+                        setBooktitle("")
+                        setBooktype("")
+                        setOrigintype("")
+                        setDatamine("")
+                        setCurserialnumber("")
+                        setAuthorwallet("")
+                        setBrandimage("")
+                    } else {    
+                        setBooktitle("")
+                        setBooktype("")
+                        setOrigintype("")
+                        setDatamine("")
+                        setCurserialnumber("")
+                        setAuthorwallet("")
+                        setBrandimage("")
                     }
                 })
                 .catch(function (error) {
@@ -113,13 +158,13 @@ const BookAdd = (props) => {
                                 shrink: true,
                             }}
                             variant="outlined"
-                            value={book}
-                            onChange={(e)=> { setBook(e.target.value) }}
+                            value={booktitle}
+                            onChange={(e)=> { setBooktitle(e.target.value) }}
                         />
                     </Box>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
-                        {/* <img src={URL.createObjectURL(brandimage)} width="200" height="200" /> */}
-                        <input type="file" id="image" accept="image/png, image/jpeg"  onChange={(e) => setBrandimage(e.target.files[0])} required/>
+                        <img src={previosImg} width="400" />
+                        <input type="file" id="image" accept="image/png, image/jpeg"  onChange={handleFileUpload} required/>
                     </Box>
                     <Box>
                         <TextField
@@ -182,9 +227,9 @@ const BookAdd = (props) => {
                                 label="Book Type"
                                 onChange={(e) => setBooktype(e.target.value)}
                             >
-                                { booktypes && booktypes.map((item) => {
+                                { booktypes && booktypes.map((item, i) => {
                                     return (
-                                        <MenuItem value={item.id}>{item.booktype}</MenuItem>
+                                        <MenuItem key={i} value={item.id}>{item.booktype}</MenuItem>
                                     )
                                 })}
                             </Select>
@@ -200,9 +245,9 @@ const BookAdd = (props) => {
                                 label="Origin Type"
                                 onChange={(e) => setOrigintype(e.target.value)}
                             >
-                            { origintypes && origintypes.map((item) => {
+                            { origintypes && origintypes.map((item, i) => {
                                 return (
-                                    <MenuItem value={item.id}>{item.origintype}</MenuItem>
+                                    <MenuItem key={i} value={item.id}>{item.origintype}</MenuItem>
                                 )
                             })}
                             </Select>

@@ -5,7 +5,7 @@ import axios from 'axios';
 // material-ui
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
 import { Grid, Button, Box } from '@material-ui/core';
-import { IconEye, IconEdit, IconTrash } from '@tabler/icons';
+import { IconEye, IconNotes, IconEdit, IconTrash } from '@tabler/icons';
 
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
@@ -48,7 +48,11 @@ const Booklist = () => {
     }, [])
 
     const editBooklist = (id) => {
-        history.push(`/books/edit/${id}`)
+        history.push(`/dashboard/books/edit/${id}`)
+    }
+
+    const editBookcontent = (id) => {
+        history.push(`/dashboard/books/contentedit/${id}`)
     }
 
     const deleteBooklist = (Booklist_id) => {
@@ -88,8 +92,15 @@ const Booklist = () => {
                             {booklists.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => {
                                 return (
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
-                                        <TableCell>{row.origintype}</TableCell>
+                                        <TableCell>{row.title}</TableCell>
                                         <TableCell align={'right'}>
+                                            <Button
+                                                style={{ marginLeft: '10px' }}
+                                                variant="contained"
+                                                onClick={() => editBookcontent(row.id)}
+                                            >
+                                                <IconNotes />
+                                            </Button>
                                             <Button
                                                 style={{ marginLeft: '10px' }}
                                                 variant="contained"

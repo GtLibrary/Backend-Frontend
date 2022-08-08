@@ -4,9 +4,9 @@ from django.db import models
 class Books(models.Model):
     title = models.CharField(max_length=200, default='')
     content = models.TextField(default = '')
-    image_url = models.ImageField(upload_to='post_main_images')
+    image_url = models.ImageField(upload_to='post_main_images', blank=True, null=True)
     author_wallet = models.CharField(max_length=200, default='')
-    bookmark_img_url = models.ImageField(upload_to='post_bookmark_images')
+    bookmark_img_url = models.ImageField(upload_to='post_bookmark_images', blank=True, null=True)
     curserial_number = models.CharField(max_length=200, default='')
     datamine = models.CharField(max_length=200, default='')
     origin_type_id = models.BigIntegerField(default=0)
