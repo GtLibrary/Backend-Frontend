@@ -10,6 +10,7 @@ import AuthGuard from './../utils/route-guard/AuthGuard';
 const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default')));
 const Booklist = Loadable(lazy(() => import('../views/dashboard/books/Booklist')));
 const BookAdd = Loadable(lazy(() => import('../views/dashboard/books/BookAdd')));
+const BookContent = Loadable(lazy(() => import('../views/dashboard/books/BookContent')));
 
 // basicsetting routing
 const BookType = Loadable(lazy(() => import('../views/basic/BookType')));
@@ -75,7 +76,7 @@ const MainRoutes = () => {
                         } />
                         <Route path="/dashboard/books/contentedit/:id" 
                         render = {(props) => (
-                            <BookAdd {...props} action="edit" />
+                            <BookContent {...props} action="edit" />
                         )
                         } />
 

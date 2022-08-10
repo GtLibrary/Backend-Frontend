@@ -7,6 +7,7 @@ from api.authentication.viewsets import (
 from api.booktype.api import BookTypeCreateApi, BookTypeDeleteApi, BookTypeUpdateApi, BookTypeApi
 from api.origintype.api import OriginTypeCreateApi, OriginTypeDeleteApi, OriginTypeUpdateApi, OriginTypeApi
 from api.books.api import BooksCreateApi, BooksDeleteApi, BooksUpdateApi, BooksApi
+from api.uploadimage.api import UploadimageCreateApi
 from rest_framework import routers
 from api.user.viewsets import UserViewSet
 from django.urls import path, include
@@ -39,4 +40,5 @@ urlpatterns = [
     path("books/list", BooksApi.as_view()),
     path("books/delete/<int:pk>", BooksDeleteApi.as_view()),
     path("books/edit/<int:pk>", BooksUpdateApi.as_view()),
+    path("uploadimage", UploadimageCreateApi.as_view()),
 ]
