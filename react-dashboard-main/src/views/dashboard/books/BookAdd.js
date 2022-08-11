@@ -37,11 +37,10 @@ const BookAdd = (props) => {
     const getBooksById = async () => {
         const { data } = await axios
             .get( configData.API_SERVER + 'books/edit/' + id)
-        console.log(data.book_type_id)
 
         setBooktitle(data.title);
-        // setBooktype(data.book_type_id);
-        // setOrigintype(data.origin_type_id);
+        setBooktype(data.book_type_id);
+        setOrigintype(data.origin_type_id);
         setDatamine(data.datamine);
         setCurserialnumber(data.curserial_number);
         setAuthorwallet(data.author_wallet);
@@ -50,8 +49,13 @@ const BookAdd = (props) => {
 
     useEffect(() => {
         if (id) {
+            getBooktypes();
+            getOrigintypes();
             getBooksById()
             setTitle("Book Edit")
+        } else {
+            getBooktypes();
+            getOrigintypes();
         }
     }, [])
 
@@ -60,18 +64,10 @@ const BookAdd = (props) => {
         setBooktypes(data);
     };
 
-    useEffect(() => {
-        getBooktypes();
-    }, []);
-
     const getOrigintypes = async () => {
         const { data } = await axios.get(configData.API_SERVER + 'origintype/list');
         setOrigintypes(data);
     };
-
-    useEffect(() => {
-        getOrigintypes();
-    }, []);
 
     const handleFileUpload = (event) => {
         setBrandimage(event.target.files[0])
