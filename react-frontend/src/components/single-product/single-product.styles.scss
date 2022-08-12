@@ -1,0 +1,76 @@
+.single-product-container {
+  margin: 2rem 0;
+  margin-bottom: 3rem;
+  padding: 2rem;
+
+  @media(min-width: 1024px) {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .product-content, .product-details {
+      flex: 0 0 400px;
+    }
+  }
+
+  .product-content {
+    margin: 2rem;
+  }
+
+  .product-details {
+    .name-price {
+      margin: 1rem 0;
+    }
+
+    .add-to-cart-btns {
+      margin: 2rem 0;
+    }
+
+    .product-description {
+      p {
+        line-height: 1.5;
+      }
+    }
+  }
+  .pdf-maincontent {
+    width: 800px;
+    height: 90vh;
+    overflow: auto;
+    padding: 20px;
+    // background-image: url("/art/paper.jpg");
+    background-size: 200% 200%;
+    background-image: linear-gradient(
+            -45deg, 
+	    rgba(230,235,215,1) 0%,
+            rgba(250,235,225,1) 25%, 
+            rgba(250,230,225,1) 51%, 
+            rgba(255,215,100,1) 100%
+	        
+      );  
+    animation: AnimateBG 20s ease infinite;
+
+    background-color: antiquewhite;
+  }
+  .pdf-maincontent img{
+    width: 100% !important;
+    height: auto !important;
+  }
+  .product-content {
+    background-image: linear-gradient(to bottom right, #840, #420);
+    outline: #e95 dashed 1px;
+    padding: 10px;
+    border-radius: 10px;
+    outline-offset: -3px;
+    border: none;
+    box-shadow: inset 1px 1px 2px #e95, inset -1px -1px 2px black;
+    color: white;
+    transition: 0.1s;
+  }
+}
+
+
+@keyframes AnimateBG { 
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
