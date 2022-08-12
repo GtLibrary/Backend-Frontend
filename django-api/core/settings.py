@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "api.booktype",
     "api.origintype",
     "api.books",
+    "api.uploadimage"
 ]
 
 MIDDLEWARE = [
