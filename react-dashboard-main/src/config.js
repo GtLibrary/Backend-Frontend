@@ -5,7 +5,7 @@ const config = {
     defaultPath: '/dashboard/default',
     fontFamily: `'Roboto', sans-serif`,
     borderRadius: 12,
-    API_SERVER: 'http://localhost:5000/api/'
+    API_SERVER: process.env.REACT_APP_API??'http://localhost:5000/api/'
 };
 
 export default config;
