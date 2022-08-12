@@ -30,14 +30,14 @@ const Success = () => {
     .then(response => response.json())
     .then(result => {
       
-      console.log(result);
+      
       
       setChargeId(result.charges.data[0].id);
     
       setAmount(result.amount);
     
     })
-    .catch(error => console.log('error', error));
+    .catch(error => {});
   
   useEffect(() => {
     if (cartItems.length !==0) { clearCart() }

@@ -13,7 +13,7 @@ const contentContainer = document.getElementById("content");
 async function logOut() {
 	await Moralis.User.logOut();
 	render();
-	console.log("logged out. User:", Moralis.User.current());
+	
 }
 
 async function doBookTradableAuthenticate(withnonce) {
@@ -22,15 +22,15 @@ async function doBookTradableAuthenticate(withnonce) {
 	let libraryNonce = 0;
 	try {
                 libraryNonce = await Moralis.Cloud.run("getLibraryNonce", {});
-		console.log("libraryNonce:", libraryNonce);
+		
 	} catch (error) {
 		console.log("using default nonce of 0 because of error:", error);
 		
 	}
 
 	// Asking for signature...
-	console.log("Asking for signature...");
-	return Moralis.authenticate({signingMessage: "" + libraryNonce + " Great Library \n" + datamine + ": Connect to begin your journey"}); // 
+	
+	return Moralis.authenticate({signingMessage: String(libraryNonce) + " Great Library \n" + datamine + ": Connect to begin your journey"}); // 
 }
 
 async function signBookForFans() {
@@ -42,11 +42,11 @@ async function signBookForFans() {
 async function loginWithMetaMask() {
 	//document.body.style.backgroundImage = "url('/art/paper.jpg)";
 
-	console.log("loginWithMetaMask");
+	
 
 	try {
 		const user = await doBookTradableAuthenticate();
-		console.log(user);
+		
 	} catch (error) {
 		console.log(error);
 		alert("Error while authenticating. Please see your wallet. Console says:" + JSON.stringify(error));
@@ -130,7 +130,7 @@ async function onUnlinkAddress(event) {
 	event.preventDefault();
 	try {
 	const address = event.target.dataset.addr;
-	console.log("onUnlinkAddress:: addr:", address);
+	
 
 	const confirmed = confirm("Are you sure you want to remove this address?");
 	if (!confirmed) {
@@ -226,7 +226,7 @@ async function hasStake(_staker) {
         };
 
         const transactionObj = await Moralis.executeFunction(sendOptions);
-        console.log(transactionObj);
+        
 	return transactionObj;
 }
 
@@ -241,7 +241,7 @@ async function getRewardRate() {
 	};
 
 	const transactionObj = await Moralis.executeFunction(sendOptions);
-	console.log(transactionObj);
+	
 	return transactionObj;
 }
 
@@ -250,10 +250,10 @@ async function earnculturecoin(event) {
 	const user = Moralis.User.current();
 
 	const curStake = await hasStake(user.attributes.ethAddress);
-	console.log("curStake:", curStake);
+	
 
 	const rewardRate = await getRewardRate();
-	console.log("Percentage Rate per Hour:", 1.0 / rewardRate * 100);
+	
 	const percentRate = 1.0 / rewardRate * 100;
 
 	//alert("You already have " + curStake + " CC staked and\nyou only earn " + percentRate + "% CC per hour.");
@@ -272,7 +272,7 @@ async function earnculturecoin(event) {
     	};
 
     	const transactionObj = await Moralis.executeFunction(sendOptions);
-    	console.log(transactionObj);
+    	
 	return transactionObj;
 }
 
@@ -307,20 +307,20 @@ async function DELME() {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-                console.log("Sanity check passed? for ", _name);
-                console.log(result);
+                
+                
 
                 const res2 = await web3.eth.getTransaction(result);
-                console.log("sane: ", _name, res2);
+                
 
                 //alert("Do not click this button until the transaction is mined.");
 
                 web3.eth.getTransactionReceipt(result, function(error, result){
-                        console.log("Debug Sane: ", result);
-                        console.log("Debug Insane (" + errorMsg + "): ", error);
+                        
+                        
 
                         if (!result && !errorMsg) {
-                                console.log("Mental health check is authorized and a timer should be set to check in a few minutes or seconds as the mining speed goes up or down.");
+                                
 
                         }
 
@@ -341,8 +341,8 @@ async function getBENString() {
         queryAll.equalTo("NBT", bookmarkcontractid);
         const data = await queryAll.find();
 
-        console.log("queryAll" + JSON.stringify(queryAll));
-        console.log(data);
+        
+        
 
 	let outstring = '<div id="ben-pettings">';
         for (i=0;i<data.length;i++){
@@ -352,9 +352,9 @@ async function getBENString() {
                 //console.log(contractid);
 
                 myprompt = data[i].get("prompt");
-		console.log("myprompt: " + myprompt);
+		
 		tokenId = data[i].get("tokenId");
-		console.log("tokenId: " + tokenId);
+		
 
                 //console.log("raw price: " + price);
                 value = web3.utils.fromWei(data[i].get("value"));
@@ -373,7 +373,7 @@ async function getBENString() {
 
 async function updateccbalance1(event) {
 	try {
-		console.log("updateccbalance1");
+		
 		await forceNetwork();
 
 		await updateccbalance(event, true);
@@ -512,7 +512,7 @@ function saveBook(event) {
 }
 
 function refreshBook(event) {
-	console.log("refreshBook");
+	
 	//window.location.reload();
 	//return redirect('/art/?' + 'type=book&curserial_num=' + str(bmsupply-1) + '&datamine=' + datamine)
 	const myhref = '/art/?type=default&datamine=' + datamine;
@@ -523,7 +523,7 @@ function refreshBook(event) {
 
 //downloadURI("data:,Hello%2C%20World!", "helloWorld.txt"); // http://jsfiddle.net/ARTsinn/Ezx5m/
 function savebookhere() {
-	console.log("savebookhere");
+	
     	var link = document.createElement("a");
     	link.download = datamine + ".html";
     	link.href = '/art/?type=default&download=true&datamine=' + datamine;
@@ -676,7 +676,7 @@ function buildProfileComponent(user) {
 	//
 	
 	const bookmarkImageUrl = "/art/?type=bookmark&curserial_num=" + cur_serial + "&datamine=" + datamine;
-	console.log("bookmarkImageUrl:", bookmarkImageUrl);
+	
 	
 	return `
 	<div class="container"  style="
@@ -965,14 +965,14 @@ Contest <span id=contestspan>1</span>:
 async function getDefaultMax(hostContract) {
         const NBTcontract = new web3.eth.Contract(NBT_abi,hostContract);
         const defaultMax = await NBTcontract.methods.maxmint().call();
-        console.log("defaultMax:" + defaultMax);
+        
         return defaultMax;
 }
 
 async function loadmax(event, _which) {
         const _textBox = document.getElementById(_which + "max");
         const _contractid = eval(_which+"contractid");
-        console.log("_contractid: ", _contractid);
+        
 
         if(_textBox.value === "unknown") {
                 const _max = await getDefaultMax(_contractid);
@@ -985,11 +985,11 @@ async function setmax(event, _which) {
 
         const _textBox = document.getElementById(_which + "max");
         const _contractid = eval(_which+"contractid");
-        console.log("_contractid: ", _contractid);
+        
 
         if(event.key === 'Enter') {
                 const _max = _textBox.value;
-                console.log("Setting max: ", _max);
+                
                 const contract = new web3.eth.Contract(NBT_abi, _contractid);
                 await contract.methods.setMaxMint(_max).send({from: user.attributes.ethAddress});
         }
@@ -1000,14 +1000,14 @@ async function setmax(event, _which) {
 async function getDefaultFrom(hostContract) {
         const NBTcontract = new web3.eth.Contract(NBT_abi,hostContract);
         const defaultFrom = await NBTcontract.methods.getDefaultFrom().call();
-        console.log("defaultFrom:" + defaultFrom);
+        
         return defaultFrom;
 }
 
 async function loadfrom(event, _which) {
         const _textBox = document.getElementById(_which + "from");
         const _contractid = eval(_which+"contractid");
-        console.log("_contractid: ", _contractid);
+        
 
 	if(_textBox.value === "unknown") {
                 const _from = await getDefaultFrom(_contractid);
@@ -1020,11 +1020,11 @@ async function setfrom(event, _which) {
 
         const _textBox = document.getElementById(_which + "from");
         const _contractid = eval(_which+"contractid");
-        console.log("_contractid: ", _contractid);
+        
 
         if(event.key === 'Enter') {
                 const _from = _textBox.value;
-                console.log("Setting from: ", _from);
+                
                 const contract = new web3.eth.Contract(NBT_abi, _contractid);
                 await contract.methods.setDefaultFrom(_from).send({from: user.attributes.ethAddress});
         }
@@ -1036,11 +1036,11 @@ async function setprice(event, _which) {
 
 	const _textBox = document.getElementById(_which + "price");
 	const _contractid = eval(_which+"contractid");
-	console.log("_contractid: ", _contractid);
+	
 
 	if(event.key === 'Enter') {
 		const _price = _textBox.value;
-		console.log("Setting price: ", _price);
+		
 		const contract = new web3.eth.Contract(NBT_abi, _contractid);
 		await contract.methods.setDefaultPrice(Moralis.Units.ETH(_price)).send({from: user.attributes.ethAddress});
 	}
@@ -1050,14 +1050,14 @@ async function setprice(event, _which) {
 async function getDefaultPrice(hostContract) {
         const NBTcontract = new web3.eth.Contract(NBT_abi,hostContract);
         const defaultPrice = await NBTcontract.methods.getDefaultPrice().call();
-        console.log("defaultPrice:" + defaultPrice);
+        
         return defaultPrice;
 }
 
 async function loadprice(event, _which) {
 	const _textBox = document.getElementById(_which + "price");
 	const _contractid = eval(_which+"contractid");
-	console.log("_contractid: ", _contractid);
+	
 
 	if(_textBox.value === "unknown") {
 		const _price = await getDefaultPrice(_contractid);
@@ -1225,7 +1225,7 @@ function onCancelNewPassword() {
 }
 
 async function onAddAddress() {
-	console.log("onAddAddress");
+	
 	try {
 		// enabling web3 will cause an account changed event
 		// which is already subscribed to link on change so
@@ -1239,7 +1239,7 @@ async function onAddAddress() {
 }
 
 async function setDefaultFrom(hostContract, _address) {
-	console.log("setDefaultFrom");
+	
 
         const NBTcontract = new web3.eth.Contract(NBT_abi,hostContract);
         await NBTcontract.methods.setDefaultFrom(1).send({from: _address, gas:10000000, gasPrice:web3.utils.toWei("100", "gwei")});
@@ -1253,8 +1253,8 @@ async function getOfferingId(contractid, tokenid) {
 
         const data = await queryAll.find();
 
-        console.log("queryAll" + JSON.stringify(queryAll));
-        console.log(data);
+        
+        
 
         price = "unknown";
         offeringId = "unknown";
@@ -1281,7 +1281,7 @@ async function minthero(_tokenId, _class, _amount) {
 	const HEROS = new web3.eth.Contract(hero_abi, heroAddress);
 	const ret = await HEROS.methods.heroMint(_tokenId, _to, _class, _amount).send({from: _address});
 
-	console.log("mintHero: " + JSON.stringify(ret));
+	
 }
 
 async function mintbook(event) {
@@ -1299,7 +1299,7 @@ async function mintbook(event) {
         };
 
         const result = await Moralis.executeFunction(options);
-        console.log("result:", result);
+        
 }
 
 
@@ -1318,32 +1318,32 @@ async function minthardbound(event) {
         };
 
         const result = await Moralis.executeFunction(options);
-        console.log("result:", result);
+        
 }
 
 
 async function onReadBook(event) {
         user = await doBookTradableAuthenticate(true);
 
-	console.log(user);
+	
 
 	_address = user.attributes.ethAddress;
 
         const moralisEth = user.get("authData").moralisEth;
-	console.log("msg = " + moralisEth.data);
-	console.log("sig = " + moralisEth.signature);
+	
+	
 
 	const options = { chain: baseNetwork, address: _address, token_address: bookcontractid };
 	const bookTokens = await Moralis.Web3API.account.getNFTsForContract(options);
-	console.log(bookTokens);
+	
 
 	let tokenId = "0";
 	let daedalusCookie = "";
 	if (bookTokens.total == 0) {
-		console.log("You don't have a book token. Seeing if you have a daedalus class token at: ", daedalusClassBoosterAddress);
+		
 		const options = { chain: baseNetwork, address: _address, token_address: daedalusClassBoosterAddress };
         	daedalusToken = await Moralis.Web3API.account.getNFTsForContract(options);
-		console.log("your tokens are: ", daedalusToken);
+		
 		if (daedalusToken.total == 0) {
 			alert("You don't have any tokens!");
 		}
@@ -1351,12 +1351,12 @@ async function onReadBook(event) {
 	} else {
 		tokenId = bookTokens.result[0].token_id;
 	}
-	console.log("user owns tokenId: " + tokenId);
-	console.log("daedalusCookie: " + daedalusCookie);
+	
+	
 
 	//http://greatlibrary.io:9466/art/?type=book&curserial_num=21&datamine=MBMPGBRRR
 	myhref = "/art/?type=book&msg=" + btoa(moralisEth.data) + "&sig=" + moralisEth.signature + "&datamine=" + datamine + "&tokenid=" + tokenId + "&curserial_num=42222" + daedalusCookie;
-	console.log(myhref);
+	
 
 	window.top.location.href = myhref;
 	//window.location.href = myhref;
@@ -1367,7 +1367,7 @@ async function getstakerate(event) {
 
 	const rewardRate = await getRewardRate();
 
-        console.log("Percentage Rate per Hour:", 1.0 / rewardRate * 100);
+        
         const percentRate = 1.0 / rewardRate * 100;
 
 	$("#stakerateid").val(percentRate);
@@ -1379,7 +1379,7 @@ async function setstakerate(event) {
 	const perHour = $("#stakerateid").val();
 
 	const newRate = 1.0 / (perHour / 100);
-	console.log("newRate: ", newRate);
+	
 
 	const user = await doBookTradableAuthenticate();
 	const _address = user.attributes.ethAddress;
@@ -1388,21 +1388,21 @@ async function setstakerate(event) {
 }
 
 async function paypress(event) {
-	console.log("paypress");
+	
         const user = Moralis.User.current();
 	const _address = user.attributes.ethAddress;
 
 
 	const cc = new web3.eth.Contract(CC_abi, cultureCoinAddress);
 	const B = await cc.methods.B().call();
-	console.log("Balance: " + web3.utils.fromWei(B));
+	
 
         const press = new web3.eth.Contract(press_abi, printingPressAddress);
         const ret = await press.methods.addBalanceCC(_address, Moralis.Units.ETH(".01")).send({from: _address}); //, 
 		//gasPrice:web3.utils.toWei("55", "gwei"), 
 		//gas:8000000});
         //const ret = await press.methods.getBalance(_address).send({from: _address, gas:8000000});
-	console.log("ret:", ret);
+	
 }
 
 
@@ -1411,7 +1411,7 @@ async function getpaid(event) {
         if (!user) {
                 user = await doBookTradableAuthenticate();
         }
-        console.log(user);
+        
 
 	_address = user.attributes.ethAddress;
 
@@ -1422,17 +1422,17 @@ async function getpaid(event) {
 	//
 
 	const stakes = await hasStake(_address);
-	console.log("stakes:", stakes);
+	
 
 	if(stakes.total_amount > 0) {
 		const myConfirm = confirm("Do you wish to withdraw all your stakes?");
 		if(myConfirm) {
 			for(i = 0; i < stakes.stakes.length; i++) {
 				const stake = stakes.stakes[i];
-				console.log("stake:", stake.amount);
+				
 				const contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
 				const ret = await contract.methods.withdrawStake(stake.amount, i).send({from: _address});
-				console.log("ret:", ret);
+				
 			}
 		}
 	}
@@ -1440,25 +1440,25 @@ async function getpaid(event) {
 
 	const press = new web3.eth.Contract(press_abi, printingPressAddress);
 	const bal = await press.methods.getBalance(_address).call({from: _address});
-	console.log("press balance:", bal);
+	
 	if(bal > 0) {
 		const myConfirm = confirm("Do you wish to withdraw all your printing press?");
 		if(myConfirm) {
 			const contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
 			const ret = await contract.methods.withdraw(bal).send({from: _address});
-			console.log("ret:", ret);
+			
 		}
 	}
 
 
 	const marketplace = new web3.eth.Contract(nft_market_place_abi, bookRegistryAddress);
  	const balance = await marketplace.methods.viewBalances(_address).call();
-	console.log(balance);
+	
 	if(balance == 0) {
 		alert("You have no money in the market.");
 	} else {
  		const tx = await marketplace.methods.withdrawBalance().send({from: _address, gas:1000000}); // , gasPrice:web3.utils.toWei("100", "gwei")});
-		console.log(tx);
+		
 	}
 
 
@@ -1506,7 +1506,7 @@ async function getRewards(hostContract, tokenId) {
 }
 
 async function getGasRewards(hostContract, tokenId) {
-	console.log("getGasRewards", hostContract, tokenId);
+	
         const contract = new web3.eth.Contract(NBT_abi, hostContract);
         const gasAmounts = await contract.methods.getGasRewards(tokenId).call();
         return gasAmounts;
@@ -1519,12 +1519,12 @@ function sleep(ms) {
 
 
 async function getPrepped() { 	// Try to prep the next bookmark until cloud gives us a tokenId
-	console.log("getPrepped");
+	
         var signedTransaction;
         try {
 		const params = {hostContract: bookmarkcontractid};
                 signedTransaction = await Moralis.Cloud.run("prepNextDefaultToken", params);
-                console.log("signed transaction from prepNextDefaultToken: ", signedTransaction);
+                
         } catch(e) {
                 //console.log("error from prepNextDefaultToken: ", e);
                 return getPrepped(event);
@@ -1532,11 +1532,11 @@ async function getPrepped() { 	// Try to prep the next bookmark until cloud give
 	if (isNaN(signedTransaction)) {
 		return getPrepped(event);
 	}
-	console.log("Prepped tokenId: ", signedTransaction);
+	
 }
 
 window.addEventListener('load', (event) => {
-	console.log("window loaded");
+	
 	//document.write("<sc ript> (function() { document.getElementById('videoContainer').style.setProperty('display', 'none'); })(); </sc ript>"); 
 	// If used in this file such a tag currently breaks the render engine. WARNING WARNING WARTING FIXME HELP JRR script tag illigal?
 	//getPrepped(event);
@@ -1550,7 +1550,7 @@ async function onBuyCurBookmark(event) {
                 await doBookTradableAuthenticate();
         }
 
-	console.log("Buying next token in: ", bookmarkcontractid); // Seems a misnommer aroudn here...
+	 // Seems a misnommer aroudn here...
 
 	const press = new web3.eth.Contract(press_abi, printingPressAddress);  // We a book or a bookmark?
 	await press.methods.buyBook(bookmarkcontractid).send({from: user.attributes.ethAddress,
@@ -1564,7 +1564,7 @@ async function onBuyCurBookmarkOld(event) {
         	await doBookTradableAuthenticate();
 	}
 
-	console.log("trying to buy bookmark", bookmarkcontractid);
+	
 
 	document.body.style.cursor= 'wait';
 
@@ -1579,12 +1579,12 @@ async function onBuyCurBookmarkOld(event) {
 
 	}
 
-	console.log(_address);
+	
 
 
         const paramsCM = {};
         const cloudMarket = await Moralis.Cloud.run("getBookRegisteryContractAddress", paramsCM);
-	console.log("cloudMarket:", cloudMarket);
+	
 	if(cloudMarket.toLowerCase() != bookRegistryAddress.toLowerCase()) {
 		alert("The book registery contract address is not the one we expect.  Please contact the developer.");
 		return;
@@ -1598,42 +1598,42 @@ async function onBuyCurBookmarkOld(event) {
   		params: {}
 	};
 	const defaultsfrom = await Moralis.Web3API.native.runContractFunction(options);
-	console.log("defaultfrom: ", defaultsfrom);
+	
 
   	const contract = new web3.eth.Contract(NBT_abi, bookmarkcontractid);
   	const currentToken = await contract.methods.getCurrentToken().call();
-	console.log("current token:", currentToken);
+	
 
 
         const contractOwner = await contract.methods.owner().call();
-        console.log("contractOwner:", contractOwner);
+        
 
         const safeSender = await contract.methods.getSafeSender().call();
-        console.log("bookmark's safeSender:", safeSender);
+        
 	if(safeSender.toLowerCase() != bookRegistryAddress.toLowerCase()) {
-		console.log("Bookmark's is not Registed with us? We can fix that I hope...");
+		
 	} else {
-		console.log("bookmark's safeSender is correct");
+		
 	}
 
 	const bookContract = new web3.eth.Contract(NBT_abi, bookcontractid);
 	const bookSafeSender = await bookContract.methods.getSafeSender().call();
-        console.log("book's safeSender:", bookSafeSender);
+        
 	if(bookSafeSender.toLowerCase() != bookmarkcontractid.toLowerCase()) {
-		console.log("Book isn't coming for free yet? Odd, but oh well.");
-		console.log("The prep code should fix that.");
+		
+		
 		//alert("Book isn't coming for free? Odd, but oh well.");
 	} else {
-		console.log("book's safeSender is correct");
+		
 	}
 
 	const params = {hostContract: bookmarkcontractid};
-        console.log("prepping for offering to be made on: ", params); // We do this here in spirit of dapps knowing things themselves.
+         // We do this here in spirit of dapps knowing things themselves.
         var signedTransaction;
 	try {
         	signedTransaction = await Moralis.Cloud.run("prepNextDefaultToken", params);
 		//alert("If the first attempt does not succeed, try reauthenticating, or waiting until the transaction is mined and returned.");
-		console.log("signed transaction from prepNextDefaultToken: ", signedTransaction);
+		
 	} catch(e) {
 		console.log("error from prepNextDefaultToken: ", e);
 
@@ -1644,14 +1644,14 @@ async function onBuyCurBookmarkOld(event) {
 	// If the signed transaction is a number then we know that it is the token id.
 	// Otherwise it is a tx and needs to be waited on.
 	if (!isNaN(signedTransaction)) {
-		console.log("signed transaction is a number");
+		
 		const tokenId = String(signedTransaction);
-		console.log("tokenId: ", tokenId);
+		
 
 		var price;
 		try {
 			price = await getpriceFromMoralis(bookmarkcontractid, tokenId);
-			console.log("price: ", price);
+			
 		} catch(e) {
 			console.log("error getting price from moralis: ", e);
 			//sleep(2000);
@@ -1660,7 +1660,7 @@ async function onBuyCurBookmarkOld(event) {
 
 		try {
 			offeringid = await getOfferingId(bookmarkcontractid, tokenId);
-			console.log("offeringid: ", offeringid);
+			
 		} catch(e) {
 			console.log("error getting offeringid from moralis: ", e);
 			for(var i = 0; i < 10; i++) {
@@ -1677,23 +1677,23 @@ async function onBuyCurBookmarkOld(event) {
 
 		const marketplace = new web3.eth.Contract(nft_market_place_abi, bookRegistryAddress);
 		const result = await marketplace.methods.viewOfferingNFT(offeringid).call();
-		console.log("Offering result: ", result);
-		if("0" == result) {
+		
+		if(result == "0") {
 			alert ("Try again, current offering result: " + result);
 			return;
 		}
 
 		const rewardsBefore = await getRewards(bookmarkcontractid, tokenId);
-		console.log("rewards before: ", rewardsBefore);
+		
 
 		const gasRewardsBefore = await getGasRewards(rewardsBefore[0], rewardsBefore[1]);
-		console.log("gas rewards before: ", gasRewardsBefore);
+		
 
 		const priceETH = Moralis.Units.ETH(price);
         	const priceHexString = BigInt(priceETH).toString(16);
 
-		console.log("priceHexString:  ", priceHexString);
-		console.log("v. priceHexOffer:", BigInt(result[2]).toString(16));
+		
+		
 		var closedOffering;
 
 		await doBookTradableAuthenticate();
@@ -1712,18 +1712,18 @@ async function onBuyCurBookmarkOld(event) {
 				}
 			}
 		}
-		console.log("closedOffering: ", closedOffering);
+		
 
 		const rewardsAfter = await getRewards(bookmarkcontractid, tokenId);
-		console.log("Bookmark rewards after should be unset/transfered: ", rewardsAfter);
+		
 
 		getPrepped();
 		document.body.style.cursor= 'pointer';
 
 	} else {
-		console.log("signed transaction is a tx");
+		
 		const tx = signedTransaction;
-		console.log("tx: ", tx);
+		
 
 		//onBuyCurBookmark(event);
 	}
@@ -1759,7 +1759,7 @@ async function onbuyhardbound(event) {
 	if (!user) {
         	user = await doBookTradableAuthenticate();
         }
-        console.log(user);
+        
 
 	const params =  {hostContract: hardboundcontractid}
         const newTokenId = await Moralis.Cloud.run("prepNextDefaultToken", params);
@@ -1774,7 +1774,7 @@ async function onbuyhardbound(event) {
 	let leastexpensive = -1;
 	let leastexpensiveid = 0;
 	for (i=0;i<data.length;i++){
-                console.log(data[i].attributes);
+                
 
                 //console.log(data[i].get("hostContract"));
                 //console.log(contractid);
@@ -1782,8 +1782,8 @@ async function onbuyhardbound(event) {
                 offeringId = data[i].get("offeringId");
                 tokenid = data[i].get("tokenId");
 
-                console.log("price: " + price);
-                console.log("offering: " + offeringId);
+                
+                
 
 		if (price > mostexpensive){
 			mostexpensive = price;
@@ -1795,22 +1795,22 @@ async function onbuyhardbound(event) {
 		}
         }
 
-	console.log("mostexpensive: " + mostexpensive);
-	console.log("mostexpensiveid: " + mostexpensiveid);
-	console.log("leastexpensive: " + leastexpensive);
-	console.log("leastexpensiveid: " + leastexpensiveid);
+	
+	
+	
+	
 
 
-        console.log("queryAll" + JSON.stringify(queryAll));
-        console.log(data);
+        
+        
 
 	address = user.attributes.ethAddress;
-	console.log(address);
+	
 
 
 	const options = { address: hardboundcontractid, chain: baseNetwork };
 	const NFTs = await Moralis.Web3API.token.getAllTokenIds(options);
-	console.log(NFTs);
+	
 
 	//const options = { chain: baseNetwork, address: address };
 	//await doBookTradableAuthenticate();
@@ -1826,14 +1826,14 @@ async function getIsAddon(_childContract, _hostContract) {
                 params: {_addon: _hostContract}
         };
         const isAddon = await Moralis.Web3API.native.runContractFunction(options);
-        console.log("isAddon: ", isAddon);
+        
 	return isAddon;
 }
 
 async function getRewardsContract(hostContract) {
         const contract = new web3.eth.Contract(NBT_abi, hostContract);
 	const rewards = await contract.methods.getRewards("0").call();
-	console.log("rewards: ", rewards);
+	
         return rewards[0];
 }
 
@@ -1846,7 +1846,7 @@ async function getPrintingPressBalance(_whom) {
                 params: {_whom: _whom}
         };
         const B = await Moralis.Web3API.native.runContractFunction(options);
-        console.log(B);
+        
 
         return web3.utils.fromWei(B);
 }
@@ -1854,10 +1854,10 @@ async function getPrintingPressBalance(_whom) {
 
 //function delegateMinter (address _NBT, uint _tokenMax, uint _amount, uint _gasRewards) public {
 async function addonPrinterMintTo(user, _contractid) {
-    	console.log("_contractid: ", _contractid);
-	console.log("printingPressAddress: ", printingPressAddress);
+    	
+	
 	const printerBlanace = await getPrintingPressBalance(user.attributes.ethAddress);
-	console.log("printerBlanace: ", printerBlanace);
+	
 
 	if (printerBlanace <= 0.0050) {
 		alert("You do not have enough Culture Coin in the printing press. " + printerBlanace);
@@ -1865,20 +1865,20 @@ async function addonPrinterMintTo(user, _contractid) {
 	}
 
     	const rewardContract = await getRewardsContract(_contractid);
-    	console.log("rewardContract: " + rewardContract);
+    	
 	if(rewardContract.toLowerCase() != bookcontractid.toLowerCase()) {
-		console.log("rewardContract != bookcontractid: ", bookcontractid);
+		
 		return;
 	}
-	console.log("rewardContract == bookcontractid: ");
+	
 
     	const isAddon = await getIsAddon(_contractid, printingPressAddress);
     	if(!isAddon) {
-		console.log("not an addon:", printingPressAddress);
+		
 		return;
     	}
 
-	console.log("trying to mint now.");
+	
     	const provider = await Moralis.enableWeb3();
     	const sendOptions = {
         	contractAddress: printingPressAddress,
@@ -1894,13 +1894,13 @@ async function addonPrinterMintTo(user, _contractid) {
     	};
 
     	const transactionObj = await Moralis.executeFunction(sendOptions);
-    	console.log(transactionObj.hash);
+    	
     	await transactionObj.wait();
 }
 
 
 async function mintnextbookmark(event) {
-	console.log("mintnextbookmark");
+	
 	//let user = Moralis.User.current();
 
 	//if(!user) {
@@ -1908,11 +1908,11 @@ async function mintnextbookmark(event) {
 	//}
 
         address = user.attributes.ethAddress;
-	console.log(address);
+	
 
         const NBTcontract = new web3.eth.Contract(NBT_abi,bookmarkcontractid);
         const contractOwner = await NBTcontract.methods.owner().call();
-        console.log("contractOwner:", contractOwner);
+        
 
 	if(address.toLowerCase() != contractOwner.toLowerCase()) {
 		alert("You must be the owner of the contract to mint a new bookmark.");
@@ -1925,17 +1925,11 @@ async function mintnextbookmark(event) {
 	return;
 
 
-	const options = {
-  		chain: baseNetwork,
-  		contractAddress: bookmarkcontractid,
-  		functionName: "mintTo",
-  		abi: NBT_abi,
-  		params: {_to: address}
-	};
+	
 
 	try {
 		const result = await Moralis.executeFunction(options);
-		console.log("result:", result);
+		
 	} catch(e) {
 		console.log("error:", e);
 		alert("Error minting bookmark: " + JSON.stringify(e));
@@ -1948,8 +1942,8 @@ async function getGetSeedFromMoralis(_meme){
         queryAll.equalTo("meme", _meme);
         const data = await queryAll.find();
 
-        console.log("queryAll" + JSON.stringify(queryAll));
-        console.log(data);
+        
+        
 
         var seed = "unknown";
         for (i=0;i<data.length;i++){
@@ -1976,7 +1970,7 @@ async function getSeedIdDirect(_meme, _totalSupply, _MotherAddress) {
     };
 
     const transactionObj = await Moralis.executeFunction(sendOptions);
-    console.log(transactionObj.hash);
+    
     await transactionObj.wait();
 }
 
@@ -2002,7 +1996,7 @@ async function getSeedId(_meme) {
 		}
 	}
 		
-	console.log("seedId:", seedId);
+	
 	return seedId;
 }
 
@@ -2022,7 +2016,7 @@ async function buyculturecoin(event) {
 }
 
 async function buyculturecoinX(event, amount) {
-	console.log("buyculturecoin: ", cultureCoinAddress);
+	
 
     	const provider = await Moralis.enableWeb3();
 
@@ -2048,20 +2042,20 @@ async function buyculturecoinX(event, amount) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-                console.log("Sanity check passed? for ", _name);
-                console.log(result);
+                
+                
 
                 const res2 = await web3.eth.getTransaction(result);
-                console.log("sane: ", _name, res2);
+                
 
                 //alert("Do not click this button until the transaction is mined.");
 
                 web3.eth.getTransactionReceipt(result, function(error, result){
-                        console.log("Debug Sane: ", result);
-                        console.log("Debug Insane (" + errorMsg + "): ", error);
+                        
+                        
 
                         if (!result && !errorMsg) {
-                                console.log("Mental health check is authorized and a timer should be set to check in a few minutes or seconds as the mining speed goes up or down.");
+                                
 
                         }
 
@@ -2096,7 +2090,7 @@ async function sellculturecoin(event) {
         	}
     	};
     	const transactionObj = await Moralis.executeFunction(sendOptions);
-    	console.log(transactionObj.hash);
+    	
     	await transactionObj.wait();
      } catch(e) {
 	 console.log("error:", e);
@@ -2111,10 +2105,10 @@ async function testlibraryfaucet(event) {
 	if (!user) {
 		user = await doBookTradableAuthenticate();
 	}
-	console.log(user);
+	
 
 	const testSeedText = document.getElementById("testprice").value;
-	console.log("testSeedText:", testSeedText);
+	
 
 	alert("You are about to create a new meme coin. Be sure to check the price twice before accepting.");
 
@@ -2124,11 +2118,11 @@ async function testlibraryfaucet(event) {
 }
 
 async function testthisbookmark (event) {
-        console.log("testthisbookmark");
+        
 
-        console.log(event);
+        
 
-        console.log($("#tokenspan"));
+        
 
         const tokenid = $("#tokenspan").text();
         //const contractid = $("#contractspan").text();
@@ -2136,8 +2130,8 @@ async function testthisbookmark (event) {
 
 
         //subscribeOfferings();
-        console.log(sellerprice);
-        console.log("tokenid: " + tokenid);
+        
+        
 
         await doBookTradableAuthenticate();
         const user = Moralis.User.current();
@@ -2145,16 +2139,16 @@ async function testthisbookmark (event) {
 
         const NBTcontract = new web3.eth.Contract(NBT_abi,bookmarkcontractid);
         var  contractOwner = await NBTcontract.methods.owner().call();
-        console.log("contractOwner:", contractOwner);
+        
         var  contractOwner = await NBTcontract.methods.owner().call();
-        console.log("contractOwner:", contractOwner);
+        
 
 	try {
         	const approved = await NBTcontract.methods.getApproved(tokenid).call();
-        	console.log("approved:", approved);
+        	
 
         	const tokenOwnner = await NBTcontract.methods.ownerOf(tokenid).call();
-        	console.log("tokenOwnner:", tokenOwnner);
+        	
 
 		if (approved != bookRegistryAddress){
         		$("#testresult").text("This contract does not think our marketplace is its owner's custodian,\n" + 
@@ -2187,39 +2181,39 @@ const testresult = "// SPDX-License-Identifier: UNLICENSED \n" +
 
 
 async function finddexrates(event) {
-	console.log("finddexrates");
+	
 	const cc = new web3.eth.Contract(CC_abi, cultureCoinAddress);
 
         const curBal = await cc.methods.balanceOf(cultureCoinAddress).call();
-	console.log("curBal:", curBal);
+	
 
     	const curBalDiff = cc_initial_balance - curBal;
-	console.log("curBalDiff:", curBalDiff);
+	
 
     	const curBurn = ccTotalSupplyStart - await cc.methods.totalSupply().call();
-	console.log("curBurn:", curBurn);
+	
 
     	const curCCOutstanding = curBalDiff - curBurn
-	console.log("curCCOutstanding:", curCCOutstanding);
+	
 
     	const curXBal = await cc.methods.B().call();
-	console.log("curXBal:", curXBal);
+	
 
     	//if curCCOutstanding <= 0:
         //	return 4
 
     	const ratioXMTSPPerCC = curXBal/curCCOutstanding;
-	console.log("ratioXMTSPPerCC:", ratioXMTSPPerCC);
+	
 
-	const newRatioXMTSPPerCC = ratioXMTSPPerCC * (1 - .01);
+	const newRatioXMTSPPerCC = ratioXMTSPPerCC * (1 - 0.01);
 	$("#dexXMTSPRateId").empty().val(newRatioXMTSPPerCC);
 	$("#dexCCRateId").empty().val(1/ratioXMTSPPerCC);
 
 	const curRatio = await cc.methods.getDexCCRate().call();
-	console.log("curRatio:", web3.utils.fromWei(curRatio));
+	
 
 	const changeInRatio = newRatioXMTSPPerCC - web3.utils.fromWei(curRatio);
-	console.log("changeInRatio:", changeInRatio);
+	
 }
 
 async function applydexrates(event) {
@@ -2228,8 +2222,8 @@ async function applydexrates(event) {
 	const xRate = $("#dexXMTSPRateId").val();
         const ccRate = $("#dexCCRateId").val();
 
-	console.log("xRate:", xRate);
-	console.log("ccRate:", ccRate);
+	
+	
 
 	const cc = new web3.eth.Contract(CC_abi, cultureCoinAddress);
 	await cc.methods.setDexCCRate(web3.utils.toWei(xRate)).send({from: user.attributes.ethAddress});
@@ -2274,29 +2268,29 @@ async function guPlaceBet(_tokenId, _amount) {
 }
 
 async function petben(event) {
-	console.log("petben benDeployAddress: ", benDeployAddress);
-	console.log("petben benScratchesAddress: ", benScratchesAddress);
+	
+	
 
 	const curBookmarkTokenId = $("#tokenspan").text();
-	console.log("curBookmarkTokenId: ", curBookmarkTokenId);
+	
 
 	const testprice = $("#testprice").val();
-	console.log("testprice: ", testprice);
+	
 
 	const benContract = new web3.eth.Contract(BEN_abi, benDeployAddress);
 	const benTax = await benContract.methods.getTotalBENTax(bookmarkcontractid, curBookmarkTokenId).call();
-	console.log("benTax: ", benTax);
+	
 
 	const benScratchesContract = new web3.eth.Contract(NBT_abi, benScratchesAddress);
 	const curScratchId = await benScratchesContract.methods.totalSupply().call();
-	console.log("curScratchId: ", curScratchId);
+	
 
 	const user = await doBookTradableAuthenticate();
 	const _address = user.attributes.ethAddress;
-	console.log("_address: ", _address);
+	
 
         benContract.methods.pet(bookmarkcontractid, testprice, curBookmarkTokenId).send({from: user.attributes.ethAddress,
-                        value: (BigInt("38820325000000000") + BigInt(benTax)) +"", 
+                        value: String(BigInt("38820325000000000") + BigInt(benTax)), 
 			//gasPrice:web3.utils.toWei("75", "gwei"),
                         gas:8000000});
 
@@ -2304,22 +2298,22 @@ async function petben(event) {
 }
 
 async function sendthisbookmark(event) {
-	console.log("sendthisbookmark");
+	
 
 	const tokenid = $("#tokenspan").text();
-	console.log("tokenid: " + tokenid);
+	
 	const toaddress = document.getElementById("toaddress").value;
-	console.log("toaddress: " + toaddress);
+	
 
 	await doBookTradableAuthenticate();
 
 	const NBTcontract = new web3.eth.Contract(NBT_abi,bookmarkcontractid);
 	var  tokenOwner = await NBTcontract.methods.ownerOf(tokenid).call();
-	console.log("tokenOwner:", tokenOwner);
+	
 
 	const user = Moralis.User.current();
 	const _address = user.attributes.ethAddress;
-	console.log("address:", _address);
+	
 
 	if(_address.toLowerCase() != tokenOwner.toLowerCase()) {
 		alert("You are not the owner of this token. You cannot give it away... Trying anyway. Failure likely...");
@@ -2329,11 +2323,11 @@ async function sendthisbookmark(event) {
 }
 
 async function sellthisbookmark(event) {
-	console.log("sellthisbookmark");
+	
 
-	console.log(event);
+	
 
-        console.log($("#tokenspan"));
+        
 
 	const tokenid = $("#tokenspan").text();
 	//const contractid = $("#contractspan").text();
@@ -2341,8 +2335,8 @@ async function sellthisbookmark(event) {
 
 
         //subscribeOfferings();
-	console.log(sellerprice);
-	console.log("tokenid: " + tokenid);
+	
+	
 
 	await doBookTradableAuthenticate();
 	const user = Moralis.User.current();
@@ -2350,21 +2344,21 @@ async function sellthisbookmark(event) {
 
 	const NBTcontract = new web3.eth.Contract(NBT_abi,bookmarkcontractid);
 	const contractOwner = await NBTcontract.methods.owner().call();
-        console.log("contractOwner:", contractOwner);
+        
 
         const approved = await NBTcontract.methods.getApproved(tokenid).call();
-	console.log("approved:", approved);
+	
 
 	if (approved != bookRegistryAddress){
 		const tokenOnwner = await NBTcontract.methods.ownerOf(tokenid).call();
-		console.log("tokenOnwner:", tokenOnwner);
+		
 
 		//const forapp = new web3.eth.Contract(approveABI, bookmarkcontractid);
         	//await forapp.methods.approve(bookRegistryAddress, tokenid).call();
 		await approveMarketPlace(bookmarkcontractid, tokenid);
 		for(var i = 0; i < 10; i++) {
 			const approved = await NBTcontract.methods.getApproved(tokenid).call();
-			console.log("approved:", approved);
+			
 			if (approved.toLowerCase() == bookRegistryAddress.toLowerCase()) {
 				break;
 			}
@@ -2374,26 +2368,26 @@ async function sellthisbookmark(event) {
 
         const offering = await placeOfferingOwner(address, bookmarkcontractid, tokenid, sellerprice);
 
-	console.log(offering);
+	
 }
 
 async function buythisbookmark(event) {
 
-	console.log(event);
+	
 
 
 	const tokenid = $("#tokenspan").text();
 	const contractid = $("#contractspan").text();
 
-	console.log(tokenid);
+	
 
 	const myprice = $("#pricespan").text();
-	console.log("myprice: ", myprice);
+	
 	const offering = $("#offeringspan").text();
-	console.log("offering: ", offering);
+	
 
         const price = Moralis.Units.ETH(myprice);
-	console.log("price: ", price);
+	
 
         const priceHexString = BigInt(price).toString(16);
         const closedOffering = await closeOffering(offering,priceHexString);
@@ -2416,7 +2410,7 @@ async function onSellBookmark(event) {
 
 	const approval = await approveMarketPlace(contract, tokenId);
 	const offering = await placeOffering(contract,tokenId, "2.991");
-	console.log(offering)
+	
 
 	//nftOffered = await isNFTOffered(contract, tokenId);
 	//console.log(nftOffered);
@@ -2427,7 +2421,7 @@ async function forceNetwork() {
 	await ethereum.request({ method: 'wallet_addEthereumChain', params: [
                         { chainId: chainID, chainName: chainName, nativeCurrency: { name: nativeCurrencyName, symbol: nativeCurrencySymbol, decimals: 18 },
                                 rpcUrls: [rpcUrls], blockExplorerUrls: [blockExplorerUrls]
-                         }] }) .catch((error) => { console.log(error) });
+                         }] }) .catch((error) => {  });
 }
 
 async function onAuthenticate (event) {
@@ -2448,7 +2442,7 @@ async function onAuthenticate (event) {
 
         const priceETH = Moralis.Units.ETH(currentUserPriceModule); // Set low to encourage donations / clicks.
         const priceHexString = BigInt(priceETH).toString(16);
-        console.log("priceHexString: ", priceHexString);
+        
 
 	try {
 		const authOut = await debugPayableFunction0("g", priceHexString, "get wrecked son :::: the meme market :::: need to wait for logs to exists to get them");
@@ -2462,35 +2456,35 @@ async function onAuthenticate (event) {
 
 
 async function onDonate (event) {
-        console.log("Thank you for trying to donate to the New Great Library of Alexandria Online Bookmark Trading Card Company TM");
+        
 	//ethereum.request({ method: 'wallet_addEthereumChain', params: [{ chainId: chainID, chainName: chainName,
 		//nativeCurrency: { name: nativeCurrencyName, symbol: nativeCurrencySymbol, decimals: 18 },
 		//rpcUrls: [rpcUrls], blockExplorerUrls: [blockExplorerUrls] }] }) .catch((error) => { console.log(error) });
 
         const priceETH = Moralis.Units.ETH("0.000000210100027"); // Set low to encourage donations / clicks.
         const priceHexString = BigInt(priceETH).toString(16);
-        console.log("priceHexString: ", priceHexString);
+        
         const debugOut = await debug(priceHexString, priceHexString);
-        console.log("debug: ", debugOut);
+        
 	alert("Inspect the console.log() to learn how much money you saved by donating with us today.");
-	console.log("You saved around 0.5 XMTSPT Random Coin by using this donate button.");
+	
 }
 
 async function onDonateBigdonateFunction(event) {
 	event.preventDefault();
 	const user = Moralis.User.current();
 
-	console.log("here");
+	
 	address = user.attributes.ethAddress;
-	console.log(address);
+	
 
 	const options = { chain: baseNetwork, address: address };
 	const balances = await Moralis.Web3API.account.getTokenBalances(options);
-	console.log("balances:", balances);
+	
 
 	await doBookTradableAuthenticate();
 
-	console.log("trying to hook up the marketplace.	");
+	
 	onGetMarketData(event);
 
 	//const xferoptions = {type: "native", amount: Moralis.Units.ETH("0.5"), receiver: "0x213e6e4167c0262d8115a8af2716c6c88a6905fd"};
@@ -2506,7 +2500,7 @@ async function onSaveProfile(event) {
 	// get values from the form
 	const username = document.getElementById("name").value;
 	const bio = document.getElementById("bio").value;
-	console.log("username:", username, "bio:", bio);
+	
 
 	// update user object
 	user.setUsername(username); // built in
@@ -2539,8 +2533,8 @@ async function getpriceFromMoralis(contractid, tokenid){
 
         const data = await queryAll.find()
 
-        console.log("queryAll" + JSON.stringify(queryAll));
-        console.log(data);
+        
+        
 
         price = "unknown";
 	offeringId = "unknown";
@@ -2548,7 +2542,7 @@ async function getpriceFromMoralis(contractid, tokenid){
                 //console.log(data[i].attributes);
 
                 //console.log(data[i].get("hostContract"));
-                console.log(contractid);
+                
 
                 price = data[i].get("price");
                 //console.log("raw price: " + price);
@@ -2600,7 +2594,7 @@ function init() {
 }
 init();
 
-console.log("part one loaded");
+
 
 //Moralis.initialize(""); // Application id from moralis.io
 //Moralis.serverURL = ""; //Server url from moralis.io
@@ -2672,21 +2666,21 @@ async function populateNFTs(){
 }
 
 async function getNFTs(){
-	console.log("getNFTs");
-	console.log(ethereum.selectedAddress);
+	
+	
 	const queryAll = new Moralis.Query("PolygonNFTOwners");
-	console.log("queryAll" + JSON.stringify(queryAll));
+	
 
 	queryAll.equalTo("owner_of", ethereum.selectedAddress);
 	const data = await queryAll.find()
-	console.log("queryAll" + JSON.stringify(queryAll));
+	
 
 
 	const user = Moralis.User.current();
 
-	console.log("here");
+	
 	address = user.attributes.ethAddress;
-	console.log(address);
+	
 
 	//const options = { chain: baseNetwork, address: address };
 
@@ -2696,7 +2690,7 @@ async function getNFTs(){
 
 
 	const balances = await Moralis.Web3API.account.getTokenBalances(options);
-	console.log("balances:", balances);
+	
 
 
 	metadata = {"image": "htt...", "name": "NFT Name", "description": "NFT Description", "price": "NFT Price", "owner": "NFT Owner"};
@@ -2788,11 +2782,11 @@ async function isNFTOffered(hostContract, tokenId){
 	queryAll.equalTo("tokenId", tokenId);
 	const data = await queryAll.find();
 
-	console.log("data:", data);
+	
 	data.length > 0? offering_exist = true: offering_exist = false;
 	for (let i=0; i< data.length; i++){
 		offeringid = data[i].get("offeringId");
-	console.log("offeringid:",offeringid);
+	
 		offering_closed = await isOfferingClosed(offeringid);
 	}
 	const result = offering_exist && !offering_closed
@@ -2803,7 +2797,7 @@ async function isNFTOffered(hostContract, tokenId){
 	// Do something with the returned Moralis.Object values
 	for (let i = 0; i < results.length; i++) {
 		const object = results[i];
-		console.log(object, object.attributes.uri)
+		
 
 		//console.log(object.id + ' - ' + object.baseTokenURI());
 	}
@@ -2906,7 +2900,7 @@ async function offerNFT(context){
 	const tx_approval = `<p> Approval transaction ${approval}</p>`
 	context.parentElement.innerHTML = tx_approval;
 	const offering = await placeOffering(contract,tokenId, price);
-	console.log(offering)
+	
 }
 
 async function placeOffering(_hostContract, _tokenId, _price) {
@@ -2915,14 +2909,14 @@ async function placeOffering(_hostContract, _tokenId, _price) {
 					tokenId: _tokenId,
 					price: _price
 	}
-	console.log("placing offering: " + params)
+	
 	const signedTransaction = await Moralis.Cloud.run("placeOffering", params);
 	fulfillTx = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
 	return fulfillTx;
 }
 
 async function placeOfferingOwner(_address, _hostContract, _tokenId, _price) {
-	console.log("plaing offering: " + _address + " " + _hostContract + " " + _tokenId + " " + _price);
+	
 
 	const contract = new web3.eth.Contract(nft_market_place_abi, bookRegistryAddress);
 
@@ -2933,7 +2927,7 @@ async function placeOfferingOwner(_address, _hostContract, _tokenId, _price) {
 
 
 async function approveMarketPlace(hostContract, tokenId){
-	console.log("Approving MarketPlace for NFT: " + hostContract + " " + tokenId);
+	
 
 	/*
         const NBTcontract = new web3.eth.Contract(NBT_abi,hostContract);
@@ -2982,16 +2976,16 @@ async function buyNFT(context){
 
 async function getMasterKey(){
 	user = await signBookForFans();
-	console.log(user);
+	
         const moralisEth = user.get("authData").moralisEth;
-	console.log(moralisEth);
+	
 
 	_address = user.attributes.ethAddress;
 	const options = { chain: baseNetwork, address: _address, token_address: bookmarkcontractid };
-        console.log("options = " + JSON.stringify(options));
+        
 
         bookMTokens = await Moralis.Web3API.account.getNFTsForContract(options);
-        console.log(bookMTokens);
+        
 
         if (bookMTokens.total == 0) {
                 alert("You do not own a copy of this book.");
@@ -2999,12 +2993,12 @@ async function getMasterKey(){
         } else {
 
         	tokenId = bookMTokens.result[0].token_id;
-        	console.log("user owns tokenId: " + tokenId);
+        	
 	}
 
 	//params = { signature: moralisEth.signature, msg: btoa(moralisEth.data) };
 	const params = { signature: moralisEth.signature, msg: moralisEth.data };
-	console.log("params = " + JSON.stringify(params));
+	
         const signedTransaction = await Moralis.Cloud.run("getMasterKey", params);
 	//console.log(signedTransaction);
 
@@ -3013,37 +3007,37 @@ async function getMasterKey(){
 
 
 async function debugPublicNonPayableFunction2(_name, offeringId, _memeName, cb) { // The string that you are offering to the machine for no money in return...
-        console.log("debugPublicNonPayable1:: executing :: ", _name, offeringId, _memeName);
+        
 
         const contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
         const debugJS = contract.methods[_name](offeringId, _memeName).call();
         debugJS.then(function(result){
-                console.log("debugPublicNonPayable1:: result :: ", result);
+                
                 try {
                         cb(result);
                 } catch (e) {
                         console.log("debugPublicNonPayable1:: error :: ", e);
                 }
         });
-        console.log("debugJS: ", debugJS);
+        
         return debugJS;
 }
 
 
 async function debugPublicNonPayableFunction1(_name, _memeName, cb) { // The string that you are offering to the machine for no money in return...
-	console.log("debugPublicNonPayable1:: executing :: ", _name, _memeName);
+	
 
 	const contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
 	const debugJS = contract.methods[_name](_memeName).call();
 	debugJS.then(function(result){
-		console.log("debugPublicNonPayable1:: result :: ", result);
+		
 		try {
 			cb(result);
 		} catch (e) {
 			console.log("debugPublicNonPayable1:: error :: ", e);
 		}
 	});
-	console.log("debugJS: ", debugJS);
+	
 	return debugJS;
 }
                                 					//{type: 'uint256',
@@ -3052,7 +3046,7 @@ async function debugPublicNonPayableFunction1(_name, _memeName, cb) { // The str
                                 					//name: "andTheUBREKUBYE"}
 
 async function debugPayableFunction01(_name, _meme, priceEncoded, errorMsg) {
-        console.log("debugPayableFunction0: from :: Running all sanity checks");
+        
         //alert("Sanity checks are still in development, but you can try it anyway.");
         const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({ name: _name,                                                                                                                                                                                              type: "function",                                                                                                                                                                                             inputs: [{type: 'uint256', "name" : _meme}] }, []); const transactionParametersICloneMoney = {
                         to: cultureCoinAddress,
@@ -3064,20 +3058,20 @@ async function debugPayableFunction01(_name, _meme, priceEncoded, errorMsg) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-                console.log("Sanity check passed? for ", _name);
-                console.log(result);
+                
+                
 
                 const res2 = await web3.eth.getTransaction(result);
-                console.log("sane: ", _name, res2);
+                
 
                 alert("Do not click this button until the transaction is mined.");
 
                 web3.eth.getTransactionReceipt(result, function(error, result){
-                        console.log("Debug Sane: ", result);
-                        console.log("Debug Insane (" + errorMsg + "): ", error);
+                        
+                        
 
                         if (!result && !errorMsg) {
-                                console.log("Mental health check is authorized and a timer should be set to check in a few minutes or seconds as the mining speed goes up or down.");
+                                
 
                         }
 
@@ -3098,7 +3092,7 @@ async function debugPayableFunction01(_name, _meme, priceEncoded, errorMsg) {
 
 async function debugPayableFunction00(_name, priceEncoded, errorMsg) {
 
-        console.log("debugPayableFunction00: from :: 0x0..");
+        
         //alert("Sanity checks are still in development, but you can try it anyway.");
         const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({ name: _name,                                                                                                                                                                                              type: "function",                                                                                                                                                                                             inputs: [] }, []); const transactionParametersICloneMoney = {
                         to: cultureCoinAddress,
@@ -3110,20 +3104,20 @@ async function debugPayableFunction00(_name, priceEncoded, errorMsg) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-                console.log("Sanity check passed? for ", _name);
-                console.log(result);
+                
+                
 
                 const res2 = await web3.eth.getTransaction(result);
-                console.log("sane: ", _name, res2);
+                
 
                 alert("Do not click this button until the transaction is mined.");
 
                 web3.eth.getTransactionReceipt(result, function(error, result){
-                        console.log("Debug Sane: ", result);
-                        console.log("Debug Insane (" + errorMsg + "): ", error);
+                        
+                        
 
                         if (!result && !errorMsg) {
-                                console.log("Mental health check is authorized and a timer should be set to check in a few minutes or seconds as the mining speed goes up or down.");
+                                
 
                         }
 
@@ -3137,9 +3131,9 @@ async function debugPayableFunction00(_name, priceEncoded, errorMsg) {
 }
 
 async function debugPayableFunctionArgs1(_name, priceEncoded, _meme, _memeArgument, cb) {
-	console.log("Adding to the blockchain..");
+	
         try {
-                console.log("SeTMeMe function about to be called.");
+                
                 const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
                         name: _name,
                         type: "function",
@@ -3158,12 +3152,12 @@ async function debugPayableFunctionArgs1(_name, priceEncoded, _meme, _memeArgume
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 }).then((result) => {
-                        console.log("promise: ", result);
-                        console.log("Added argument resultis: " + result);
-                        console.log(web3.eth.getTransaction(result));
+                        
+                        
+                        
                         web3.eth.getTransaction(result).then((result) => {
-                                console.log("Results, may or may not have logs: ", result);
-                                console.log("Added argument  input was: " + result.input);
+                                
+                                
 				try {
 					if(result.logs) {
 						debugDecode(result);
@@ -3192,16 +3186,16 @@ async function debugDecode(result) {
 
                         const data = result.logs[0].data;
                         const decodedParameters = web3.eth.abi.decodeParameters(typesArray, data);
-                        console.log(decodedParameters);
-                        console.log(JSON.stringify(decodedParameters, null, 4));
+                        
+                        
 
                         try {
                                 for (i = 0; i < result.logs.length; i++) {
                                         const data = result.logs[i].data;
                                         const decodedParameters = web3.eth.abi.decodeParameters(typesArray, data);
-                                        console.log(i);
-                                        console.log(decodedParameters);
-                                        console.log(JSON.stringify(decodedParameters, null, 4));
+                                        
+                                        
+                                        
                                 }
 
                         } catch (e) {
@@ -3213,7 +3207,7 @@ async function debugDecode(result) {
 
 
 async function debugPayableFunction0(_name, priceEncoded, errorMsg) {
-	console.log("debugPayableFunction0: from :: Running all sanity checks");
+	
         //alert("Sanity checks are still in development, but you can try it anyway.");
         const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({ name: _name,                                                                                                                                                                                              type: "function",                                                                                                                                                                                             inputs: [] }, []); const transactionParametersICloneMoney = {
                         to: cultureCoinAddress,
@@ -3225,20 +3219,20 @@ async function debugPayableFunction0(_name, priceEncoded, errorMsg) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-                console.log("Sanity check passed? for ", _name);
-                console.log(result);
+                
+                
 
                 const res2 = await web3.eth.getTransaction(result);
-                console.log("sane: ", _name, res2);
+                
 
                 alert("Do not click this button until the transaction is mined.");
 
                 web3.eth.getTransactionReceipt(result, function(error, result){
-                        console.log("Debug Sane: ", result);
-                        console.log("Debug Insane (" + errorMsg + "): ", error);
+                        
+                        
 
 			if (!result && !errorMsg) {
-				console.log("Mental health check is authorized and a timer should be set to check in a few minutes or seconds as the mining speed goes up or down.");
+				
 
 			}
 
@@ -3267,7 +3261,7 @@ async function runContractFunction(_name, _meme, _calldata) {
                 		params: { _meme: _meme }
 			};
         		const defaultsfrom = await Moralis.Web3API.native.runContractFunction(options);
-			console.log("runContractFunction: ", defaultsfrom);
+			
 		} catch (e) {
 			console.log("runContractFunction error: ", e);
 			//const marketplace = new web3.eth.Contract(nft_market_place_abi, bookRegistryAddress);
@@ -3297,7 +3291,7 @@ async function runContractFunction(_name, _meme, _calldata) {
 			const marketplace = new web3.eth.Contract(nft_market_place_abi, bookRegistryAddress);
         		const tx = await marketplace.methods.newBookContract(_name, _symbol, _bookRegistryAddress,
 				_baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, _mintTo).send({from: ethereum.selectedAddress, gasPrice:web3.utils.toWei("100", "gwei")});
-        		console.log(tx);
+        		
 
 		} catch (e) {
 			console.log("runContractFunction error: check your marketplace abi and/or contract: ", bookRegistryAddress, e);
@@ -3310,15 +3304,15 @@ async function runContractFunction(_name, _meme, _calldata) {
 			const _register = args[2];
 			const _meme_ = args[3];			// _meme_ last for future upgrades. FIXME. And the last _ because collision with _meme.
 
-			console.log("_totalSupply: ", _totalSupply);
-			console.log("_MotherAddress: ", _MotherAddress);
-			console.log("_register: ", _register);
-			console.log("_meme: ", _meme);
+			
+			
+			
+			
 
 
 		        const contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
         		const tx = await contract.methods.seed(_meme_, _totalSupply, _MotherAddress, _register).send({from: ethereum.selectedAddress, gasPrice:web3.utils.toWei("100", "gwei")});
-			console.log(tx);
+			
         		return tx;
 		} catch (e) {
 			console.log("runContractFunction (seed()) returned error for _meme:", _meme, e);
@@ -3347,7 +3341,7 @@ async function runContractFunction(_name, _meme, _calldata) {
 				params: { _name: _name, _symbol: _symbol, _bookRegistryAddress: _bookRegistryAddress, _baseuri: _baseuri, _burnable: _burnable, _maxmint: _maxmint, _defaultprice: _defaultprice, _defaultfrom: _defaultfrom, _mintTo: _mintTo }
 			};
 			const defaultsfrom = await Moralis.Web3API.native.runContractFunction(options);
-			console.log("runContractFunction: ", defaultsfrom);
+			
 		} catch (e) {
 			console.log("runContractFunction error: ", e);
 		}
@@ -3358,7 +3352,7 @@ async function runContractFunction(_name, _meme, _calldata) {
 }
 
 async function debug(offeringId, priceEncoded){
-	console.log("debugging started for this bookmark");
+	
 
 
 
@@ -3388,24 +3382,24 @@ async function debug(offeringId, priceEncoded){
 if(false) {
 
 	const contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
-	console.log(contract);
+	
 
 	try {
 		const masterKey = await getMasterKey();
 		const config = await Moralis.Config.get({useMasterKey: true});
-		console.log(config);
+		
 
 		const privateParam = config.get("privateParam");
-		console.log("private: ", privateParam);
-		console.log("your master key is:", masterKey);
+		
+		
 
 	} catch (e) {
 		console.log(e);
 	}
 	
-        console.log("Check sanity")
+        
         try {
-                console.log("Running all sanity checks");
+                
 		alert("Sanity checks are still in development, but you can try it anyway.");
                 const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
                         name: "sane",                                                                                                                                                                                              type: "function",                                                                                                                                                                                             inputs: []
@@ -3420,17 +3414,17 @@ if(false) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-		console.log("Sanity check passed?");
-		console.log(result);
+		
+		
 
                 const res2 = await web3.eth.getTransaction(result);
-		console.log("sane: ", res2);
+		
 
 		alert("Do not click this button until the transaction is mined.");
 
 		web3.eth.getTransactionReceipt(result, function(error, result){
-			console.log("Really Sane: ", result);
-			console.log("Really Insane (should be empty): ", error);
+			
+			
 		});
 		// https://ethereum.stackexchange.com/questions/58228/return-function-value-instead-of-transaction-receipt-with-web3/58236
 
@@ -3472,10 +3466,10 @@ if(false) {
                 method: 'eth_sendTransaction',
                 params: [transactionParametersG]
         });
-	console.log(txtG);
+	
 
 
-	console.log("debuging the universe takes time....");
+	
 	alert("univeral debug mode engaged..");
 	const encodedFunctionGDBHook = web3.eth.abi.encodeFunctionCall({
                 name: "debugUniverse",
@@ -3494,9 +3488,9 @@ if(false) {
                 method: 'eth_sendTransaction',
                 params: [transactionParametersGDBHook]
         });
-        console.log(txtGDBHook);
+        
 
-	console.log("debuging the universe takes time....");
+	
 	alert("Running self check.");
         const encodedFunctionI = web3.eth.abi.encodeFunctionCall({
                 name: "i",
@@ -3515,9 +3509,9 @@ if(false) {
                 method: 'eth_sendTransaction',
                 params: [transactionParametersI]
         });
-        console.log(txtI);
+        
 
-	console.log("Cloning takes time, even if it's only money....");
+	
 	alert("This next transaction may fail, but still try it anyway to verify you can't always clone money..");
         const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
                 name: "cloneMoney",
@@ -3535,12 +3529,12 @@ if(false) {
                 method: 'eth_sendTransaction',
                 params: [transactionParametersICloneMoney]
         });
-        console.log(txtICloneMoney);
+        
 
 
-	console.log("Verifying disclaimer");
+	
 	try {
-	        console.log("Checking disclaimer for free money....");
+	        
 		alert("Check the disclaimer. Its chould not be payable.");
         	const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
                 	name: "disclaimer",
@@ -3561,15 +3555,15 @@ if(false) {
                 	method: 'eth_sendTransaction',
                 	params: [transactionParametersICloneMoney]
         	});
-       		console.log(txtICloneMoney);
+       		
 
 	} catch (e) {
 		console.log(e);
 	}
 
-	console.log("Call actual debug function");
+	
         try {
-                console.log("Seeing if I can debug");
+                
 		alert("We can finally call debug.");
                 const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
                         name: "debug",
@@ -3590,15 +3584,15 @@ if(false) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-                console.log(txtICloneMoney);
+                
 
         } catch (e) {
                 console.log(e);
         }
 
-	console.log("Recover left over money");
+	
         try {
-                console.log("There is always some left over money in the shoe....");
+                
 		alert("Recovery of funds will fail if you cloned your money...");
 		alert("Do not click through until the failure comes through...");
                 const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
@@ -3618,16 +3612,16 @@ if(false) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-                console.log(txtICloneMoney);
+                
 
         } catch (e) {
                 console.log(e);
         }
 
 } if(false) {
-        console.log("Add to the meme pool.");
+        
         try {
-                console.log("SeTMeMe function about to be called.");
+                
 		alert("Setting meme now...");
                 const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
                         name: "setMeme",
@@ -3647,12 +3641,12 @@ if(false) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 }).then((result) => {
-                        console.log(result);
-                        console.log("Added Meme is: " + result);
-                        console.log(web3.eth.getTransaction(result));
+                        
+                        
+                        
                         web3.eth.getTransaction(result).then((result) => {
-                                console.log(result);
-                                console.log("Added Meme is: " + result.input);
+                                
+                                
                         });
                 });
 
@@ -3660,9 +3654,9 @@ if(false) {
                 console.log(e);
         }
 } if(false) {
-	console.log("Recover the meme.");
+	
         try {
-                console.log("GeTMeMe function about to be called.");
+                
 		alert("Getting meme now...");
                 const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
                         name: "getMeme",
@@ -3678,12 +3672,12 @@ if(false) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 }).then((result) => {
-                	console.log(result);
-                	console.log("Recovered Meme is: " + result);
-			console.log(web3.eth.getTransaction(result));
+                	
+                	
+			
 			web3.eth.getTransaction(result).then((result) => {
-				console.log(result);
-				console.log("Recovered Meme is: " + result.input);
+				
+				
 			});
 		});
 
@@ -3691,9 +3685,9 @@ if(false) {
 		console.log(e);
 	}
 	alert("Warning Warning Warning! Entering uncharted teritory!");
-        console.log("Get clone account of this coin.");
+        
         try {
-                console.log("See who the clones are.");
+                
 		alert("This clone function is not yet implemented.");
                 const encodedFunctionICloneMoney = web3.eth.abi.encodeFunctionCall({
                         name: "cloneAccount",
@@ -3709,8 +3703,8 @@ if(false) {
                         method: 'eth_sendTransaction',
                         params: [transactionParametersICloneMoney]
                 });
-                console.log(txtICloneMoney);
-                console.log("Your clone is: " + txtICloneMoney);
+                
+                
 
         } catch (e) {
                 console.log(e);
@@ -3727,8 +3721,8 @@ if(false) {
 }
 
 async function closeOffering(offeringId, priceEncoded){
-	console.log("closeOffering: " + offeringId + " price: " + priceEncoded)
-	console.log("closing with address: ", bookRegistryAddress);
+	
+	
 
 	//const contract = new web3.eth.Contract(nft_market_place_abi, bookRegistryAddress);
 	//const retval = await contract.methods.verifyOffering(offeringId).call();

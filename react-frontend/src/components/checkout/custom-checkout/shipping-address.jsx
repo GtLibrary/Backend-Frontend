@@ -24,7 +24,7 @@ const ShippingAddress = ({ setShipping }) => {
         initialValues={initialValues}
         validate={validate}
         onSubmit={(values) => {
-          console.log('values', values);
+          
           setShipping(values);
         }}
       >

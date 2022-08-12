@@ -26,7 +26,7 @@ const SignIn = () => {
   };
 
   const handleSubmit = async (values, { setSubmitting }) => {
-    console.log('values', values);
+    
     const { email, password } = values;
     try {
       //signin with firebase

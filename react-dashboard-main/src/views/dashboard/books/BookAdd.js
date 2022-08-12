@@ -28,7 +28,7 @@ const BookAdd = (props) => {
 
     const getBooksById = async () => {
         const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + id);
-        console.log(data.book_type_id);
+        
 
         setBooktitle(data.title);
         // setBooktype(data.book_type_id);
@@ -95,7 +95,7 @@ const BookAdd = (props) => {
                     }
                 })
                 .catch(function (error) {
-                    console.log('catch error === ');
+                    
                 });
         } else {
             await axios
@@ -124,7 +124,7 @@ const BookAdd = (props) => {
                     }
                 })
                 .catch(function (error) {
-                    console.log('catch error === ');
+                    
                 });
         }
     };

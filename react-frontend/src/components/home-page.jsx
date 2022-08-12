@@ -25,7 +25,7 @@ const HomePage = () => {
           // res.setHeader("Access-Control-Allow-Origin", "*")
           // res.setHeader("Access-Control-Allow-Methods", "*")
           // res.setHeader("Access-Control-Allow-Headers", "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'")
-          console.log("res.data =========== ", res.data)
+          
         })
     }
     getProducts();
