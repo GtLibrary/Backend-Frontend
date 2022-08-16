@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
 // material-ui
 import { Button, Box } from '@material-ui/core';
-import { IconEye, IconEdit, IconTrash } from '@tabler/icons';
+import { IconEdit, IconTrash } from '@tabler/icons';
 
 // project imports
 import MainCard from '../../ui-component/cards/MainCard';

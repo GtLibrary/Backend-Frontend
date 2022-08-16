@@ -5,25 +5,35 @@ import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 // material-ui
-import { Grid, Button, Box, TextField } from '@material-ui/core';
-import { IconEye, IconEdit, IconTrash } from '@tabler/icons';
+import { Grid, Button, Box } from '@material-ui/core';
+import { makeStyles } from '@material-ui/styles';
 // toast message
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import { gridSpacing } from '../../../store/constant';
 import configData from '../../../config';
 
+import { pdfjs } from 'react-pdf';
+// import { pdfjs } from "pdfjs-dist";
+// pdfjs.GlobalWorkerOptions.workerSrc ='pdf.worker.min.js';
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
+
+// import PDFJSWorker from 'node_modules/pdfjs-dist/build/pdf.worker.js';
+// pdfjs.GlobalWorkerOptions.workerSrc = PDFJSWorker;
 //==============================|| book content ||==============================//
-const Icons = {
-    IconEye: IconEye, 
-    IconEdit: IconEdit, 
-    IconTrash: IconTrash
-}
+
+const useStyles = makeStyles((theme) => ({
+    maincontent: {
+        height: 'calc(100vh - 210px)',
+        overflowY: 'scroll',
+    }
+}));
 
 const BookContent = (props) => {
     const { id } = useParams();
     const [ bookcontent, setBookcontent ] = useState('<p>Hello from CKEditor 5!</p>');
     const [ title, setTitle ] = useState('Book Content Edit');
+    const classes = useStyles();
 
     const getBookcontentById = async () => {
         const { data } = await axios
@@ -99,6 +109,84 @@ const BookContent = (props) => {
             return uploadAdapter(loader);
         };
     }
+
+    function getPageText(pageNum, PDFDocumentInstance) {
+        // Return a Promise that is solved once the text of the page is retrieven
+        return new Promise(function (resolve, reject) {
+            PDFDocumentInstance.getPage(pageNum).then(function (pdfPage) {
+                // The main trick to obtain the text of the PDF page, use the getTextContent method
+                pdfPage.getTextContent().then(function (textContent) {
+                    var textItems = textContent.items;
+                    var finalString = "";
+    
+                    // Concatenate the string of the item to the final string
+                    for (var i = 0; i < textItems.length; i++) {
+                        var item = textItems[i];
+    
+                        finalString += item.str + " ";
+                    }
+    
+                    // Solve promise with the text retrieven from the page
+                    resolve(finalString);
+                });
+            });
+        });
+    }
+
+    function readFileAsync(event) {
+        return new Promise((resolve, reject) => {
+            const file = event.target.files[0];
+            if (!file) {
+                return;
+            }
+            const reader = new FileReader();
+            
+            reader.onload = () => {
+                console.log(reader)
+                let binary = '';
+                let bytes = new Uint8Array(reader.result);
+                let len = bytes.byteLength;
+                for (let i = 0; i < len; i++) {
+                    binary += String.fromCharCode(bytes[i]);
+                }
+                resolve({
+                    id: Math.random(),
+                    url: `data:${file.type};base64,${btoa(binary)}`,
+                    type: 'pdf',
+                    data: `${btoa(binary)}`,
+                    dataarr: bytes
+                });
+            };
+
+            reader.onerror = reject;
+
+            reader.readAsArrayBuffer(file);
+        });
+    }
+    const uploadcontent = async (event) => {
+
+        const pdfinfo = await readFileAsync(event);
+        // console.log("pdfinfo == == ",pdfinfo.data)
+        const loadpdf = pdfjs.getDocument({data: pdfinfo.data})
+        console.log("loadpdf",loadpdf)
+        loadpdf.promise.then(pdf => {
+            var pdfDocument = pdf;
+            var pagesPromises = [];
+
+            for (var i = 0; i < pdf.numPages; i++) {
+                (function (pageNumber) {
+                    pagesPromises.push(getPageText(pageNumber, pdfDocument));
+                })(i + 1);
+            }
+
+            Promise.all(pagesPromises).then(function (pagesText) {
+                console.log("pagesText===", pagesText);
+            });
+
+        }, function (reason) {
+            console.error(reason);
+        });
+    }
     return (
         <MainCard title={title}>
             <Grid container spacing={gridSpacing}>
@@ -108,8 +196,18 @@ const BookContent = (props) => {
                             <Button variant="outlined">Back To List</Button>
                         </Link>
                     </Box>
+                    <Box display="flex" felxDirection="row" p={1} m={1} bgcolor="background.paper">
+                        <input
+                            accept="application/pdf"
+                            className="hidden"
+                            id="button-file"
+                            type="file"
+                            onChange={(e) => {uploadcontent(e)}}
+                        />
+                    </Box>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
                         <CKEditor
+                            // className={classes.maincontent}
                             config={{
                                 extraPlugins: [uploadPlugin]
                             }}

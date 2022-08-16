@@ -4,19 +4,12 @@ import axios from 'axios';
 
 // material-ui
 import { Grid, Button, Box, TextField } from '@material-ui/core';
-import { IconEye, IconEdit, IconTrash } from '@tabler/icons';
-// toast message
 // project imports
 import MainCard from '../../ui-component/cards/MainCard';
 import { gridSpacing } from '../../store/constant';
 import configData from '../../config';
 
 //==============================|| Book Type ||==============================//
-const Icons = {
-    IconEye: IconEye, 
-    IconEdit: IconEdit, 
-    IconTrash: IconTrash
-}
 
 const NewBookType = (props) => {
     const { id } = useParams();
@@ -52,7 +45,7 @@ const NewBookType = (props) => {
                     booktype: booktype
                 })
                 .then(function (response) {
-                    if (response.success == 201) {
+                    if (response.success === 201) {
                         setBooktype("")
                     } else {    
                         setBooktype("")
