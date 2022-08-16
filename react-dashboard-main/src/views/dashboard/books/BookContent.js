@@ -83,8 +83,6 @@ const BookContent = (props) => {
               const body = new FormData();
               loader.file.then((file) => {
                 body.append("uploadimage", file);
-                // let headers = new Headers();
-                // headers.append("Origin", "http://localhost:3000");
                 fetch(`${configData.API_SERVER}uploadimage`, {
                   method: "post",
                   body: body
