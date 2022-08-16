@@ -4,20 +4,15 @@ import axios from 'axios';
 
 // material-ui
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
-import { Grid, Button, Box } from '@material-ui/core';
-import { IconEye, IconNotes, IconEdit, IconTrash } from '@tabler/icons';
+import { Button, Box } from '@material-ui/core';
+import { IconNotes, IconEdit, IconTrash } from '@tabler/icons';
 
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
-import { gridSpacing } from '../../../store/constant';
 import configData from '../../../config';
 
 //==============================|| Book Type ||==============================//
-const Icons = {
-    IconEye: IconEye, 
-    IconEdit: IconEdit, 
-    IconTrash: IconTrash
-};
+
 const columns = [
     { id: 'name', label: 'Book Name', minWidth: 170 },
     { id: 'action', label: 'Actions', minWidth: 100, align:'right' }

@@ -31,7 +31,6 @@ import axios from 'axios';
 // project imports
 import MainCard from '../../../../ui-component/cards/MainCard';
 import Transitions from '../../../../ui-component/extended/Transitions';
-import UpgradePlanCard from './UpgradePlanCard';
 import { LOGOUT } from './../../../../store/actions';
 
 // assets
@@ -242,46 +241,6 @@ const ProfileSection = () => {
                                         />
                                         <Divider />
                                         <PerfectScrollbar className={classes.ScrollHeight}>
-                                            <UpgradePlanCard />
-                                            <Divider />
-                                            <Card className={classes.card}>
-                                                <CardContent>
-                                                    <Grid container spacing={3} direction="column">
-                                                        <Grid item>
-                                                            <Grid item container alignItems="center" justifyContent="space-between">
-                                                                <Grid item>
-                                                                    <Typography variant="subtitle1">Start DND Mode</Typography>
-                                                                </Grid>
-                                                                <Grid item>
-                                                                    <Switch
-                                                                        color="primary"
-                                                                        checked={sdm}
-                                                                        onChange={(e) => setSdm(e.target.checked)}
-                                                                        name="sdm"
-                                                                        size="small"
-                                                                    />
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                        <Grid item>
-                                                            <Grid item container alignItems="center" justifyContent="space-between">
-                                                                <Grid item>
-                                                                    <Typography variant="subtitle1">Allow Notifications</Typography>
-                                                                </Grid>
-                                                                <Grid item>
-                                                                    <Switch
-                                                                        checked={notification}
-                                                                        onChange={(e) => setNotification(e.target.checked)}
-                                                                        name="sdm"
-                                                                        size="small"
-                                                                    />
-                                                                </Grid>
-                                                            </Grid>
-                                                        </Grid>
-                                                    </Grid>
-                                                </CardContent>
-                                            </Card>
-                                            <Divider />
                                             <List component="nav" className={classes.navContainer}>
                                                 <ListItemButton
                                                     className={classes.listItem}
