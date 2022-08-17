@@ -140,7 +140,6 @@ const BookContent = (props) => {
             const reader = new FileReader();
             
             reader.onload = () => {
-                console.log(reader)
                 let binary = '';
                 let bytes = new Uint8Array(reader.result);
                 let len = bytes.byteLength;
@@ -165,8 +164,7 @@ const BookContent = (props) => {
 
         const pdfinfo = await readFileAsync(event);
         // console.log("pdfinfo == == ",pdfinfo.data)
-        const loadpdf = pdfjs.getDocument({data: pdfinfo.data})
-        console.log("loadpdf",loadpdf)
+        const loadpdf = pdfjs.getDocument({data: pdfinfo.dataarr})
         loadpdf.promise.then(pdf => {
             var pdfDocument = pdf;
             var pagesPromises = [];
@@ -179,6 +177,7 @@ const BookContent = (props) => {
 
             Promise.all(pagesPromises).then(function (pagesText) {
                 console.log("pagesText===", pagesText);
+                // setBookcontent(pagesText)
             });
 
         }, function (reason) {
