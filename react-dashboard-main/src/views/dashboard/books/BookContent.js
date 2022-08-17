@@ -168,6 +168,7 @@ const BookContent = (props) => {
         loadpdf.promise.then(pdf => {
             var pdfDocument = pdf;
             var pagesPromises = [];
+            var contentHtml = '';
 
             for (var i = 0; i < pdf.numPages; i++) {
                 (function (pageNumber) {
@@ -176,8 +177,11 @@ const BookContent = (props) => {
             }
 
             Promise.all(pagesPromises).then(function (pagesText) {
-                console.log("pagesText===", pagesText);
-                // setBookcontent(pagesText)
+                for (let i = 0; i < pagesText.length; i++) {
+                    const element = pagesText[i];
+                    contentHtml += '<p>' + element + '</p>'
+                }
+                setBookcontent(contentHtml)
             });
 
         }, function (reason) {
