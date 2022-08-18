@@ -4,31 +4,18 @@ import Layout from './shared/layout';
 import Hero from './hero/hero';
 import MainSection from './main-section/main-section';
 import FeaturedCollection from './featured-collection/featured-collection';
-import SHOP_DATA from '../shop';
 
 const HomePage = () => {
-  const [products, setProducts] = useState(SHOP_DATA)
-  const url = "http://localhost:9466/api/getproducts";
+  const [products, setProducts] = useState([])
+
+  const getBooklists = async () => {
+    const { data } = await axios
+        .get('http://localhost:5000/api/getbooklist')
+    setProducts(data)
+  }
+
   useEffect(() => {
-    async function getProducts() {
-      const config = {
-        method: 'get',
-        url: url,
-        // headers: { 
-        //   'Content-Type': 'text/html; charset=utf-8',
-        //   'X-Frame-Options': 'SAMEORIGIN',
-        //   'X-Content-Type-Options': 'nosniff' 
-        // }
-      }
-      await axios(config)
-        .then(res => {
-          // res.setHeader("Access-Control-Allow-Origin", "*")
-          // res.setHeader("Access-Control-Allow-Methods", "*")
-          // res.setHeader("Access-Control-Allow-Headers", "'Access-Control-Allow-Headers: Origin, Content-Type, X-Auth-Token'")
-          
-        })
-    }
-    getProducts();
+      getBooklists()
   }, [])
   return (
     <>

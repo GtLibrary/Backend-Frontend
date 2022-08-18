@@ -1,17 +1,15 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import withRouter from '../../withRouter';
-import { ProductsContext } from '../../context/products-context';
 import { CartContext } from '../../context/cart-context';
 import Layout from '../shared/layout';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
-import SHOP_DATA from '../../shop';
 import './single-product.styles.scss';
 
 const SingleProduct = ({ match }) => {
   const navigate = useNavigate();
-  const [products, setProducts] = useState(SHOP_DATA);
+  const [products, setProducts] = useState([]);
   const [pdfcontent, setPdfcontent] = useState('')
   const { addProduct, increase } = useContext(CartContext);
   const { id } = useParams();
