@@ -3,14 +3,9 @@ import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 // material-ui
-import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-// import { IconEye, IconEdit, IconTrash } from '@tabler/icons';
-// toast message
-// project imports
+import { Button, Box, TextField, Stack, Autocomplete } from '@material-ui/core';
 import MainCard from '../../../ui-component/cards/MainCard';
 import configData from '../../../config';
-// import Header from '../../../layout/MainLayout/Header';
-// import UploadFiles from '../../../ui-component/uploadfiles'
 
 const BookAdd = (props) => {
     const { id } = useParams();
@@ -27,8 +22,7 @@ const BookAdd = (props) => {
     const [previosImg, setPreviosImg] = useState('');
 
     const getBooksById = async () => {
-        const { data } = await axios
-            .get( configData.API_SERVER + 'books/edit/' + id)
+        const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + id);
 
         setBooktitle(data.title);
         setBooktype(data.book_type_id);
@@ -43,13 +37,13 @@ const BookAdd = (props) => {
         if (id) {
             getBooktypes();
             getOrigintypes();
-            getBooksById()
-            setTitle("Book Edit")
+            getBooksById();
+            setTitle('Book Edit');
         } else {
             getBooktypes();
             getOrigintypes();
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const getBooktypes = async () => {
@@ -79,7 +73,7 @@ const BookAdd = (props) => {
         form_data.append('origin_type_id', origintype);
         form_data.append('book_type_id', booktype);
         if (id) {
-            // const { data } = 
+            // const { data } =
             await axios
                 .put(configData.API_SERVER + 'books/edit/' + id, form_data, {
                     headers: {
@@ -91,9 +85,7 @@ const BookAdd = (props) => {
                     } else {
                     }
                 })
-                .catch(function (error) {
-                    
-                });
+                .catch(function (error) {});
         } else {
             await axios
                 .post(configData.API_SERVER + 'books/save', form_data, {
@@ -120,9 +112,7 @@ const BookAdd = (props) => {
                         setBrandimage('');
                     }
                 })
-                .catch(function (error) {
-                    
-                });
+                .catch(function (error) {});
         }
     };
 
@@ -140,63 +130,63 @@ const BookAdd = (props) => {
                 autoComplete="off"
             >
                 <div>
-                <TextField
-                    id="book-title"
-                    // label="Book  Name"
-                    style={{ margin: 8 }}
-                    placeholder="Please input the book title"
-                    helperText="Book Title"
-                    fullWidth
-                    // margin="normal"
-                    InputLabelProps={{
-                        shrink: true
-                    }}
-                    variant="filled"
-                    value={booktitle}
-                    onChange={(e) => {
-                        setBooktitle(e.target.value);
-                    }}
-                />
+                    <TextField
+                        id="book-title"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the book title"
+                        helperText="Book Title"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={booktitle}
+                        onChange={(e) => {
+                            setBooktitle(e.target.value);
+                        }}
+                    />
                 </div>
                 <div>
-                <img src={previosImg} width="400" alt="" />
-                <input type="file" id="image" accept="image/png, image/jpeg" onChange={handleFileUpload} required />
+                    <img src={previosImg} width="400" alt="" />
+                    <input type="file" id="image" accept="image/png, image/jpeg" onChange={handleFileUpload} required />
                 </div>
                 <div>
-                <TextField
-                    id="authorwallet"
-                    // label="Book  Name"
-                    style={{ margin: 8 }}
-                    placeholder="Please input the author wallet address"
-                    helperText="Author Wallet"
-                    fullWidth
-                    // margin="normal"
-                    InputLabelProps={{
-                        shrink: true
-                    }}
-                    variant="filled"
-                    value={authorwallet}
-                    onChange={(e) => {
-                        setAuthorwallet(e.target.value);
-                    }}
-                />
-                <TextField
-                    id="curserialnumber"
-                    // label="Book  Name"
-                    style={{ margin: 8 }}
-                    placeholder="Please input the curserial number"
-                    helperText="Curserial Number"
-                    fullWidth
-                    // margin="normal"
-                    InputLabelProps={{
-                        shrink: true
-                    }}
-                    variant="filled"
-                    value={curserialnumber}
-                    onChange={(e) => {
-                        setCurserialnumber(e.target.value);
-                    }}
-                />
+                    <TextField
+                        id="authorwallet"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author wallet address"
+                        helperText="Author Wallet"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={authorwallet}
+                        onChange={(e) => {
+                            setAuthorwallet(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="curserialnumber"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the curserial number"
+                        helperText="Curserial Number"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={curserialnumber}
+                        onChange={(e) => {
+                            setCurserialnumber(e.target.value);
+                        }}
+                    />
                 </div>
                 <TextField
                     id="datamine"
@@ -215,7 +205,7 @@ const BookAdd = (props) => {
                         setDatamine(e.target.value);
                     }}
                 />
-                <FormControl fullWidth>
+                {/* <FormControl fullWidth>
                     <InputLabel id="booktype">Book Type</InputLabel>
                     <Select
                         labelId="booktype"
@@ -234,7 +224,7 @@ const BookAdd = (props) => {
                             })}
                     </Select>
                 </FormControl>
-                
+
                 <FormControl fullWidth>
                     <InputLabel id="origintype">Origin Type</InputLabel>
                     <Select
@@ -253,7 +243,35 @@ const BookAdd = (props) => {
                                 );
                             })}
                     </Select>
-                </FormControl>
+                </FormControl> */}
+                <Stack spacing={2} 
+                // sx={{ width: 300 }}
+                >
+                    <Autocomplete
+                        id="booktype-select"
+                        freeSolo
+                        onChange={(e) => setBooktype(e.target.value)}
+                        options={booktypes.map((option) => option.origintype)}
+                        renderInput={(params) => <TextField {...params} label="Book Type" />}
+                    />
+                    <Autocomplete
+                        freeSolo
+                        onChange={(e) => setOrigintype(e.target.value)}
+                        id="origintype-select"
+                        // disableClearable
+                        options={origintypes.map((option) => option.origintype)}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label="Origin Type"
+                                InputProps={{
+                                    ...params.InputProps,
+                                    type: 'search'
+                                }}
+                            />
+                        )}
+                    />
+                </Stack>
                 <Button variant="contained" onClick={() => saveBook()}>
                     Save
                 </Button>

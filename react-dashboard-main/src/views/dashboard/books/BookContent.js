@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
@@ -25,85 +25,83 @@ pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/$
 const useStyles = makeStyles((theme) => ({
     maincontent: {
         height: 'calc(100vh - 210px)',
-        overflowY: 'scroll',
+        overflowY: 'scroll'
     }
 }));
 
 const BookContent = (props) => {
     const { id } = useParams();
-    const [ bookcontent, setBookcontent ] = useState('<p>Hello from CKEditor 5!</p>');
-    const [ title, setTitle ] = useState('Book Content Edit');
+    const [bookcontent, setBookcontent] = useState('<p>Hello from CKEditor 5!</p>');
+    const [title, setTitle] = useState('Book Content Edit');
     const classes = useStyles();
 
     const getBookcontentById = async () => {
-        const { data } = await axios
-            .get( configData.API_SERVER + 'books/edit/' + id)
-        setBookcontent(data.content)
-    }
+        const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + id);
+        setBookcontent(data.content);
+    };
 
     const updateBookcontent = async () => {
-        const { data } = await axios
-            .put( configData.API_SERVER + 'books/edit/' + id, {
-                content: bookcontent
-            })
-    }
+        const { data } = await axios.put(configData.API_SERVER + 'books/edit/' + id, {
+            content: bookcontent
+        });
+    };
 
     useEffect(() => {
         if (id) {
-            getBookcontentById()
-            setTitle("Book Content Edit")
+            getBookcontentById();
+            setTitle('Book Content Edit');
         }
-    }, [])
+    }, []);
 
     const saveBookcontent = () => {
-        if(id) {
-            updateBookcontent()
+        if (id) {
+            updateBookcontent();
         } else {
             axios
-                .post( configData.API_SERVER + 'bookcontent/save', {
+                .post(configData.API_SERVER + 'bookcontent/save', {
                     content: bookcontent
                 })
                 .then(function (response) {
                     if (response.success == 201) {
-                        setBookcontent("")
-                    } else {    
-                        setBookcontent("")
+                        setBookcontent('');
+                    } else {
+                        setBookcontent('');
                     }
                 })
                 .catch(function (error) {
-                    console.log("catch error === ")
+                    console.log('catch error === ');
                 });
         }
-    }
-    
+    };
+
     function uploadAdapter(loader) {
         return {
-          upload: () => {
-            return new Promise((resolve, reject) => {
-              const body = new FormData();
-              loader.file.then((file) => {
-                body.append("uploadimage", file);
-                fetch(`${configData.API_SERVER}uploadimage`, {
-                  method: "post",
-                  body: body
-                  // mode: "no-cors"
-                })
-                  .then((res) => res.json())
-                  .then((res) => {
-                    resolve({
-                      default: `${res.uploadimage}`
+            upload: () => {
+                return new Promise((resolve, reject) => {
+                    const body = new FormData();
+                    loader.file.then((file) => {
+                        body.append('uploadimage', file);
+                        fetch(`${configData.API_SERVER}uploadimage`, {
+                            method: 'post',
+                            body: body
+                            // mode: "no-cors"
+                        })
+                            .then((res) => res.json())
+                            .then((res) => {
+                                resolve({
+                                    default: `${res.uploadimage}`
+                                });
+                            })
+                            .catch((err) => {
+                                reject(err);
+                            });
                     });
-                  })
-                  .catch((err) => {
-                    reject(err);
-                  });
-              });
-            });
-          }
+                });
+            }
         };
-      }
+    }
     function uploadPlugin(editor) {
-        editor.plugins.get("FileRepository").createUploadAdapter = (loader) => {
+        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
             return uploadAdapter(loader);
         };
     }
@@ -115,15 +113,15 @@ const BookContent = (props) => {
                 // The main trick to obtain the text of the PDF page, use the getTextContent method
                 pdfPage.getTextContent().then(function (textContent) {
                     var textItems = textContent.items;
-                    var finalString = "";
-    
+                    var finalString = '';
+
                     // Concatenate the string of the item to the final string
                     for (var i = 0; i < textItems.length; i++) {
                         var item = textItems[i];
-    
-                        finalString += item.str + " ";
+
+                        finalString += item.str + ' ';
                     }
-    
+
                     // Solve promise with the text retrieven from the page
                     resolve(finalString);
                 });
@@ -138,7 +136,7 @@ const BookContent = (props) => {
                 return;
             }
             const reader = new FileReader();
-            
+
             reader.onload = () => {
                 let binary = '';
                 let bytes = new Uint8Array(reader.result);
@@ -161,33 +159,34 @@ const BookContent = (props) => {
         });
     }
     const uploadcontent = async (event) => {
-
         const pdfinfo = await readFileAsync(event);
         // console.log("pdfinfo == == ",pdfinfo.data)
-        const loadpdf = pdfjs.getDocument({data: pdfinfo.dataarr})
-        loadpdf.promise.then(pdf => {
-            var pdfDocument = pdf;
-            var pagesPromises = [];
-            var contentHtml = '';
+        const loadpdf = pdfjs.getDocument({ data: pdfinfo.dataarr });
+        loadpdf.promise.then(
+            (pdf) => {
+                var pdfDocument = pdf;
+                var pagesPromises = [];
+                var contentHtml = '';
 
-            for (var i = 0; i < pdf.numPages; i++) {
-                (function (pageNumber) {
-                    pagesPromises.push(getPageText(pageNumber, pdfDocument));
-                })(i + 1);
-            }
-
-            Promise.all(pagesPromises).then(function (pagesText) {
-                for (let i = 0; i < pagesText.length; i++) {
-                    const element = pagesText[i];
-                    contentHtml += '<p>' + element + '</p>'
+                for (var i = 0; i < pdf.numPages; i++) {
+                    (function (pageNumber) {
+                        pagesPromises.push(getPageText(pageNumber, pdfDocument));
+                    })(i + 1);
                 }
-                setBookcontent(contentHtml)
-            });
 
-        }, function (reason) {
-            console.error(reason);
-        });
-    }
+                Promise.all(pagesPromises).then(function (pagesText) {
+                    for (let i = 0; i < pagesText.length; i++) {
+                        const element = pagesText[i];
+                        contentHtml += '<p>' + element + '</p>';
+                    }
+                    setBookcontent(contentHtml);
+                });
+            },
+            function (reason) {
+                console.error(reason);
+            }
+        );
+    };
     return (
         <MainCard title={title}>
             <Grid container spacing={gridSpacing}>
@@ -203,36 +202,43 @@ const BookContent = (props) => {
                             className="hidden"
                             id="button-file"
                             type="file"
-                            onChange={(e) => {uploadcontent(e)}}
+                            onChange={(e) => {
+                                uploadcontent(e);
+                            }}
                         />
                     </Box>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
                         <CKEditor
                             // className={classes.maincontent}
                             config={{
-                                extraPlugins: [uploadPlugin]
+                                extraPlugins: [uploadPlugin],
+                                fullPage: false,
+                                resize_enabled: false,
+                                removePlugins: 'resize,autogrow'
                             }}
                             editor={ ClassicEditor }
                             // data="<p>Hello from CKEditor 5!</p>"
                             data={bookcontent}
-                            onReady={ editor => {
+                            onReady={(editor) => {
                                 // You can store the "editor" and use when it is needed.
                                 // console.log( 'Editor is ready to use!', editor );
-                            } }
-                            onChange={ ( event, editor ) => {
+                            }}
+                            onChange={(event, editor) => {
                                 const data = editor.getData();
-                                setBookcontent(data)
-                            } }
-                            onBlur={ ( event, editor ) => {
+                                setBookcontent(data);
+                            }}
+                            onBlur={(event, editor) => {
                                 // console.log( 'Blur.', editor );
-                            } }
-                            onFocus={ ( event, editor ) => {
+                            }}
+                            onFocus={(event, editor) => {
                                 // console.log( 'Focus.', editor );
-                            } }
+                            }}
                         />
                     </Box>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                        <Button variant="contained" onClick={() => saveBookcontent()}>Save</Button>
+                        <Button variant="contained" onClick={() => saveBookcontent()}>
+                            Save
+                        </Button>
                     </Box>
                 </Grid>
             </Grid>
