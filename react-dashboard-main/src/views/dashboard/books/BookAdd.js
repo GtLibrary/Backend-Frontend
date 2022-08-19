@@ -251,7 +251,7 @@ const BookAdd = (props) => {
                         id="booktype-select"
                         freeSolo
                         onChange={(e) => setBooktype(e.target.value)}
-                        options={booktypes.map((option) => option.origintype)}
+                        options={booktypes.map((option) => option.booktype)}
                         renderInput={(params) => <TextField {...params} label="Book Type" />}
                     />
                     <Autocomplete
