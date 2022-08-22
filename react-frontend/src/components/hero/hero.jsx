@@ -10,7 +10,7 @@ const Hero = () => {
           <h1 className="hero-title">
             Books reimagined for modern life.
           </h1>    
-          <Link to='/shop'>    
+          <Link to='/books'>    
             <div className='shop-now-btn'>
               <button className='button is-black' id='shop-now'>
                 Books
