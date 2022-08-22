@@ -19,7 +19,7 @@ const SingleProduct = ({ match }) => {
 
     // if product does not exist, redirec to shop page
     if (!product) {
-      return navigate('/shop');
+      return navigate('/books');
     }
 
     setProduct(product);
@@ -48,7 +48,7 @@ const SingleProduct = ({ match }) => {
   }, []);
   // while we check for product
   if (!product) { return null }
-  const { imageUrl, author, title, price, description } = product;
+  const { image_url, author, title, price, description } = product;
   return (
     <Layout>
       <div className='single-product-container'>

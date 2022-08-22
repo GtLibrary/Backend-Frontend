@@ -17,7 +17,7 @@ const FeaturedProduct = (props) => {
       <div className='name-price'>
         <h3>{title}</h3>
         {/* <p>$ {price}</p> */}
-        { 
+        {/* { 
           <button 
             className='button is-black nomad-btn'
             onClick={() => addProduct(product)}>
@@ -29,7 +29,7 @@ const FeaturedProduct = (props) => {
             id='btn-white-outline'
             onClick={()=> increase(product)}>
               ADD MORE</button>
-        }
+        } */}
         
       </div>
     </div>
