@@ -3,6 +3,7 @@ from django.db import models
 # Create your models here.
 class Books(models.Model):
     title = models.CharField(max_length=200, default='')
+    introduction = models.TextField(default = '')
     content = models.TextField(default = '')
     image_url = models.ImageField(upload_to='post_main_images', blank=True, null=True)
     author_wallet = models.CharField(max_length=200, default='')
