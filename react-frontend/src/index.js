@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import CartContextProvider from './context/cart-context';
+import { MoralisProvider } from "react-moralis";
 
 import {
   Web3ReactProvider,
@@ -16,15 +17,20 @@ function getLibrary(provider) {
   return library;
 }
 
+const appId = "gmDA8QccmPHQvtnZcEiGemyCcZi7Sgr1meq9GgPz"
+const serverUrl = "https://qzzj9cxkd0zd.usemoralis.com:2053/server"
+
 const container = document.getElementById('root');
 const root = createRoot(container);
 root.render(
   <React.StrictMode>
-    <Web3ReactProvider getLibrary={getLibrary}>
+    <MoralisProvider appId={appId} serverUrl={serverUrl}>
+    {/* <Web3ReactProvider getLibrary={getLibrary}> */}
         <CartContextProvider>
           <App />
         </CartContextProvider>
-    </Web3ReactProvider>
+    {/* </Web3ReactProvider> */}
+    </MoralisProvider>
   </React.StrictMode>
 );
 
