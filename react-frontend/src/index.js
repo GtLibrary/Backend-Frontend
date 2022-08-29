@@ -1,5 +1,5 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import { render } from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
@@ -17,21 +17,19 @@ function getLibrary(provider) {
   return library;
 }
 
-const appId = "gmDA8QccmPHQvtnZcEiGemyCcZi7Sgr1meq9GgPz"
-const serverUrl = "https://qzzj9cxkd0zd.usemoralis.com:2053/server"
+const appId = "gmDA8QccmPHQvtnZcEiGemyCcZi7Sgr1meq9GgPz";
+const serverUrl = "https://qzzj9cxkd0zd.usemoralis.com:2053/server";
 
-const container = document.getElementById('root');
-const root = createRoot(container);
-root.render(
+render(
   <React.StrictMode>
-    <MoralisProvider appId={appId} serverUrl={serverUrl}>
-    {/* <Web3ReactProvider getLibrary={getLibrary}> */}
-        <CartContextProvider>
-          <App />
-        </CartContextProvider>
-    {/* </Web3ReactProvider> */}
+    <MoralisProvider
+      serverUrl="https://hpz4yq50hr8y.usemoralis.com:2053/server"
+      appId="FaLY0U96izeaTHPkmvxHUq87YIejSYU0KMBiHS5M"
+    >
+      <App />
     </MoralisProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
