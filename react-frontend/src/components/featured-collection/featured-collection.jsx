@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import FeaturedProduct from '../shared/featured-product';
 
 const FeaturedCollection = (props) => {

@@ -11,7 +11,7 @@ from api.uploadimage.api import UploadimageCreateApi
 from rest_framework import routers
 from api.user.viewsets import UserViewSet
 from django.urls import path, include
-from api.books.views import getbooklist
+from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId
 
 router = routers.SimpleRouter(trailing_slash=False)
 
@@ -40,5 +40,7 @@ urlpatterns = [
     path("books/delete/<int:pk>", BooksDeleteApi.as_view()),
     path("books/edit/<int:pk>", BooksUpdateApi.as_view()),
     path("uploadimage", UploadimageCreateApi.as_view()),
-    path("getbooklist", getbooklist)
+    path("getbooklist", getbooklist),
+    path("bookdata/<int:pk>", getbookdatabyId),
+    path("bookcontent/<int:pk>", getBookContentbyId)
 ]
