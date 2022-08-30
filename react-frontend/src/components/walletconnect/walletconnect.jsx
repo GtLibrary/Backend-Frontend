@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { useWeb3React } from "@web3-react/core";
 import { HiOutlineExternalLink } from 'react-icons/hi'
 import { Button, Flex } from "./CommonComponents";
 import './walletconnect.styles.scss';

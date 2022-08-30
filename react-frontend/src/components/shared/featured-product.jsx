@@ -1,5 +1,4 @@
-import React, { useContext } from 'react';
-// import { CartContext } from '../../context/cart-context'; 
+import React from 'react';
 import withRouter from '../../withRouter';
 import { useNavigate } from "react-router-dom";
 import './featured-product.styles.scss';
@@ -7,8 +6,7 @@ import './featured-product.styles.scss';
 const FeaturedProduct = (props) => {
   const navigate = useNavigate();
   const { title, image_url, price, id, description } = props;
-  const product = { title, image_url, price, id,  description };
-  // const { addProduct, increase } = useContext(CartContext);
+
   return (
     <div className='featured-product col-md-3 col-sm-6 col-xs-12'>
       <div className='featured-image' onClick={() => navigate(`/product/${id}`)}>
