@@ -15,6 +15,15 @@ const BookAdd = (props) => {
     const [authorwallet, setAuthorwallet] = useState('');
     const [curserialnumber, setCurserialnumber] = useState('');
     const [datamine, setDatamine] = useState('');
+    const [introduction, setIntroduction] = useState('');
+    const [maxbooksupply, setMaxbooksupply] = useState('');
+    const [maxbookmarksupply, setMaxbookmarksupply] = useState('');
+    const [startpoint, setStartpoint] = useState('');
+    const [bookprice, setBookprice] = useState('');
+    const [bookmarkprice, setBookmarkprice] = useState('');
+    const [hardbound, setHardbound] = useState('');
+    const [hardboundfrom, setHardboundfrom] = useState('');
+    const [hardboundprice, setHardboundprice] = useState('');
     const [booktype, setBooktype] = useState('');
     const [origintype, setOrigintype] = useState('');
     const [booktypes, setBooktypes] = useState('');
@@ -102,6 +111,15 @@ const BookAdd = (props) => {
                         setCurserialnumber('');
                         setAuthorwallet('');
                         setBrandimage('');
+                        setIntroduction('');
+                        setMaxbookmarksupply('');
+                        setMaxbooksupply('');
+                        setBookmarkprice('');
+                        setBookprice('');
+                        setStartpoint('');
+                        setHardbound('');
+                        setHardboundfrom('');
+                        setHardboundprice('');
                     } else {
                         setBooktitle('');
                         setBooktype('');
@@ -110,6 +128,15 @@ const BookAdd = (props) => {
                         setCurserialnumber('');
                         setAuthorwallet('');
                         setBrandimage('');
+                        setIntroduction('');
+                        setMaxbookmarksupply('');
+                        setMaxbooksupply('');
+                        setBookmarkprice('');
+                        setBookprice('');
+                        setStartpoint('');
+                        setHardbound('');
+                        setHardboundfrom('');
+                        setHardboundprice('');
                     }
                 })
                 .catch(function (error) {});
@@ -188,24 +215,184 @@ const BookAdd = (props) => {
                         }}
                     />
                 </div>
-                <TextField
-                    id="datamine"
-                    // label="Book  Name"
-                    style={{ margin: 8 }}
-                    placeholder="Please input the author wallet address"
-                    helperText="DataMine"
-                    fullWidth
-                    // margin="normal"
-                    InputLabelProps={{
-                        shrink: true
-                    }}
-                    variant="filled"
-                    value={datamine}
-                    onChange={(e) => {
-                        setDatamine(e.target.value);
-                    }}
-                />
-                {/* <FormControl fullWidth>
+                <div>
+                    <TextField
+                        id="introduction"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author wallet address"
+                        helperText="Introduction"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={introduction}
+                        onChange={(e) => {
+                            setIntroduction(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="maxbooksupply"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the curserial number"
+                        helperText="Max Books Supply"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={maxbooksupply}
+                        onChange={(e) => {
+                            setMaxbooksupply(e.target.value);
+                        }}
+                    />
+                </div><div>
+                    <TextField
+                        id="maxbookmarksupply"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author wallet address"
+                        helperText="Max bookmarks supply"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={maxbookmarksupply}
+                        onChange={(e) => {
+                            setMaxbookmarksupply(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="startpoint"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the curserial number"
+                        helperText="Start Point"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={startpoint}
+                        onChange={(e) => {
+                            setStartpoint(e.target.value);
+                        }}
+                    />
+                </div><div>
+                    <TextField
+                        id="bookprice"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author wallet address"
+                        helperText="Book Price"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={bookprice}
+                        onChange={(e) => {
+                            setBookprice(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="Bookmarkprice"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the curserial number"
+                        helperText="Bookmark Price"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={bookmarkprice}
+                        onChange={(e) => {
+                            setBookmarkprice(e.target.value);
+                        }}
+                    />
+                </div><div>
+                    <TextField
+                        id="hardbound"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author wallet address"
+                        helperText="Hardbound"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={hardbound}
+                        onChange={(e) => {
+                            setHardbound(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="hardboundfrom"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the curserial number"
+                        helperText="Hardbound from"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={hardboundfrom}
+                        onChange={(e) => {
+                            setHardboundfrom(e.target.value);
+                        }}
+                    />
+                </div>
+                <div>
+                    <TextField
+                        id="hardboundprice"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author wallet address"
+                        helperText="Hardbound Price"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={hardboundprice}
+                        onChange={(e) => {
+                            setHardboundprice(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="datamine"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author wallet address"
+                        helperText="DataMine"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={datamine}
+                        onChange={(e) => {
+                            setDatamine(e.target.value);
+                        }}
+                    />
+                </div>
+                <FormControl fullWidth>
                     <InputLabel id="booktype">Book Type</InputLabel>
                     <Select
                         labelId="booktype"

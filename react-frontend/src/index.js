@@ -1,31 +1,23 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
+import { render } from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import CartContextProvider from './context/cart-context';
+import { MoralisProvider } from "react-moralis";
 
-import {
-  Web3ReactProvider,
-} from "@web3-react/core";
-import { Web3Provider } from "@ethersproject/providers";
+const appId = "gmDA8QccmPHQvtnZcEiGemyCcZi7Sgr1meq9GgPz";
+const serverUrl = "https://qzzj9cxkd0zd.usemoralis.com:2053/server";
 
-function getLibrary(provider) {
-  const library = new Web3Provider(provider);
-  library.pollingInterval = 8000;
-  return library;
-}
-
-const container = document.getElementById('root');
-const root = createRoot(container);
-root.render(
+render(
   <React.StrictMode>
-    <Web3ReactProvider getLibrary={getLibrary}>
-        <CartContextProvider>
-          <App />
-        </CartContextProvider>
-    </Web3ReactProvider>
-  </React.StrictMode>
+    <MoralisProvider
+      serverUrl={serverUrl}
+      appId={appId}
+    >
+      <App />
+    </MoralisProvider>
+  </React.StrictMode>,
+  document.getElementById("root")
 );
 
 // If you want to start measuring performance in your app, pass a function
