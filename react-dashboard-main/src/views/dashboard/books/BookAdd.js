@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 // material-ui
-import { Button, Box, TextField, Stack, Autocomplete } from '@material-ui/core';
+import { Button, Box, TextField, Stack, Autocomplete, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 import MainCard from '../../../ui-component/cards/MainCard';
 import configData from '../../../config';
 
@@ -250,7 +250,8 @@ const BookAdd = (props) => {
                             setMaxbooksupply(e.target.value);
                         }}
                     />
-                </div><div>
+                </div>
+                <div>
                     <TextField
                         id="maxbookmarksupply"
                         // label="Book  Name"
@@ -285,7 +286,8 @@ const BookAdd = (props) => {
                             setStartpoint(e.target.value);
                         }}
                     />
-                </div><div>
+                </div>
+                <div>
                     <TextField
                         id="bookprice"
                         // label="Book  Name"
@@ -320,7 +322,8 @@ const BookAdd = (props) => {
                             setBookmarkprice(e.target.value);
                         }}
                     />
-                </div><div>
+                </div>
+                <div>
                     <TextField
                         id="hardbound"
                         // label="Book  Name"
@@ -430,9 +433,10 @@ const BookAdd = (props) => {
                                 );
                             })}
                     </Select>
-                </FormControl> */}
-                <Stack spacing={2} 
-                // sx={{ width: 300 }}
+                </FormControl>
+                <Stack
+                    spacing={2}
+                    // sx={{ width: 300 }}
                 >
                     <Autocomplete
                         id="booktype-select"
