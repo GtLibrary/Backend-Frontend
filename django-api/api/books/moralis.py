@@ -78,7 +78,7 @@ class Moralis:
 
     ## Dont do this async .. life is flaky enough.
     def runNewBookContract(self, _name, _symbol, _bookRegistryAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, _mintTo, _retTxt):
-        cmd = "cd /home/john/bakerydemo/moralis/; node newBookContract.js " + _name + " " + _symbol + " " + _bookRegistryAddress + " " + _baseuri + " " + _burnable + " " + _maxmint + " " + _defaultprice + " " + _defaultfrom + " " + _mintTo + " " + _mintTo + " " + _retTxt + ""
+        cmd = "cd /home/john/bakerydemo/moralis/; node newBookContract.js " + str(_name) + " " + str(_symbol) + " " + str(_bookRegistryAddress) + " " + str(_baseuri) + " " + str(_burnable) + " " + str(_maxmint) + " " + str(_defaultprice) + " " + str(_defaultfrom) + " " + str(_mintTo) + " " + str(_mintTo) + " " + str(_retTxt) + ""
         print(cmd)
         os.system(cmd)
 

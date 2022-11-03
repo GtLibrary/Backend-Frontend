@@ -1,5 +1,9 @@
 from django.db import models
+import os
+from django.conf import settings
+from dotenv import load_dotenv
 
+load_dotenv()
 # Create your models here.
 class Books(models.Model):
     title = models.CharField(max_length=200, default='')
@@ -26,3 +30,7 @@ class Books(models.Model):
 
     def __str__(self):
         return self.title
+
+
+    def datamine_path(datamine):
+        return os.path.join(os.environ['DATAMINEROOT'], datamine)
