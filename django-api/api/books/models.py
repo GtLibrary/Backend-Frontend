@@ -21,9 +21,12 @@ class Books(models.Model):
     start_point = models.BigIntegerField(default=1)
     book_price = models.BigIntegerField(default=0)
     bookmark_price = models.BigIntegerField(default=0)
-    hardbound = models.BigIntegerField(default=0)
-    hardbound_from = models.BigIntegerField(default=0)
+    hardbound = models.CharField(max_length=200, default='')
+    hardbound_from = models.CharField(max_length=200, default='')
     hardbound_price = models.BigIntegerField(default=0)
+    bt_contract_address = models.CharField(max_length=200, default='')
+    hb_contract_address = models.CharField(max_length=200, default='')
+    bm_contract_address = models.CharField(max_length=200, default='')
     pub_date = models.DateTimeField('date published',auto_now=True, null=False, blank=False)
     class Meta:
         ordering = ['title']

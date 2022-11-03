@@ -86,6 +86,15 @@ const BookAdd = (props) => {
         form_data.append('datamine', datamine);
         form_data.append('origin_type_id', origintype);
         form_data.append('book_type_id', booktype);
+        form_data.append('book_price', bookprice);
+        form_data.append('bookmark_price', bookmarkprice);
+        form_data.append('hardbound', hardbound);
+        form_data.append('hardbound_from', hardboundfrom);
+        form_data.append('hardbound_price', hardboundprice);
+        form_data.append('max_book_supply', maxbooksupply);
+        form_data.append('max_bookmark_supply', maxbookmarksupply);
+        form_data.append('start_point', startpoint);
+        form_data.append('introduction', introduction);
         if (id) {
             // const { data } =
             await axios
@@ -245,6 +254,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the curserial number"
                         helperText="Max Books Supply"
                         fullWidth
+                        type="number"
                         // margin="normal"
                         InputLabelProps={{
                             shrink: true
@@ -263,6 +273,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the author wallet address"
                         helperText="Max bookmarks supply"
                         fullWidth
+                        type="number"
                         // margin="normal"
                         InputLabelProps={{
                             shrink: true
@@ -280,6 +291,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the curserial number"
                         helperText="Start Point"
                         fullWidth
+                        type="number"
                         // margin="normal"
                         InputLabelProps={{
                             shrink: true
@@ -298,6 +310,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the author wallet address"
                         helperText="Book Price"
                         fullWidth
+                        type="number"
                         // margin="normal"
                         InputLabelProps={{
                             shrink: true
@@ -315,6 +328,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the curserial number"
                         helperText="Bookmark Price"
                         fullWidth
+                        type="number"
                         // margin="normal"
                         InputLabelProps={{
                             shrink: true
@@ -369,6 +383,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the author wallet address"
                         helperText="Hardbound Price"
                         fullWidth
+                        type="number"
                         // margin="normal"
                         InputLabelProps={{
                             shrink: true
