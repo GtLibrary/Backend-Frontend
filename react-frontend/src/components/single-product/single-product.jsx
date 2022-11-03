@@ -49,6 +49,24 @@ const SingleProduct = ({ match }) => {
     
     getPdfData();
   }, []);
+
+
+  const testurl = `http://localhost:5000/api/art/${id}`;
+
+  useEffect(() => {
+    async function getPdfData() {
+      const config = {
+        method: 'get',
+        url: testurl,
+      }
+      let res = await axios(config)
+      .then(res => {
+        setPdfcontent(res.data)
+      })
+    }
+    
+    getPdfData();
+  }, []);
   // while we check for product
   if (!product) { return null }
   const { image_url, title, book_price, introduction } = product;
