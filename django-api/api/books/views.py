@@ -442,7 +442,7 @@ def art(request, pk):
     tokenid = request.GET.get('tokenid', 'default')
 
     potential = calculate_project_potential(datamine, curserial_num, "book", pk, "object", error_fingerprint="default")
-    bmsupply = getTotalBMTokens(potential, datamine)
+    bmsupply =  (potential, datamine)
 
     if bmsupply == 0:
         bookmarkcontractid = getbookmarkcontractid(potential, datamine)
@@ -476,6 +476,6 @@ def art(request, pk):
         temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
 
 
-        return Response("SUCCESS")
+        return Response(temp_content)
     else:
         return Response("FAILURE")

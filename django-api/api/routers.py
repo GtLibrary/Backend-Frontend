@@ -11,7 +11,9 @@ from api.uploadimage.api import UploadimageCreateApi
 from rest_framework import routers
 from api.user.viewsets import UserViewSet
 from django.urls import path, include
+from django.conf.urls import url
 from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, art
+from api.nft import views as nft_views
 
 router = routers.SimpleRouter(trailing_slash=False)
 
@@ -44,4 +46,6 @@ urlpatterns = [
     path("bookdata/<int:pk>", getbookdatabyId),
     path("bookcontent/<int:pk>", getBookContentbyId),
     path('art/<int:pk>', art, name='art'),
+
+    url('^nft/', nft_views.nft, name='nft'),
 ]

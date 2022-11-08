@@ -33,22 +33,22 @@ const SingleProduct = ({ match }) => {
 
   }, [id]);
 
-  const url = `http://localhost:5000/api/bookcontent/${id}`;
+  // const url = `http://localhost:5000/api/bookcontent/${id}`;
 
-  useEffect(() => {
-    async function getPdfData() {
-      const config = {
-        method: 'get',
-        url: url,
-      }
-      let res = await axios(config)
-      .then(res => {
-        setPdfcontent(res.data)
-      })
-    }
+  // useEffect(() => {
+  //   async function getPdfData() {
+  //     const config = {
+  //       method: 'get',
+  //       url: url,
+  //     }
+  //     let res = await axios(config)
+  //     .then(res => {
+  //       setPdfcontent(res.data)
+  //     })
+  //   }
     
-    getPdfData();
-  }, []);
+  //   getPdfData();
+  // }, []);
 
 
   const testurl = `http://localhost:5000/api/art/${id}`;

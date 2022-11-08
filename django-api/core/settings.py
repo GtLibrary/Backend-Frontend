@@ -47,7 +47,8 @@ INSTALLED_APPS = [
     "api.origintype",
     "api.books",
     "api.uploadimage",
-    "api.customers"
+    "api.customers",
+    "api.nft"
 ]
 
 MIDDLEWARE = [

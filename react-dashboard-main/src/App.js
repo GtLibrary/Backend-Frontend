@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { ThemeProvider } from '@material-ui/core/styles';
@@ -13,12 +13,12 @@ import theme from './themes';
 
 // project imports
 import NavigationScroll from './layout/NavigationScroll';
+import Web3 from "web3";
 
 //-----------------------|| APP ||-----------------------//
 
 const App = () => {
     const customization = useSelector((state) => state.customization);
-
     return (
         <StyledEngineProvider injectFirst>
             <ThemeProvider theme={theme(customization)}>
