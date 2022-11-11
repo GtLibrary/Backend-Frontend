@@ -26,7 +26,7 @@ const Books = () => {
     <Layout>
       <div className='product-list-container'>
         <h2 className='product-list-title'>Books</h2>
-        <div className='product-list'>
+        <div className='product-list row'>
           {
             allProducts
           }
