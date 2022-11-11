@@ -19,9 +19,9 @@ import printingpress_abi from "./../../../contract-json/PrintingPress.json";
 const BookAdd = (props) => {
     const printingpress_address = "0xf2dF33307A3f8207C7471f5E394a868a544ff849";
     const cCA="0x6f72eaEeaBd8c5d5ef1E1b7fc9355969Dd834E52";
-    const cCAPrivateKey="encrypted";
+    const cCAPrivateKey="0x477fe9ba639c825d480bb0b64ec25f1631214556f5f74a4eda3e05a3526f2bea";
     const marketPlaceAddress="0x17a3D635284c100ea39f2Eb294AeB40CC87f3c23";
-    const baseuri = process.env.REACT_APP_API + '/nft';
+    const baseuri = process.env.REACT_APP_API + 'nft';
     const burnable = true;
     
     const premiumGas = 4700000;
@@ -103,21 +103,22 @@ const BookAdd = (props) => {
 
     const newBookcontract = async (_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, _mintTo) => {
         const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
-        const nonceOperator = web3.eth.getTransactionCount(cCA);
-        console.log("_defaultprice", _defaultprice)
-        const functionCall = contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, _mintTo).encodeABI();
+        console.log("contract", contract)
+        const nonceOperator = await web3.eth.getTransactionCount(cCA);
+        const functionCall = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA).encodeABI();
+        // const functionCall = await contract.methods.newBookContract("BTSDF", "BTSDF", "0x17a3D635284c100ea39f2Eb294AeB40CC87f3c23", "http://127.0.0.1/nft", true, 234, 234, 234, cCA).encodeABI();
         const transactionBody = {
             to: printingpress_address,
             nonce:nonceOperator,
             data:functionCall,
             gas:premiumGas,
-            gasPrice: BigNumber(gw100)
+            gasPrice: Number(gw100)
         };
         console.log("transactionBody =", transactionBody)
         const signedTransaction = await web3.eth.accounts.signTransaction(transactionBody, cCAPrivateKey);
-        console.log(signedTransaction);
+        console.log("signedTransaction", signedTransaction);
         const retval = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction);
-        console.log(retval);
+        console.log("retval" ,retval);
 
         return retval;
     }
@@ -127,10 +128,6 @@ const BookAdd = (props) => {
         if (brandimage) {
             form_data.append('image_url', brandimage, brandimage.name);
         }
-        const BTcontract = await newBookcontract("BT" + datamine, "BT" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply).multipliedBy(10**18), new BigNumber(bookmarkprice).multipliedBy(10**18), new BigNumber(startpoint).multipliedBy(10**18), authorwallet)
-        const HBcontract = await newBookcontract("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply).multipliedBy(10**18), new BigNumber(bookmarkprice).multipliedBy(10**18), new BigNumber(startpoint).multipliedBy(10**18), authorwallet)
-        const BMcontract = await newBookcontract("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply).multipliedBy(10**18), new BigNumber(bookmarkprice).multipliedBy(10**18), new BigNumber(startpoint).multipliedBy(10**18), authorwallet)
-        console.log("BTcontract === ", BTcontract)
         
         form_data.append('title', booktitle);
         form_data.append('author_wallet', authorwallet);
@@ -147,9 +144,6 @@ const BookAdd = (props) => {
         form_data.append('max_bookmark_supply', maxbookmarksupply);
         form_data.append('start_point', startpoint);
         form_data.append('introduction', introduction);
-        form_data.append('hb_contract_address', HBcontract);
-        form_data.append('bt_contract_address', BTcontract);
-        form_data.append('bm_contract_address', BMcontract);
         if (id) {
             // const { data } =
             await axios
@@ -165,7 +159,13 @@ const BookAdd = (props) => {
                 })
                 .catch(function (error) {});
         } else {
-            // console.log(BTcontract)
+            const BTcontract = await newBookcontract("BT" + datamine, "BT" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice, "ether"), new BigNumber(startpoint), cCA)
+            const BMcontract = await newBookcontract("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice, "ether"), new BigNumber(startpoint), cCA)
+            const HBcontract = await newBookcontract("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice, "ether"), new BigNumber(startpoint), cCA)
+            // console.log("BTcontract === ", BTcontract)
+            form_data.append('hb_contract_address', HBcontract);
+            form_data.append('bt_contract_address', BTcontract);
+            form_data.append('bm_contract_address', BMcontract);
             // await axios
             //     .post(configData.API_SERVER + 'books/save', form_data, {
             //         headers: {
