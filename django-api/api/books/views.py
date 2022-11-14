@@ -13,11 +13,13 @@ from dotenv import load_dotenv
 from api.books.minter import MyFirstMinter
 from api.books.minter import MySecondMinter
 from api.books.minter import Minter
+from web3 import Web3, HTTPProvider
 
 load_dotenv()
 
 moralis = Moralis()
 
+web3 = Web3(Web3.HTTPProvider(os.environ["speedyNode"]))
 #os.environ['DJANGO_SETTINGS_MODULE']
 securePort = os.environ['securePort']
 secureHost = os.environ['secureHost']
@@ -40,8 +42,8 @@ def getbooklist(request):
 
 @api_view(['GET'])
 def getbookdatabyId(request, pk):
-    fields = ('id', 'title','image_url', 'book_price', 'introduction')
-    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'introduction')
+    fields = ('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bookmark_price', 'bt_contract_address', 'bm_contract_address', 'hb_contract_address')
+    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bookmark_price', 'bt_contract_address', 'bm_contract_address', 'hb_contract_address')
     data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 
@@ -260,39 +262,10 @@ def getbookcontractid(potential, datamine):
 
     return "unknowncontractid-ALPHA"
 
-def verifyRewards(potential, datamine, bookmarkcontractid, bookcontractid):
+def verifyRewards(bookmarkcontractid, bookcontractid):
     print("verifyRewards: " + str(bookmarkcontractid) + " " + str(bookcontractid))
-    verified = getFromBackend(getbookmarkcontractid(potential, datamine) + "/verifyrewards/" + getbookcontractid(potential, datamine)) 
+    verified = getFromBackend(bookmarkcontractid + "/verifyrewards/" + bookcontractid) 
     return verified
-
-
-# def Minter(potential, datamine, contractType, whoFile):
-#     #Minter(self, datamine, "HB", whoFile)
-
-#     #self.potential = potential
-#     _datamine = datamine
-#     _name = contractType + potential._name
-#     _symbol = contractType + potential._symbol
-#     _bookRegistryAddress = potential._bookRegistryAddress
-#     _baseuri = potential._baseuri
-#     _burnable = potential._burnable
-#     _maxmint = potential._maxmint
-#     _defaultprice = potential._defaultprice
-#     _defaultfrom = potential._defaultfrom
-#     _mintTo = potential._mintTo
-
-#     #return moralis.runNewBookContract(_name, _symbol, _bookRegistryAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, _mintTo, who) ##, unknown // moralis got it.
-
-#     secureUri = "0x0" + "/newbookcontract/" + _name + "/" + _symbol+ "/" + _bookRegistryAddress + "!" + _baseuri + "!"
-#     secureUri += str(_burnable) + "/" + str(_maxmint) + "/" + str(_defaultprice) + "/" + str(_defaultfrom) + "/" + str(_mintTo) + "!" + str(whoFile)
-
-#     print(secureUri)
-#     contractid = getFromBackend(secureUri)
-#     f = open(whoFile, "w")
-#     f.write(contractid)
-#     f.close()
-
-
 
 fifoWrite = 0 # Zero means no fd
 def getFifoWrite():
@@ -327,24 +300,15 @@ def getFromBackend(url):
         print("response: " + response.text)
         return response.text
 
-def getBookmarkTotalSupply(potential, datamine):
-    print("getBookmarkTotalSupply: " + str(datamine))
+def getBookmarkTotalSupply(bookmarkcontractid):
 
-    currentBookmarlTotalSupply = getFromBackend(getbookmarkcontractid(potential, datamine) + "/totalsupply")
+    currentBookmarlTotalSupply = getFromBackend(bookmarkcontractid + "/totalsupply")
     print("currentBookmarlTotalSupply: " + str(currentBookmarlTotalSupply))
     try:
         currentBookmarlTotalSupply = int(currentBookmarlTotalSupply)
         return int(currentBookmarlTotalSupply)
     except:
         print("error: " + str(currentBookmarlTotalSupply))
-
-
-def getTotalBMTokens(potential, datamine):
-    print("In getTotalBMTokens")
-    dataminedir = Books.datamine_path(potential.datamine)
-
-    return getBookmarkTotalSupply(potential, datamine)  # this should ensure the .totalsupply file exists if possible
-
 
 # generate hardbound contract address
 def generate_hardboundcontractid(self, datamine):
@@ -423,51 +387,40 @@ def calculate_project_potential(datamine, curserial_num, arttype, book_id, retur
 def art(request, pk):
 
     bookcontent = Books.objects.get(pk=pk)
-    # arttype = request.GET.get('type', 'book')
-    # curserial_num = request.GET.get('curserial_num', '')
     curserial_num = bookcontent.curserial_number
     curserial_num = re.sub(r'[^a-zA-Z0-9\.]', '', curserial_num)
-    # datamine = request.GET.get('datamine', 'TLSC')
     datamine = bookcontent.datamine
     datamine = re.sub(r'[^a-zA-Z0-9\.]', '', datamine)
-    # redirectCount = request.GET.get('redirect', '0')
-    # redirectCount = int(redirectCount)
 
     daedalusToken = request.GET.get('daedalusToken', '0')
     daedalusToken = re.sub(r'[^a-zA-Z0-9\.]', '', daedalusToken)
 
-    #msg = base64.b64decode(request.GET.get('msg', '')).decode('utf-8')
     msg = request.GET.get('msg', '')
     signature = request.GET.get('sig', 'default')
+    sender = request.GET.get('sender', '')
     tokenid = request.GET.get('tokenid', 'default')
 
-    potential = calculate_project_potential(datamine, curserial_num, "book", pk, "object", error_fingerprint="default")
-    bmsupply = getTotalBMTokens(potential, datamine)
-
+    bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
+    
     if bmsupply == 0:
-        bookmarkcontractid = getbookmarkcontractid(potential, datamine)
-        bookcontractid = getbookcontractid(potential, datamine)
-        hardboundcontractid = gethardboundcontractid(potential, datamine)
-        verifyRewards(potential, datamine, bookmarkcontractid, bookcontractid)
-        getBookmarkTotalSupply(potential, datamine)
-
-    if not os.path.exists(Books.datamine_path(datamine)):
-        os.mkdir(Books.datamine_path(datamine))
-
-    print(msg)
-    print(signature)
-
-
-
-    sender = moralis.getSender(msg, signature)
-    print("sender: " + sender)
-
-    contractid = getbookcontractid(potential, datamine)
-    print("contractid: " + contractid)
-
-    tokenOwner = moralis.getTokenOwner(contractid, tokenid)
-    print(tokenOwner)
-    #print("tokenOwner: " + tokenOwner)
+        bookmarkcontractid = bookcontent.bm_contract_address
+        bookcontractid = bookcontent.bt_contract_address
+        hardboundcontractid = bookcontent.hb_contract_address
+        verifyRewards(bookmarkcontractid, bookcontractid)
+        getBookmarkTotalSupply(bookmarkcontractid)
+        
+    if (tokenid == 'default'):
+        tokenOwner = ''
+    else:
+        contract_abi = json.load(open('/home/john/bakerydemo/brownie/BookTradable.json'))
+        myContract = web3.eth.contract(address=bookcontent.bt_contract_address, abi=contract_abi)
+        tokenOwner = myContract.functions.ownerOf(tokenid).call()
+        print("token owner ==========", tokenOwner)
+    # sender = moralis.getSender(msg, signature)
+    # bookcontractid = bookcontent.bt_contract_address
+    # tokenOwner = moralis.getTokenOwner(bookcontractid, tokenid)
+    # sender = ''
+    # tokenOwner = ''
 
     if sender == tokenOwner:
         cur_num = bmsupply - 1
@@ -475,7 +428,6 @@ def art(request, pk):
         figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
         temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
 
-
-        return Response("SUCCESS")
+        return Response({"content": temp_content, "book_image": figure_content})
     else:
-        return Response("FAILURE")
+        return Response({"content":"You are not token owner!!"})

@@ -18,7 +18,8 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
                 self.fields.pop(field_name)
 class BooksSerializer(DynamicFieldsModelSerializer):
     pub_date = serializers.DateTimeField(read_only=True)
-    image_url = serializers.SerializerMethodField()
+    # image_url = serializers.SerializerMethodField()
+    image_url = serializers.ImageField(required=False)
 
     class Meta:
         model = Books
@@ -27,5 +28,8 @@ class BooksSerializer(DynamicFieldsModelSerializer):
     
     def get_image_url(self, Books):
         request = self.context.get('request')
-        image_url = Books.image_url.url
+        if Books.image_url:
+            image_url = Books.image_url.url
+        else:
+            image_url = ''
         return request.build_absolute_uri(image_url)

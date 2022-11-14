@@ -7,7 +7,6 @@
 
   .product-list {
     div {
-      margin: 1rem;
       cursor: pointer;
     }
   }
@@ -20,7 +19,7 @@
       flex-wrap: wrap;
       justify-content: center;
       align-items: stretch;
-      margin: 0 5rem;
+      // margin: 0 5rem;
       div {
         flex: 0 0 300px;
       }

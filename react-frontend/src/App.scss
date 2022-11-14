@@ -20,6 +20,9 @@ img {
   margin: 0 auto;
 }
 
+main {
+  background-color: #F8F3E7;
+}
 #shop-now {
   font-weight: 600; 
   font-size: 1.5rem;
@@ -48,7 +51,7 @@ img {
       padding: 5px;
 
       .featured-product {
-        margin: 10px;
+        // margin: 10px;
       }
     }
   }
