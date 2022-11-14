@@ -103,8 +103,7 @@ const BookAdd = (props) => {
 
     const newBookcontract = async (_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, _mintTo) => {
         const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
-        console.log("contract", contract)
-        const nonceOperator = await web3.eth.getTransactionCount(cCA);
+        const nonceOperator = await web3.eth.getTransactionCount(cCA, "latest");
         const functionCall = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA).encodeABI();
         // const functionCall = await contract.methods.newBookContract("BTSDF", "BTSDF", "0x17a3D635284c100ea39f2Eb294AeB40CC87f3c23", "http://127.0.0.1/nft", true, 234, 234, 234, cCA).encodeABI();
         const transactionBody = {
@@ -145,7 +144,6 @@ const BookAdd = (props) => {
         form_data.append('start_point', startpoint);
         form_data.append('introduction', introduction);
         if (id) {
-            // const { data } =
             await axios
                 .put(configData.API_SERVER + 'books/edit/' + id, form_data, {
                     headers: {
@@ -159,9 +157,9 @@ const BookAdd = (props) => {
                 })
                 .catch(function (error) {});
         } else {
-            const BTcontract = await newBookcontract("BT" + datamine, "BT" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice, "ether"), new BigNumber(startpoint), cCA)
-            const BMcontract = await newBookcontract("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice, "ether"), new BigNumber(startpoint), cCA)
-            const HBcontract = await newBookcontract("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice, "ether"), new BigNumber(startpoint), cCA)
+            const BTcontract = await newBookcontract("BT" + datamine, "BT" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
+            const BMcontract = await newBookcontract("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
+            const HBcontract = await newBookcontract("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
             // console.log("BTcontract === ", BTcontract)
             form_data.append('hb_contract_address', HBcontract);
             form_data.append('bt_contract_address', BTcontract);

@@ -267,35 +267,6 @@ def verifyRewards(bookmarkcontractid, bookcontractid):
     verified = getFromBackend(bookmarkcontractid + "/verifyrewards/" + bookcontractid) 
     return verified
 
-
-# def Minter(potential, datamine, contractType, whoFile):
-#     #Minter(self, datamine, "HB", whoFile)
-
-#     #self.potential = potential
-#     _datamine = datamine
-#     _name = contractType + potential._name
-#     _symbol = contractType + potential._symbol
-#     _bookRegistryAddress = potential._bookRegistryAddress
-#     _baseuri = potential._baseuri
-#     _burnable = potential._burnable
-#     _maxmint = potential._maxmint
-#     _defaultprice = potential._defaultprice
-#     _defaultfrom = potential._defaultfrom
-#     _mintTo = potential._mintTo
-
-#     #return moralis.runNewBookContract(_name, _symbol, _bookRegistryAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, _mintTo, who) ##, unknown // moralis got it.
-
-#     secureUri = "0x0" + "/newbookcontract/" + _name + "/" + _symbol+ "/" + _bookRegistryAddress + "!" + _baseuri + "!"
-#     secureUri += str(_burnable) + "/" + str(_maxmint) + "/" + str(_defaultprice) + "/" + str(_defaultfrom) + "/" + str(_mintTo) + "!" + str(whoFile)
-
-#     print(secureUri)
-#     contractid = getFromBackend(secureUri)
-#     f = open(whoFile, "w")
-#     f.write(contractid)
-#     f.close()
-
-
-
 fifoWrite = 0 # Zero means no fd
 def getFifoWrite():
     writeFifo = os.environ["ALPHA_FIFO"]

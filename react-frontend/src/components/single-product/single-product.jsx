@@ -91,75 +91,77 @@ const SingleProduct = ({ match }) => {
   }, []);
   // while we check for product
   if (!product) { return null }
-  const { image_url, title, book_price, introduction, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address } = product;
+  const { image_url, title, book_price, datamine, introduction, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address } = product;
 
-  // const fetchNFTsForContract = async () => {
-  //   const options = {
-  //     chain: chainName,
-  //     address: user.get("ethAddress"),
-  //     token_address: bt_contract_address,
-  //   };
-  //   const bookTokens = await Web3Api.account.getNFTsForContract(options);
-  //   if(bookTokens.total) {
-  //     return bookTokens.result[0].token_id
-  //   } else {
-  //     return '';
-  //   }
-  // };
   const showBMModal = (i) => {
     setModalShow(true)
   }
 
   return (
     <Layout>
-      <div className='single-product-container'>
-        <div className="product-content">
-          {/* <div className='pdf-maincontent' dangerouslySetInnerHTML={{__html: pdfcontent}}  /> */}
-          <div className="pdf-maincontent">
-            <div className="pdf-image" dangerouslySetInnerHTML={{__html: pdfimage}} />
-            <div className="pdf-content">
-              { pdfcontent.map((item, i) => {
-                return (
-                  <span className="" key={i} onClick={() => showBMModal(i)}>{item}</span>
-                )
-              })}
+      <div className='single-product-container container'>
+        <div className="row">
+          <div className='col-md-4'>
+            <div className="product-brandimage">
+              <img className="img-responsive" src={image_url}></img>
+            </div>
+          </div>
+          <div className="col-md-8 detail-area">
+            <div className="product-detailinfo">
+              <h5>{title}</h5>
+              <h6>By John R Raymond</h6>
+              <div className="product-category">Sci/Fi Fantasy</div>
+              <p>{introduction}</p>
             </div>
           </div>
         </div>
-        <div className='product-details'>
-          <div className='name-price'>
-            <h3>{title}</h3>
-            {/* <strong><i>{author}</i></strong>  */}
-            <h5>{introduction}</h5>
-            <p><i>${book_price}</i></p>
+        <div className="row">
+          <div className="product-content">
+            <div className="action-area">
+              <button className="btn btn-action"><i className="fa fa-refresh"></i> Refresh</button>
+              <button className="btn btn-action"><i className="fa fa-download"></i> Save Book</button>
+              <button className="btn btn-action"><i className="fa fa-book"></i> Read Book</button>
+              <button className="btn btn-action"><i className="fa fa-headphones"></i> Audio Book</button>
+              <button className="btn btn-action"><i className="fa fa-money"></i> Buy Book</button>
+            </div>
+            <div className="pdf-maincontent">
+              <div className="pdf-image" dangerouslySetInnerHTML={{__html: pdfimage}} />
+              <div className="pdf-content">
+                { pdfcontent.map((item, i) => {
+                  return (
+                    <span className="" key={i} onClick={() => showBMModal(i)}>{item}</span>
+                  )
+                })}
+              </div>
+            </div>
           </div>
-
-          <div className='add-to-cart-btns'>
-            {/* {
-              <button 
-                className='button is-white nomad-btn' 
-                id='btn-white-outline'
-                onClick={() => addProduct(product)}>
-                  ADD TO CART
-              </button> 
-            }
-            {
-              <button 
-                className='button is-white nomad-btn' 
-                id='btn-white-outline'
-                onClick={()=> increase(product)}>
-                  ADD MORE
-              </button>
-            }
-            <Link to='/checkout'>
-            <button className='button is-black nomad-btn' id='btn-white-outline'>
-              PROCEED TO CHECKOUT
-            </button>
-            </Link> */}
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="bookmark-area">      
+              <h3 className="bookmark-title">BookMark</h3>
+              <div className="bookmark-content">
+                <div className="bookmark-imagearea">
+                    <div className="bookimage-area">
+                      {/* <img className="img-responsive" src={}></img> */}
+                    </div>
+                </div>
+                <div className="bookmark-description">
+                  <p>Purchasing the bookmark will progress the story for others, and you will be able to read the full book free. Currently BETA.</p>
+                  <p><bold>Book May Also Include:</bold></p>
+                  <ul>
+                    <li>Free Audio Book Code</li>
+                    <li>BEN, the AI cat</li>
+                    <li>Ticket for the Movie</li>
+                    <li>Author's Brain-In-A-Jar</li>
+                  </ul>  
+                </div>
+              </div> 
+            </div>
           </div>
         </div>
       </div>
-      <BMdetailModal show={modalShow} onHide={() => setModalShow(false)} bookmark_price={bookmark_price} contract_address={bt_contract_address} />
+      <BMdetailModal show={modalShow} onHide={() => setModalShow(false)} product={product} />
     </Layout>
   );
 }
