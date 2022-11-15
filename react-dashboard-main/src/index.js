@@ -14,17 +14,21 @@ import config from './config';
 
 // style + assets
 import './assets/scss/style.scss';
+import { MoralisProvider } from "react-moralis";
 
+const appId = "gmDA8QccmPHQvtnZcEiGemyCcZi7Sgr1meq9GgPz";
+const serverUrl = "https://qzzj9cxkd0zd.usemoralis.com:2053/server";
 //-----------------------|| REACT DOM RENDER  ||-----------------------//
 
 ReactDOM.render(
-    <Provider store={store}>
-        <PersistGate loading={null} persistor={persister}>
-            <BrowserRouter basename={config.basename}>
-                <App />
-            </BrowserRouter>
-        </PersistGate>
-    </Provider>,
+
+        <Provider store={store}>
+            <PersistGate loading={null} persistor={persister}>
+                <BrowserRouter basename={config.basename}>
+                    <App />
+                </BrowserRouter>
+            </PersistGate>
+        </Provider>,
     document.getElementById('root')
 );
 
