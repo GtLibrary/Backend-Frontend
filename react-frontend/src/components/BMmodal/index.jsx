@@ -4,6 +4,7 @@ import Modal from 'react-bootstrap/Modal';
 function BMdetailModal(props) {
     const { product } = props
     const { id, title, image_url, introduction, datamine, book_price, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address } = product
+    
     return (
         <Modal
         {...props}
