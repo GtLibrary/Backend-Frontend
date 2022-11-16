@@ -11,14 +11,24 @@ import printingpress_abi from "../../utils/contract/PrintingPress.json"
 import BT_abi from "../../utils/contract/BookTradable.json"
 import Web3 from 'web3';
 
+
 const SingleProduct = ({ match }) => {
+  
+  const Web3Api = useMoralisWeb3Api();
+  const providerUrl = process.env.REACT_APP_PROVIDERURL;
+
+  const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
   const printpress_abi = printingpress_abi;
-  const printpress_address = "0xf2dF33307A3f8207C7471f5E394a868a544ff849";
-  const CC_address = '0x0235F1C524AA396F72E0bE939263Ef95244fC029';
-  const cCA = '0x6f72eaEeaBd8c5d5ef1E1b7fc9355969Dd834E52';
-  const cCAPrivateKey = "0x477fe9ba639c825d480bb0b64ec25f1631214556f5f74a4eda3e05a3526f2bea";
-  const { user, account } = useMoralis();
+  const bt_abi = BT_abi;
+  const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
+  const cCA = process.env.REACT_APP_CCA;
+  const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
+
+  const premiumGas = process.env.REACT_APP_PREMIUMGAS;
+  const gw100 = web3.utils.toWei('25.01', 'gwei');
+
+  const { user } = useMoralis();
   const navigate = useNavigate();
   const [pdfcontent, setPdfcontent] = useState([]);
   const [pdfimage, setPdfimage] = useState('');
@@ -26,13 +36,9 @@ const SingleProduct = ({ match }) => {
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
 
-  const { native } = useMoralisWeb3Api();
-  const providerUrl = 'https://nd-403-110-561.p2pify.com/dd4287180d2d299318a50402bcc4398d/ext/bc/C/rpc';
-
-  const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
   useEffect(() => {
-    const bookurl = `http://localhost:5000/api/bookdata/${id}`
+    const bookurl = process.env.REACT_APP_API + `bookdata/${id}`
     
     async function getBook() {
       const config = {
@@ -54,33 +60,6 @@ const SingleProduct = ({ match }) => {
 
   useEffect(() => {
 
-    let testurl
-    if(user) {
-      var sender = user.get("ethAddress")
-      testurl = `http://localhost:5000/api/art/${id}?sender=` + sender;
-    } else {
-      var sender = "";
-      testurl = `http://localhost:5000/api/art/${id}?sender=` + sender;
-    }
-    
-    async function getPdfData() {
-      const config = {
-        method: 'get',
-        url: testurl,
-      }
-      await axios(config)
-      .then(res => {
-        setPdfimage(res.data.book_image);
-
-        var chunks = [];
-        for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += 400) {
-            chunks.push(res.data.content.substring(i, i + 400));
-        }
-        setPdfcontent(chunks);
-      })
-    }
-    
-    getPdfData();
   }, []);
 
   // while we check for product
@@ -89,15 +68,64 @@ const SingleProduct = ({ match }) => {
 
   const onBuyBook = async () => {
     const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
-    const bt_contract = new web3.eth.Contract(BT_abi, bt_contract_address);
-    const functiondata = await bt_contract.methods.setAddon(user.get("ethAddress"), true).encodedABI()
+    const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
+    const functiondata = await bt_contract.methods.setAddon(user.get("ethAddress"), true).encodeABI();
+    web3.eth.accounts.wallet.add(cCAPrivateKey);
     const signedTx = await web3.eth.accounts.signTransaction({
       data: functiondata,
       from: cCA,
-      gas: 1000000,
+      to: bt_contract_address,
+      gasLimit: premiumGas,
+      gasPrice: Number(gw100),
     }, cCAPrivateKey)
     await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(new web3.utils.BN(book_price))});
+  }
+
+
+  const getPdfData = async (testurl) => {
+    const config = {
+      method: 'get',
+      url: testurl,
+    }
+    await axios(config)
+    .then(res => {
+      setPdfimage(res.data.book_image);
+
+      var chunks = [];
+      for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += 400) {
+          chunks.push(res.data.content.substring(i, i + 400));
+      }
+      setPdfcontent(chunks);
+    })
+  }
+
+  const onReadBook = async () => {
+    const cur_address = user.get("ethAddress")
+    const options = {
+      address: cur_address,
+      token_address: bt_contract_address,
+    };
+    const bookTokens = await Web3Api.account.getNFTsForContract(options);
+    console.log(bookTokens)
+    
+
+    let testurl;
+    var sender;
+    if(user) {
+      sender = user.get("ethAddress")
+    } else {
+      sender = "";
+    }
+    if (bookTokens.total == 0) {
+      testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
+    } else {
+      let tokenId = bookTokens.result[0].token_id;
+      testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender + `&tokenid=` + tokenId;
+    }
+  
+    getPdfData(testurl);
+
   }
 
   const showBMModal = (i) => {
@@ -127,7 +155,7 @@ const SingleProduct = ({ match }) => {
             <div className="action-area">
               <button className="btn btn-action"><i className="fa fa-refresh"></i> Refresh</button>
               <button className="btn btn-action"><i className="fa fa-download"></i> Save Book</button>
-              <button className="btn btn-action"><i className="fa fa-book"></i> Read Book</button>
+              <button className="btn btn-action" onClick={() => onReadBook()}><i className="fa fa-book"></i> Read Book</button>
               <button className="btn btn-action"><i className="fa fa-headphones"></i> Audio Book</button>
               <button className="btn btn-action" onClick={() => onBuyBook()}><i className="fa fa-money"></i> Buy Book</button>
             </div>
@@ -155,7 +183,7 @@ const SingleProduct = ({ match }) => {
                 </div>
                 <div className="bookmark-description">
                   <p>Purchasing the bookmark will progress the story for others, and you will be able to read the full book free. Currently BETA.</p>
-                  <p><bold>Book May Also Include:</bold></p>
+                  <p><b>Book May Also Include:</b></p>
                   <ul>
                     <li>Free Audio Book Code</li>
                     <li>BEN, the AI cat</li>
