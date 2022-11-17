@@ -18,17 +18,17 @@ import printingpress_abi from './../../../contract-json/PrintingPress.json';
 import CC_abi from './../../../contract-json/CultureCoin.json';
 
 const BookAdd = (props) => {
-    const printingpress_address = '0xf2dF33307A3f8207C7471f5E394a868a544ff849';
-    const CC_address = '0x0235F1C524AA396F72E0bE939263Ef95244fC029';
-    const cCA = '0x6f72eaEeaBd8c5d5ef1E1b7fc9355969Dd834E52';
-    const cCAPrivateKey = '0x477fe9ba639c825d480bb0b64ec25f1631214556f5f74a4eda3e05a3526f2bea';
-    const marketPlaceAddress = '0x17a3D635284c100ea39f2Eb294AeB40CC87f3c23';
+    const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
+    const CC_address = process.env.REACT_APP_CULTURECOINADDRESS;
+    const cCA = process.env.REACT_APP_CCA;
+    const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
+    const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
     const baseuri = process.env.REACT_APP_API + 'nft';
     const burnable = true;
-    const bookContracts = 'BookContractsFFour';
+    const bookContracts = process.env.REACT_APP_BOOKCONTRACTS;
 
-    const premiumGas = 4700000;
-    const regularGas = 2000000;
+    const premiumGas = process.env.REACT_APP_PREMIUMGAS;
+    const regularGas = process.env.REACT_APP_REGLUARGAS;
 
     const { id } = useParams();
     const printpress_abi = printingpress_abi;
@@ -37,6 +37,7 @@ const BookAdd = (props) => {
     const [title, setTitle] = useState('Book Add');
     const [brandimage, setBrandimage] = useState(null);
     const [authorwallet, setAuthorwallet] = useState('');
+    const [authorname, setAuthorname] = useState('');
     const [curserialnumber, setCurserialnumber] = useState('');
     const [datamine, setDatamine] = useState('');
     const [introduction, setIntroduction] = useState('');
@@ -54,7 +55,7 @@ const BookAdd = (props) => {
     const [origintypes, setOrigintypes] = useState('');
     const [previosImg, setPreviosImg] = useState('');
 
-    const providerUrl = 'https://nd-403-110-561.p2pify.com/dd4287180d2d299318a50402bcc4398d/ext/bc/C/rpc';
+    const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
     const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
@@ -71,6 +72,13 @@ const BookAdd = (props) => {
         setDatamine(data.datamine);
         setCurserialnumber(data.curserial_number);
         setAuthorwallet(data.author_wallet);
+        setAuthorname(data.author_name);
+        setIntroduction(data.introduction);
+        setMaxbooksupply(data.max_book_supply);
+        setMaxbookmarksupply(data.max_bookmark_supply);
+        setStartpoint(data.start_point);
+        setBookprice(data.book_price);
+        setBookmarkprice(data.bookmark_price);
         setPreviosImg(data.image_url);
     };
 
@@ -170,31 +178,22 @@ const BookAdd = (props) => {
         _mintTo
     ) => {
         const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
-        // const defaultprice = web3.utils.toWei(_defaultprice, 'ether');
-        const nonceOperator = await web3.eth.getTransactionCount(cCA, 'latest');
-        const functionCall = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, defaultprice, _defaultfrom, cCA).encodeABI();
-        // const functionCall = await contract.methods.newBookContract("BTSDF", "BTSDF", "0x17a3D635284c100ea39f2Eb294AeB40CC87f3c23", "http://127.0.0.1/nft", true, 234, 234, 234, cCA).encodeABI();
-        const transactionBody = {
-            from: cCA,
-            to: printingpress_address,
-            nonce: nonceOperator,
-            data: functionCall,
-            gas: premiumGas,
-            gasPrice: Number(gw100)
+
+        const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;    
+        const transaction = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA);
+        
+        let gas_Price = await web3.eth.getGasPrice();
+        const options = {
+            to      : transaction._parent._address,
+            data    : transaction.encodeABI(),
+            gas     : await transaction.estimateGas({from: account}),
+            gasPrice: gas_Price
         };
-        const signedTransaction = await web3.eth.accounts.signTransaction(transactionBody, cCAPrivateKey);
-        console.log('signedTransaction', signedTransaction);
-        var transactionhash;
-        const retval = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction, function (error, hash) {
-            if (!error) {
-                console.log('The hash of your transaction is: ', hash);
-                transactionhash = hash;
-            } else {
-                console.log('Something went wrong while submitting your transaction:', error);
-                transactionhash = error
-            }
-        });
-        return transactionhash;
+        const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
+        const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+        const contractId = await web3.eth.getTransaction(result);
+
+        return contractId;
     };
 
     const saveBook = async () => {
@@ -205,6 +204,7 @@ const BookAdd = (props) => {
 
         form_data.append('title', booktitle);
         form_data.append('author_wallet', authorwallet);
+        form_data.append('author_name', authorname);
         form_data.append('curserial_number', curserialnumber);
         form_data.append('datamine', datamine);
         form_data.append('origin_type_id', origintype);
@@ -226,23 +226,11 @@ const BookAdd = (props) => {
                     }
                 })
                 .then(function (response) {
-                    if (response.success === 201) {
-                    } else {
-                    }
+                    
                 })
                 .catch(function (error) {});
         } else {
-            const BTcontract = await getnewBookcontractdata(
-                'BT' + datamine,
-                'BT' + datamine,
-                marketPlaceAddress,
-                baseuri,
-                burnable,
-                new BigNumber(maxbookmarksupply),
-                new BigNumber(bookmarkprice),
-                new BigNumber(startpoint),
-                cCA
-            );
+            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA);
             const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
             const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
             // console.log("BTcontract === ", BTcontract)
@@ -263,6 +251,7 @@ const BookAdd = (props) => {
                         setDatamine('');
                         setCurserialnumber('');
                         setAuthorwallet('');
+                        setAuthorname('');
                         setBrandimage('');
                         setIntroduction('');
                         setMaxbookmarksupply('');
@@ -280,6 +269,7 @@ const BookAdd = (props) => {
                         setDatamine('');
                         setCurserialnumber('');
                         setAuthorwallet('');
+                        setAuthorname('');
                         setBrandimage('');
                         setIntroduction('');
                         setMaxbookmarksupply('');
@@ -348,6 +338,23 @@ const BookAdd = (props) => {
                         value={authorwallet}
                         onChange={(e) => {
                             setAuthorwallet(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="author_name"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author name"
+                        helperText="Author Name"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={authorname}
+                        onChange={(e) => {
+                            setAuthorname(e.target.value);
                         }}
                     />
                     <TextField
