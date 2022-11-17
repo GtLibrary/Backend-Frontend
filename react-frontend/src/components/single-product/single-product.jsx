@@ -14,6 +14,7 @@ import Web3 from 'web3';
 
 const SingleProduct = ({ match }) => {
   
+  const { user } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
   const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
@@ -28,7 +29,6 @@ const SingleProduct = ({ match }) => {
   const premiumGas = process.env.REACT_APP_PREMIUMGAS;
   const gw100 = web3.utils.toWei('25.01', 'gwei');
 
-  const { user } = useMoralis();
   const navigate = useNavigate();
   const [pdfcontent, setPdfcontent] = useState([]);
   const [pdfimage, setPdfimage] = useState('');
@@ -64,24 +64,52 @@ const SingleProduct = ({ match }) => {
 
   // while we check for product
   if (!product) { return null }
-  const { image_url, title, book_price, datamine, introduction, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address } = product;
+  const { image_url, title, author_name, book_price, datamine, introduction, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address, booktype } = product;
 
   const onBuyBook = async () => {
-    const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
-    const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-    const functiondata = await bt_contract.methods.setAddon(user.get("ethAddress"), true).encodeABI();
-    web3.eth.accounts.wallet.add(cCAPrivateKey);
-    const signedTx = await web3.eth.accounts.signTransaction({
-      data: functiondata,
-      from: cCA,
-      to: bt_contract_address,
-      gasLimit: premiumGas,
-      gasPrice: Number(gw100),
-    }, cCAPrivateKey)
-    await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
-    await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(new web3.utils.BN(book_price))});
-  }
+      const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
+      const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
 
+      const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;    
+      const transaction = await bt_contract.methods.setAddon(user.get("ethAddress"), true);
+      console.log("transaction === ",transaction)
+      let gas_Price = await web3.eth.getGasPrice();
+      const options = {
+          to      : transaction._parent._address,
+          data    : transaction.encodeABI(),
+          gas     : await transaction.estimateGas({from: account}),
+          gasPrice: gas_Price
+      };
+      const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
+      console.log("signed data =======",signed)
+      const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+
+      // const tx = {
+      //   from: cCA,
+      //   to: bt_contract_address,
+      //   gas: premiumGas,
+      //   data: bt_contract.methods.setAddon(user.get("ethAddress"), true).encodeABI()
+      // }
+      // const signPromise = web3.eth.accounts.signTransaction(tx, cCAPrivateKey)
+      // signPromise.then(signedTx => {
+      //   const sentTx = web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction)
+      //   sentTx.on('receipt', receipt => {
+      //     console.log("receipt", receipt)
+      //     return receipt
+      //   })
+      //   sentTx.on('error', err => {
+      //     console.log("error", err)
+      //     return err
+      //   })
+      // })
+      // .catch(err => {
+      //   console.log("err    ==", err)
+      //   return err
+      // })
+      // console.log("signPromise ===> ", signPromise)
+      await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(new web3.utils.BN(book_price))});
+
+  }
 
   const getPdfData = async (testurl) => {
     const config = {
@@ -108,8 +136,7 @@ const SingleProduct = ({ match }) => {
     };
     const bookTokens = await Web3Api.account.getNFTsForContract(options);
     console.log(bookTokens)
-    
-
+  
     let testurl;
     var sender;
     if(user) {
@@ -144,7 +171,7 @@ const SingleProduct = ({ match }) => {
           <div className="col-md-8 detail-area">
             <div className="product-detailinfo">
               <h5>{title}</h5>
-              <h6>By John R Raymond</h6>
+              <h6>By {author_name}</h6>
               <div className="product-category">Sci/Fi Fantasy</div>
               <p>{introduction}</p>
             </div>

@@ -37,6 +37,7 @@ const BookAdd = (props) => {
     const [title, setTitle] = useState('Book Add');
     const [brandimage, setBrandimage] = useState(null);
     const [authorwallet, setAuthorwallet] = useState('');
+    const [authorname, setAuthorname] = useState('');
     const [curserialnumber, setCurserialnumber] = useState('');
     const [datamine, setDatamine] = useState('');
     const [introduction, setIntroduction] = useState('');
@@ -71,6 +72,13 @@ const BookAdd = (props) => {
         setDatamine(data.datamine);
         setCurserialnumber(data.curserial_number);
         setAuthorwallet(data.author_wallet);
+        setAuthorname(data.author_name);
+        setIntroduction(data.introduction);
+        setMaxbooksupply(data.max_book_supply);
+        setMaxbookmarksupply(data.max_bookmark_supply);
+        setStartpoint(data.start_point);
+        setBookprice(data.book_price);
+        setBookmarkprice(data.bookmark_price);
         setPreviosImg(data.image_url);
     };
 
@@ -170,31 +178,22 @@ const BookAdd = (props) => {
         _mintTo
     ) => {
         const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
-        // const defaultprice = web3.utils.toWei(_defaultprice, 'ether');
-        const nonceOperator = await web3.eth.getTransactionCount(cCA, 'latest');
-        const functionCall = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA).encodeABI();
-        // const functionCall = await contract.methods.newBookContract("BTSDF", "BTSDF", "0x17a3D635284c100ea39f2Eb294AeB40CC87f3c23", "http://127.0.0.1/nft", true, 234, 234, 234, cCA).encodeABI();
-        const transactionBody = {
-            from: cCA,
-            to: printingpress_address,
-            nonce: nonceOperator,
-            data: functionCall,
-            gas: premiumGas,
-            gasPrice: Number(gw100)
+
+        const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;    
+        const transaction = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA);
+        
+        let gas_Price = await web3.eth.getGasPrice();
+        const options = {
+            to      : transaction._parent._address,
+            data    : transaction.encodeABI(),
+            gas     : await transaction.estimateGas({from: account}),
+            gasPrice: gas_Price
         };
-        const signedTransaction = await web3.eth.accounts.signTransaction(transactionBody, cCAPrivateKey);
-        console.log('signedTransaction', signedTransaction);
-        var transactionhash;
-        const retval = await web3.eth.sendSignedTransaction(signedTransaction.rawTransaction, function (error, hash) {
-            if (!error) {
-                console.log('The hash of your transaction is: ', hash);
-                transactionhash = hash;
-            } else {
-                console.log('Something went wrong while submitting your transaction:', error);
-                transactionhash = error
-            }
-        });
-        return transactionhash;
+        const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
+        const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+        const contractId = await web3.eth.getTransaction(result);
+
+        return contractId;
     };
 
     const saveBook = async () => {
@@ -205,6 +204,7 @@ const BookAdd = (props) => {
 
         form_data.append('title', booktitle);
         form_data.append('author_wallet', authorwallet);
+        form_data.append('author_name', authorname);
         form_data.append('curserial_number', curserialnumber);
         form_data.append('datamine', datamine);
         form_data.append('origin_type_id', origintype);
@@ -226,23 +226,11 @@ const BookAdd = (props) => {
                     }
                 })
                 .then(function (response) {
-                    if (response.success === 201) {
-                    } else {
-                    }
+                    
                 })
                 .catch(function (error) {});
         } else {
-            const BTcontract = await getnewBookcontractdata(
-                'BT' + datamine,
-                'BT' + datamine,
-                marketPlaceAddress,
-                baseuri,
-                burnable,
-                new BigNumber(maxbookmarksupply),
-                new BigNumber(bookmarkprice),
-                new BigNumber(startpoint),
-                cCA
-            );
+            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA);
             const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
             const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
             // console.log("BTcontract === ", BTcontract)
@@ -263,6 +251,7 @@ const BookAdd = (props) => {
                         setDatamine('');
                         setCurserialnumber('');
                         setAuthorwallet('');
+                        setAuthorname('');
                         setBrandimage('');
                         setIntroduction('');
                         setMaxbookmarksupply('');
@@ -280,6 +269,7 @@ const BookAdd = (props) => {
                         setDatamine('');
                         setCurserialnumber('');
                         setAuthorwallet('');
+                        setAuthorname('');
                         setBrandimage('');
                         setIntroduction('');
                         setMaxbookmarksupply('');
@@ -348,6 +338,23 @@ const BookAdd = (props) => {
                         value={authorwallet}
                         onChange={(e) => {
                             setAuthorwallet(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="author_name"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the author name"
+                        helperText="Author Name"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={authorname}
+                        onChange={(e) => {
+                            setAuthorname(e.target.value);
                         }}
                     />
                     <TextField

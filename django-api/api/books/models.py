@@ -10,6 +10,7 @@ class Books(models.Model):
     introduction = models.TextField(default = '')
     content = models.TextField(default = '')
     image_url = models.ImageField(upload_to='post_main_images', blank=True, null=True)
+    author_name = models.CharField(max_length=200, default='')
     author_wallet = models.CharField(max_length=200, default='')
     bookmark_img_url = models.ImageField(upload_to='post_bookmark_images', blank=True, null=True)
     curserial_number = models.CharField(max_length=200, default='')
