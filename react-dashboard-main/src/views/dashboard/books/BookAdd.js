@@ -262,24 +262,6 @@ const BookAdd = (props) => {
                         setHardbound('');
                         setHardboundfrom('');
                         setHardboundprice('');
-                    } else {
-                        setBooktitle('');
-                        setBooktype('');
-                        setOrigintype('');
-                        setDatamine('');
-                        setCurserialnumber('');
-                        setAuthorwallet('');
-                        setAuthorname('');
-                        setBrandimage('');
-                        setIntroduction('');
-                        setMaxbookmarksupply('');
-                        setMaxbooksupply('');
-                        setBookmarkprice('');
-                        setBookprice('');
-                        setStartpoint('');
-                        setHardbound('');
-                        setHardboundfrom('');
-                        setHardboundprice('');
                     }
                 })
                 .catch(function (error) {});
@@ -357,6 +339,8 @@ const BookAdd = (props) => {
                             setAuthorname(e.target.value);
                         }}
                     />
+                </div>
+                <div>
                     <TextField
                         id="curserialnumber"
                         // label="Book  Name"

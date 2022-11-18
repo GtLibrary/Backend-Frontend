@@ -35,6 +35,7 @@ const SingleProduct = ({ match }) => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
+  const [curserialnum, setCurserialnum] = useState(0)
 
 
   useEffect(() => {
@@ -121,8 +122,8 @@ const SingleProduct = ({ match }) => {
       setPdfimage(res.data.book_image);
 
       var chunks = [];
-      for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += 400) {
-          chunks.push(res.data.content.substring(i, i + 400));
+      for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += (charsLength/(res.data.curserial_num))) {
+          chunks.push(res.data.content.substring(i, i + (charsLength/(res.data.curserial_num))));
       }
       setPdfcontent(chunks);
     })
@@ -155,7 +156,8 @@ const SingleProduct = ({ match }) => {
 
   }
 
-  const showBMModal = (i) => {
+  const showBMModal = (index) => {
+    setCurserialnum(index)
     setModalShow(true)
   }
 
@@ -223,7 +225,7 @@ const SingleProduct = ({ match }) => {
           </div>
         </div>
       </div>
-      <BMdetailModal show={modalShow} onHide={() => setModalShow(false)} product={product} />
+      <BMdetailModal show={modalShow} onHide={() => setModalShow(false)} product={product} curserial_num={curserialnum} />
     </Layout>
   );
 }
