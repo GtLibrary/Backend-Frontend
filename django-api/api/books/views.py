@@ -143,6 +143,6 @@ def art(request, pk):
         figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
         temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
 
-        return Response({"content": temp_content, "book_image": figure_content})
+        return Response({"content": temp_content, "book_image": figure_content, "curserial_num": curserial_num})
     else:
         return Response({"content":"You are not token owner!!"})
