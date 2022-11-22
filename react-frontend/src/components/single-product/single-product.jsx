@@ -18,7 +18,7 @@ const SingleProduct = ({ match }) => {
   const Web3Api = useMoralisWeb3Api();
   const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
-  const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+  const web3 = new Web3(window.ethereum);
 
   const printpress_abi = printingpress_abi;
   const bt_abi = BT_abi;
@@ -70,46 +70,18 @@ const SingleProduct = ({ match }) => {
   const onBuyBook = async () => {
       const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-
-      const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;    
-      const transaction = await bt_contract.methods.setAddon(user.get("ethAddress"), true);
-      console.log("transaction === ",transaction)
-      let gas_Price = await web3.eth.getGasPrice();
+      const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
+      const transaction = await bt_contract.methods.setAddon(printpress_address, true);
       const options = {
+          from    : account,
           to      : transaction._parent._address,
           data    : transaction.encodeABI(),
-          gas     : await transaction.estimateGas({from: account}),
-          gasPrice: gas_Price
+          gas     : premiumGas
       };
       const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
-      console.log("signed data =======",signed)
       const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
 
-      // const tx = {
-      //   from: cCA,
-      //   to: bt_contract_address,
-      //   gas: premiumGas,
-      //   data: bt_contract.methods.setAddon(user.get("ethAddress"), true).encodeABI()
-      // }
-      // const signPromise = web3.eth.accounts.signTransaction(tx, cCAPrivateKey)
-      // signPromise.then(signedTx => {
-      //   const sentTx = web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction)
-      //   sentTx.on('receipt', receipt => {
-      //     console.log("receipt", receipt)
-      //     return receipt
-      //   })
-      //   sentTx.on('error', err => {
-      //     console.log("error", err)
-      //     return err
-      //   })
-      // })
-      // .catch(err => {
-      //   console.log("err    ==", err)
-      //   return err
-      // })
-      // console.log("signPromise ===> ", signPromise)
-      await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(new web3.utils.BN(book_price))});
-
+      await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(String(book_price))});
   }
 
   const getPdfData = async (testurl) => {
@@ -135,13 +107,14 @@ const SingleProduct = ({ match }) => {
       address: cur_address,
       token_address: bt_contract_address,
     };
+    console.log("options == ", options)
     const bookTokens = await Web3Api.account.getNFTsForContract(options);
     console.log(bookTokens)
   
     let testurl;
     var sender;
     if(user) {
-      sender = user.get("ethAddress")
+      sender = cur_address
     } else {
       sender = "";
     }
