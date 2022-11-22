@@ -25,7 +25,7 @@ const BookAdd = (props) => {
     const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
     // const baseuri = process.env.REACT_APP_API + 'nft';
-    const baseuri = "https://greatlibrary.io/nfts";
+    const baseuri = "https://greatlibrary.io/nft/";
     const burnable = true;
     const bookContracts = process.env.REACT_APP_BOOKCONTRACTS;
 
@@ -211,9 +211,9 @@ const BookAdd = (props) => {
                 .catch(function (error) {});
         } else {
             console.log("to wei book price", web3.utils.toWei(bookprice))
-            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), cCA);
-            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), cCA)
-            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), cCA)
+            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbooksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), cCA);
+            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice), new BigNumber(startpoint), cCA)
+            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(hardbound), web3.utils.toWei(hardboundprice), new BigNumber(startpoint), cCA)
 
             form_data.append('bt_contract_address', BTcontract);
             form_data.append('bm_contract_address', BMcontract);

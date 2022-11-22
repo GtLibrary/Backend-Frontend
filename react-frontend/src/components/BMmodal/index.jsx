@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
@@ -12,7 +12,7 @@ function BMdetailModal(props) {
     const { user } = useMoralis();
     const providerUrl = process.env.REACT_APP_PROVIDERURL;
   
-    const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+    const web3 = new Web3(window.ethereum);
     const { product, curserial_num } = props
     const printpress_abi = printingpress_abi;
     const marketplace_abi = Marketplace_abi;
@@ -25,6 +25,9 @@ function BMdetailModal(props) {
 
     const { id, title, image_url, introduction, datamine, book_price, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address } = product
     const tokenid = curserial_num;
+    const premiumGas = process.env.REACT_APP_PREMIUMGAS;
+    const regularGas = process.env.REACT_APP_REGLUARGAS
+    const gw100 = web3.utils.toWei('25.01', 'gwei');
     
     const [dexrate, setDexrate] = useState(0);
     const [stakerate, setStakerate] = useState(0);
@@ -32,6 +35,14 @@ function BMdetailModal(props) {
     const [sellerprice, setSellerprice] = useState(0);
     const [xmsprate, setXmsprate] = useState(0);
     const [ccrate, setCcrate] = useState(0);
+    const [bmContractowner, setBmContractowner] = useState('');
+
+    useEffect(async () => {
+        
+        const NBTcontract = new web3.eth.Contract(NBT_abi,bm_contract_address);
+        const contractOwner = await NBTcontract.methods.owner().call();
+        setBmContractowner(contractOwner)
+    }, [])
 
     let user_wallet;
     if(user) {
@@ -46,10 +57,9 @@ function BMdetailModal(props) {
         console.log("user wallet ===", user_wallet)
         const buybookdata = await printpress_contract.methods.buyBook(bm_contract_address).send({
             from: user_wallet,
-			value: new web3.utils.BN(bookmark_price),
-			gas:8000000
+			value: web3.utils.toWei(String(bookmark_price)),
+            gas: 800000
         });
-        console.log("buybookdata", buybookdata)
     }
 
     const sellthisbookmark = async () => {
@@ -171,7 +181,7 @@ function BMdetailModal(props) {
                 <p>Price : {bookmark_price}</p>
                 <button type="button" className="btn btn-primary btn-sm" onClick={() => buyBookMark()}>Buy Bookmark</button>
                 <hr/>
-                <h5>For owner <span id="ownerspan">unknown</span></h5>
+                <h5>For owner <span id="ownerspan">{bmContractowner}</span></h5>
                 <button type="button" className="btn btn-primary btn-sm" id="btn-sell-bmrk" onClick={() => sellthisbookmark()}>Sell bookmark</button>
                   for: <input type="text" id="sellerprice" name="fname" value={sellerprice} onChange={(e)=> setSellerprice(e.target.value)} /><br/>
                 <button type="button" className="btn btn-primary btn-sm" id="btn-send-bmrk" onClick={() => sendthisbookmark()}>Send bookmark</button>
