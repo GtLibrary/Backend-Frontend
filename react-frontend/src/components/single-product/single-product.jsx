@@ -18,7 +18,7 @@ const SingleProduct = ({ match }) => {
   const Web3Api = useMoralisWeb3Api();
   const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
-  const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+  const web3 = new Web3(window.ethereum);
 
   const printpress_abi = printingpress_abi;
   const bt_abi = BT_abi;
@@ -70,20 +70,24 @@ const SingleProduct = ({ match }) => {
   const onBuyBook = async () => {
       const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-
-      const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;    
-      const transaction = await bt_contract.methods.setAddon(user.get("ethAddress"), true);
-      console.log("transaction === ",transaction)
+      const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
+      console.log(account, cCAPrivateKey)
+      const cc_admin = await bt_contract.methods.cCA().call()
+      console.log("cc admin", cc_admin)
+      const transaction = await bt_contract.methods.setAddon(printpress_address, true);
       let gas_Price = await web3.eth.getGasPrice();
+      // console.log("Encode ABI", estimateGas);
       const options = {
+          from    : account,
           to      : transaction._parent._address,
           data    : transaction.encodeABI(),
-          gas     : await transaction.estimateGas({from: account}),
-          gasPrice: gas_Price
+          gas     : premiumGas
       };
+      console.log("option ===", options)
       const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
       console.log("signed data =======",signed)
       const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+      console.log("result =======", result)
 
       // const tx = {
       //   from: cCA,
@@ -108,7 +112,8 @@ const SingleProduct = ({ match }) => {
       //   return err
       // })
       // console.log("signPromise ===> ", signPromise)
-      await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(new web3.utils.BN(book_price))});
+      console.log("book price ===", web3.utils.toWei(String(book_price)))
+      await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(String(book_price)), gas:90000});
 
   }
 

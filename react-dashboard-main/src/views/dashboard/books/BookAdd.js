@@ -16,6 +16,7 @@ import configData from '../../../config';
 
 import printingpress_abi from './../../../contract-json/PrintingPress.json';
 import CC_abi from './../../../contract-json/CultureCoin.json';
+import bt_abi from "./../../../contract-json/BookTradable.json";
 
 const BookAdd = (props) => {
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
@@ -23,7 +24,8 @@ const BookAdd = (props) => {
     const cCA = process.env.REACT_APP_CCA;
     const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
-    const baseuri = process.env.REACT_APP_API + 'nft';
+    // const baseuri = process.env.REACT_APP_API + 'nft';
+    const baseuri = "https://greatlibrary.io/nfts";
     const burnable = true;
     const bookContracts = process.env.REACT_APP_BOOKCONTRACTS;
 
@@ -32,6 +34,7 @@ const BookAdd = (props) => {
 
     const { id } = useParams();
     const printpress_abi = printingpress_abi;
+    const booktradable_abi = bt_abi;
 
     const [booktitle, setBooktitle] = useState('');
     const [title, setTitle] = useState('Book Add');
@@ -121,7 +124,7 @@ const BookAdd = (props) => {
         _defaultfrom,
         _mintTo
     ) => {
-        const transactionHash = await newBookcontract(
+        const contractaddress = await newBookcontract(
             _name,
             _symbol,
             _marketPlaceAddress,
@@ -132,38 +135,8 @@ const BookAdd = (props) => {
             _defaultfrom,
             _mintTo
         );
-        const txs = transactionHash;
-        console.log("transactionHash", transactionHash)
 
-        const contractid = await getContractId(txs);
-        return contractid
-    };
-
-    const getContractId = async (txs, rCount) => {
-        if (!rCount) {
-            rCount = 0;
-        }
-
-        const queryAll = new useMoralisQuery((bookContracts).toLowerCase());
-
-        queryAll.equalTo('transaction_hash', txs + '');
-
-        setTimeout(()=> {
-            console.log("settimeout")
-        }, 1000);
-
-        const data = await queryAll.find();
-
-        if (data.length == 0) {
-            if (rCount < 10) {
-                return getContractId(txs, rCount + 1);
-            }
-            return 'check moralis query string above and the id of the registry in your moralis server.';
-        }
-
-        for (let i = 0; i < data.length; i++) {
-            return data[i].get('what');
-        }
+        return contractaddress;
     };
 
     const newBookcontract = async (
@@ -179,7 +152,8 @@ const BookAdd = (props) => {
     ) => {
         const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
 
-        const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;    
+        const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;
+        console.log(cCA, account)
         const transaction = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA);
         
         let gas_Price = await web3.eth.getGasPrice();
@@ -191,9 +165,15 @@ const BookAdd = (props) => {
         };
         const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
         const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-        const contractId = await web3.eth.getTransaction(result);
+        const contractdata = await web3.eth.getTransactionReceipt(result.transactionHash);
+        const contract_address = contractdata.logs[0].address;
 
-        return contractId;
+        const bt_contract = new web3.eth.Contract(booktradable_abi, contract_address);
+        const cc_admin = await bt_contract.methods.cCA().call()
+
+        console.log("cc_admin ====", cc_admin)
+
+        return contract_address;
     };
 
     const saveBook = async () => {
@@ -230,10 +210,11 @@ const BookAdd = (props) => {
                 })
                 .catch(function (error) {});
         } else {
-            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA);
-            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
-            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), new BigNumber(bookmarkprice), new BigNumber(startpoint), cCA)
-            // console.log("BTcontract === ", BTcontract)
+            console.log("to wei book price", web3.utils.toWei(bookprice))
+            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), cCA);
+            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), cCA)
+            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), cCA)
+
             form_data.append('bt_contract_address', BTcontract);
             form_data.append('bm_contract_address', BMcontract);
             form_data.append('hb_contract_address', HBcontract);
