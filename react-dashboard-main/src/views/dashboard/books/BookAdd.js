@@ -6,13 +6,10 @@ import BigNumber from 'bignumber.js';
 import { useMoralisQuery } from "react-moralis";
 // material-ui
 import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
-// import { IconEye, IconEdit, IconTrash } from '@tabler/icons';
-// toast message
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import configData from '../../../config';
-// import Header from '../../../layout/MainLayout/Header';
-// import UploadFiles from '../../../ui-component/uploadfiles'
+import "./styles.css"
 
 import printingpress_abi from './../../../contract-json/PrintingPress.json';
 import CC_abi from './../../../contract-json/CultureCoin.json';
@@ -24,8 +21,7 @@ const BookAdd = (props) => {
     const cCA = process.env.REACT_APP_CCA;
     const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
-    // const baseuri = process.env.REACT_APP_API + 'nft';
-    const baseuri = "https://greatlibrary.io/nft/";
+    const baseuri = process.env.REACT_APP_API + 'nft/';
     const burnable = true;
     const bookContracts = process.env.REACT_APP_BOOKCONTRACTS;
 
@@ -50,7 +46,7 @@ const BookAdd = (props) => {
     const [bookprice, setBookprice] = useState(0);
     const [bookmarkprice, setBookmarkprice] = useState(0);
     const [hardbound, setHardbound] = useState('');
-    const [hardboundfrom, setHardboundfrom] = useState('');
+    // const [hardboundfrom, setHardboundfrom] = useState('');
     const [hardboundprice, setHardboundprice] = useState('');
     const [booktype, setBooktype] = useState('');
     const [origintype, setOrigintype] = useState('');
@@ -79,6 +75,8 @@ const BookAdd = (props) => {
         setIntroduction(data.introduction);
         setMaxbooksupply(data.max_book_supply);
         setMaxbookmarksupply(data.max_bookmark_supply);
+        setHardboundprice(data.hardbound_price)
+        setHardbound(data.hardbound)
         setStartpoint(data.start_point);
         setBookprice(data.book_price);
         setBookmarkprice(data.bookmark_price);
@@ -191,8 +189,8 @@ const BookAdd = (props) => {
         form_data.append('book_type_id', booktype);
         form_data.append('book_price', bookprice);
         form_data.append('bookmark_price', bookmarkprice);
-        form_data.append('hardbound', hardbound);
-        form_data.append('hardbound_from', hardboundfrom);
+        // form_data.append('hardbound', hardbound);
+        // form_data.append('hardbound_from', hardboundfrom);
         form_data.append('hardbound_price', hardboundprice);
         form_data.append('max_book_supply', maxbooksupply);
         form_data.append('max_bookmark_supply', maxbookmarksupply);
@@ -240,8 +238,8 @@ const BookAdd = (props) => {
                         setBookmarkprice('');
                         setBookprice('');
                         setStartpoint('');
-                        setHardbound('');
-                        setHardboundfrom('');
+                        // setHardbound('');
+                        // setHardboundfrom('');
                         setHardboundprice('');
                     }
                 })
@@ -318,25 +316,6 @@ const BookAdd = (props) => {
                         value={authorname}
                         onChange={(e) => {
                             setAuthorname(e.target.value);
-                        }}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        id="curserialnumber"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the curserial number"
-                        helperText="Curserial Number"
-                        fullWidth
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={curserialnumber}
-                        onChange={(e) => {
-                            setCurserialnumber(e.target.value);
                         }}
                     />
                 </div>
@@ -455,6 +434,25 @@ const BookAdd = (props) => {
                 </div>
                 <div>
                     <TextField
+                        id="curserialnumber"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the curserial number"
+                        helperText="Curserial Number"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={curserialnumber}
+                        onChange={(e) => {
+                            setCurserialnumber(e.target.value);
+                        }}
+                    />
+                {/* </div>
+                <div> */}
+                    <TextField
                         id="hardbound"
                         // label="Book  Name"
                         style={{ margin: 8 }}
@@ -471,7 +469,7 @@ const BookAdd = (props) => {
                             setHardbound(e.target.value);
                         }}
                     />
-                    <TextField
+                    {/* <TextField
                         id="hardboundfrom"
                         // label="Book  Name"
                         style={{ margin: 8 }}
@@ -487,7 +485,7 @@ const BookAdd = (props) => {
                         onChange={(e) => {
                             setHardboundfrom(e.target.value);
                         }}
-                    />
+                    /> */}
                 </div>
                 <div>
                     <TextField
@@ -526,45 +524,48 @@ const BookAdd = (props) => {
                         }}
                     />
                 </div>
-                <FormControl fullWidth>
-                    <InputLabel id="booktype">Book Type</InputLabel>
-                    <Select
-                        labelId="booktype"
-                        id="booktype-select"
-                        value={booktype}
-                        label="Book Type"
-                        onChange={(e) => setBooktype(e.target.value)}
-                    >
-                        {booktypes &&
-                            booktypes.map((item, i) => {
-                                return (
-                                    <MenuItem key={i} value={item.id}>
-                                        {item.booktype}
-                                    </MenuItem>
-                                );
-                            })}
-                    </Select>
-                </FormControl>
-
-                <FormControl fullWidth>
-                    <InputLabel id="origintype">Origin Type</InputLabel>
-                    <Select
-                        labelId="origintype"
-                        id="origintype-select"
-                        value={origintype}
-                        label="Origin Type"
-                        onChange={(e) => setOrigintype(e.target.value)}
-                    >
-                        {origintypes &&
-                            origintypes.map((item, i) => {
-                                return (
-                                    <MenuItem key={i} value={item.id}>
-                                        {item.origintype}
-                                    </MenuItem>
-                                );
-                            })}
-                    </Select>
-                </FormControl>
+                <div>
+                    <FormControl className="mui-formcontrol" fullWidth>
+                        <InputLabel id="booktype">Book Type</InputLabel>
+                        <Select
+                            labelId="booktype"
+                            id="booktype-select"
+                            value={booktype}
+                            label="Book Type"
+                            onChange={(e) => setBooktype(e.target.value)}
+                        >
+                            {booktypes &&
+                                booktypes.map((item, i) => {
+                                    return (
+                                        <MenuItem key={i} value={item.id}>
+                                            {item.booktype}
+                                        </MenuItem>
+                                    );
+                                })}
+                        </Select>
+                    </FormControl>
+                </div>
+                <div>
+                    <FormControl className="mui-formcontrol" fullWidth>
+                        <InputLabel id="origintype">Origin Type</InputLabel>
+                        <Select
+                            labelId="origintype"
+                            id="origintype-select"
+                            value={origintype}
+                            label="Origin Type"
+                            onChange={(e) => setOrigintype(e.target.value)}
+                        >
+                            {origintypes &&
+                                origintypes.map((item, i) => {
+                                    return (
+                                        <MenuItem key={i} value={item.id}>
+                                            {item.origintype}
+                                        </MenuItem>
+                                    );
+                                })}
+                        </Select>
+                    </FormControl>
+                </div>
                 <Button variant="contained" onClick={() => saveBook()}>
                     Save
                 </Button>

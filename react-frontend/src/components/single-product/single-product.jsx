@@ -107,9 +107,7 @@ const SingleProduct = ({ match }) => {
       address: cur_address,
       token_address: bt_contract_address,
     };
-    console.log("options == ", options)
     const bookTokens = await Web3Api.account.getNFTsForContract(options);
-    console.log(bookTokens)
   
     let testurl;
     var sender;
@@ -127,6 +125,25 @@ const SingleProduct = ({ match }) => {
   
     getPdfData(testurl);
 
+  }
+
+  const onSaveBook = () => {
+    const pageHTML = document.querySelector(".pdf-content").outerHTML;
+    const blob = new Blob([pageHTML], { type: "text/html" });
+    const url = URL.createObjectURL(blob);
+    const tempEl = document.createElement("a");
+    document.body.appendChild(tempEl);
+    tempEl.href = url;
+    tempEl.download = "download.html";
+    tempEl.click();
+    setTimeout(() => {
+      URL.revokeObjectURL(url);
+      tempEl.parentNode.removeChild(tempEl);
+    }, 2000);
+  }
+
+  const onRefresh = () => {
+    window.location.reload();
   }
 
   const showBMModal = (index) => {
@@ -155,8 +172,8 @@ const SingleProduct = ({ match }) => {
         <div className="row">
           <div className="product-content">
             <div className="action-area">
-              <button className="btn btn-action"><i className="fa fa-refresh"></i> Refresh</button>
-              <button className="btn btn-action"><i className="fa fa-download"></i> Save Book</button>
+              <button className="btn btn-action" onClick={() => onRefresh()}><i className="fa fa-refresh"></i> Refresh</button>
+              <button className="btn btn-action" onClick={() => onSaveBook()}><i className="fa fa-download"></i> Save Book</button>
               <button className="btn btn-action" onClick={() => onReadBook()}><i className="fa fa-book"></i> Read Book</button>
               <button className="btn btn-action"><i className="fa fa-headphones"></i> Audio Book</button>
               <button className="btn btn-action" onClick={() => onBuyBook()}><i className="fa fa-money"></i> Buy Book</button>
