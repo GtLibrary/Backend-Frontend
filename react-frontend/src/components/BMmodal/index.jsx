@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useMoralis, useMoralisWeb3Api } from "react-moralis";
+import { useMoralis } from "react-moralis";
 import Web3 from 'web3';
 import printingpress_abi from "../../utils/contract/PrintingPress.json"
 import NBT_abi from "../../utils/contract/BookTradable.json"
@@ -10,7 +10,6 @@ import CC_abi from "../../utils/contract/CultureCoin.json"
 
 function BMdetailModal(props) {
     const { user } = useMoralis();
-    const providerUrl = process.env.REACT_APP_PROVIDERURL;
   
     const web3 = new Web3(window.ethereum);
     const { product, curserial_num } = props
@@ -23,11 +22,8 @@ function BMdetailModal(props) {
     const cc_initial_balance = process.env.REACT_APP_CC_INITIAL_BALANCE;
     const ccTotalSupplyStart = process.env.REACT_APP_CCTOTALSUPPLYSTART;
 
-    const { id, title, image_url, introduction, datamine, book_price, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address } = product
+    const { datamine, bookmark_price, bm_contract_address, hb_contract_address, hardbound_price } = product
     const tokenid = curserial_num;
-    const premiumGas = process.env.REACT_APP_PREMIUMGAS;
-    const regularGas = process.env.REACT_APP_REGLUARGAS
-    const gw100 = web3.utils.toWei('25.01', 'gwei');
     
     const [dexrate, setDexrate] = useState(0);
     const [stakerate, setStakerate] = useState(0);
@@ -53,11 +49,20 @@ function BMdetailModal(props) {
 
     const buyBookMark = async () => {
         const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
-        let gas_Price = await web3.eth.getGasPrice();
-        console.log("user wallet ===", user_wallet)
-        const buybookdata = await printpress_contract.methods.buyBook(bm_contract_address).send({
+
+        await printpress_contract.methods.buyBook(bm_contract_address).send({
             from: user_wallet,
 			value: web3.utils.toWei(String(bookmark_price)),
+            gas: 800000
+        });
+    }
+
+    const buyBookHardbound = async () => {
+        const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
+
+        await printpress_contract.methods.buyBook(hb_contract_address).send({
+            from: user_wallet,
+			value: web3.utils.toWei(String(hardbound_price)),
             gas: 800000
         });
     }
@@ -178,8 +183,13 @@ function BMdetailModal(props) {
             <div>
                 <p>Price for bookmark: {curserial_num} {datamine}</p>
                 <p>Contract Address: {bm_contract_address}</p>
-                <p>Price : {bookmark_price}</p>
+                <p>Bookmark Price : {bookmark_price}</p>
                 <button type="button" className="btn btn-primary btn-sm" onClick={() => buyBookMark()}>Buy Bookmark</button>
+                <hr/>
+                <p>Price for Hardbound: HB{datamine}</p>
+                <p>Contract Address: {hb_contract_address}</p>
+                <p>Hardbound Price : {hardbound_price}</p>
+                <button type="button" className="btn btn-primary btn-sm" onClick={() => buyBookHardbound()}>Buy Hardbound</button>
                 <hr/>
                 <h5>For owner <span id="ownerspan">{bmContractowner}</span></h5>
                 <button type="button" className="btn btn-primary btn-sm" id="btn-sell-bmrk" onClick={() => sellthisbookmark()}>Sell bookmark</button>
