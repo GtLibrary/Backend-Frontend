@@ -134,7 +134,7 @@ const SingleProduct = ({ match }) => {
     const tempEl = document.createElement("a");
     document.body.appendChild(tempEl);
     tempEl.href = url;
-    tempEl.download = "thispage.html";
+    tempEl.download = "download.html";
     tempEl.click();
     setTimeout(() => {
       URL.revokeObjectURL(url);
