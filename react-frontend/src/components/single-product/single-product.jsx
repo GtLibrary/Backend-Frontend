@@ -94,8 +94,8 @@ const SingleProduct = ({ match }) => {
       setPdfimage(res.data.book_image);
 
       var chunks = [];
-      for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += (charsLength/(res.data.curserial_num))) {
-          chunks.push(res.data.content.substring(i, i + (charsLength/(res.data.curserial_num))));
+      for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += (charsLength/(2000))) {
+          chunks.push(res.data.content.substring(i, i + (charsLength/(2000))));
       }
       setPdfcontent(chunks);
     })

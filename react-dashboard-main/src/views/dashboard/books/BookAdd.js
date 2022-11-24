@@ -122,36 +122,8 @@ const BookAdd = (props) => {
         _defaultfrom,
         _mintTo
     ) => {
-        const contractaddress = await newBookcontract(
-            _name,
-            _symbol,
-            _marketPlaceAddress,
-            _baseuri,
-            _burnable,
-            _maxmint,
-            _defaultprice,
-            _defaultfrom,
-            _mintTo
-        );
-
-        return contractaddress;
-    };
-
-    const newBookcontract = async (
-        _name,
-        _symbol,
-        _marketPlaceAddress,
-        _baseuri,
-        _burnable,
-        _maxmint,
-        _defaultprice,
-        _defaultfrom,
-        _mintTo
-    ) => {
         const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
-
         const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;
-        console.log(cCA, account)
         const transaction = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA);
         
         let gas_Price = await web3.eth.getGasPrice();
@@ -165,11 +137,6 @@ const BookAdd = (props) => {
         const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
         const contractdata = await web3.eth.getTransactionReceipt(result.transactionHash);
         const contract_address = contractdata.logs[0].address;
-
-        const bt_contract = new web3.eth.Contract(booktradable_abi, contract_address);
-        const cc_admin = await bt_contract.methods.cCA().call()
-
-        console.log("cc_admin ====", cc_admin)
 
         return contract_address;
     };
@@ -209,9 +176,9 @@ const BookAdd = (props) => {
                 .catch(function (error) {});
         } else {
             console.log("to wei book price", web3.utils.toWei(bookprice))
-            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbooksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), cCA);
-            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice), new BigNumber(startpoint), cCA)
-            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(hardbound), web3.utils.toWei(hardboundprice), new BigNumber(startpoint), cCA)
+            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbooksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), authorwallet);
+            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice), new BigNumber(startpoint), authorwallet)
+            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(hardbound), web3.utils.toWei(hardboundprice), new BigNumber(startpoint), authorwallet)
 
             form_data.append('bt_contract_address', BTcontract);
             form_data.append('bm_contract_address', BMcontract);
