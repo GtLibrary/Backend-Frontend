@@ -12,9 +12,9 @@ const Footer = () => {
           All rights reserved.
         </div>
         <div className="social-area">
-          <div className="social-icon-git"><GithubIcon /></div>
-          <div className="social-icon"><TwitterIcon /></div>
-          <div className="social-icon"><LinkIcon /></div>
+          <a href="https://github.com/GtLibrary/"><div className="social-icon-git"><GithubIcon /></div></a>
+          <a href="#"><div className="social-icon"><TwitterIcon /></div></a>
+          <a href="#"><div className="social-icon"><LinkIcon /></div></a>
         </div>
       </div>
     </div>
