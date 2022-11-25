@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useMoralis, useMoralisWeb3Api } from "react-moralis";
+import { useMoralis } from "react-moralis";
 import Web3 from 'web3';
 import printingpress_abi from "../../utils/contract/PrintingPress.json"
 import NBT_abi from "../../utils/contract/BookTradable.json"
@@ -10,9 +10,8 @@ import CC_abi from "../../utils/contract/CultureCoin.json"
 
 function BMdetailModal(props) {
     const { user } = useMoralis();
-    const providerUrl = process.env.REACT_APP_PROVIDERURL;
   
-    const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
+    const web3 = new Web3(window.ethereum);
     const { product, curserial_num } = props
     const printpress_abi = printingpress_abi;
     const marketplace_abi = Marketplace_abi;
@@ -23,7 +22,7 @@ function BMdetailModal(props) {
     const cc_initial_balance = process.env.REACT_APP_CC_INITIAL_BALANCE;
     const ccTotalSupplyStart = process.env.REACT_APP_CCTOTALSUPPLYSTART;
 
-    const { id, title, image_url, introduction, datamine, book_price, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address } = product
+    const { datamine, bookmark_price, bm_contract_address, hb_contract_address, hardbound_price } = product
     const tokenid = curserial_num;
     
     const [dexrate, setDexrate] = useState(0);
@@ -32,6 +31,14 @@ function BMdetailModal(props) {
     const [sellerprice, setSellerprice] = useState(0);
     const [xmsprate, setXmsprate] = useState(0);
     const [ccrate, setCcrate] = useState(0);
+    const [bmContractowner, setBmContractowner] = useState('');
+
+    useEffect(async () => {
+        
+        const NBTcontract = new web3.eth.Contract(NBT_abi,bm_contract_address);
+        const contractOwner = await NBTcontract.methods.owner().call();
+        setBmContractowner(contractOwner)
+    }, [])
 
     let user_wallet;
     if(user) {
@@ -42,14 +49,22 @@ function BMdetailModal(props) {
 
     const buyBookMark = async () => {
         const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
-        let gas_Price = await web3.eth.getGasPrice();
-        console.log("user wallet ===", user_wallet)
-        const buybookdata = await printpress_contract.methods.buyBook(bm_contract_address).send({
+
+        await printpress_contract.methods.buyBook(bm_contract_address).send({
             from: user_wallet,
-			value: new web3.utils.BN(bookmark_price),
-			gas:8000000
+			value: web3.utils.toWei(String(bookmark_price)),
+            gas: 800000
         });
-        console.log("buybookdata", buybookdata)
+    }
+
+    const buyBookHardbound = async () => {
+        const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
+
+        await printpress_contract.methods.buyBook(hb_contract_address).send({
+            from: user_wallet,
+			value: web3.utils.toWei(String(hardbound_price)),
+            gas: 800000
+        });
     }
 
     const sellthisbookmark = async () => {
@@ -168,10 +183,15 @@ function BMdetailModal(props) {
             <div>
                 <p>Price for bookmark: {curserial_num} {datamine}</p>
                 <p>Contract Address: {bm_contract_address}</p>
-                <p>Price : {bookmark_price}</p>
+                <p>Bookmark Price : {bookmark_price}</p>
                 <button type="button" className="btn btn-primary btn-sm" onClick={() => buyBookMark()}>Buy Bookmark</button>
                 <hr/>
-                <h5>For owner <span id="ownerspan">unknown</span></h5>
+                <p>Price for Hardbound: HB{datamine}</p>
+                <p>Contract Address: {hb_contract_address}</p>
+                <p>Hardbound Price : {hardbound_price}</p>
+                <button type="button" className="btn btn-primary btn-sm" onClick={() => buyBookHardbound()}>Buy Hardbound</button>
+                <hr/>
+                <h5>For owner <span id="ownerspan">{bmContractowner}</span></h5>
                 <button type="button" className="btn btn-primary btn-sm" id="btn-sell-bmrk" onClick={() => sellthisbookmark()}>Sell bookmark</button>
                   for: <input type="text" id="sellerprice" name="fname" value={sellerprice} onChange={(e)=> setSellerprice(e.target.value)} /><br/>
                 <button type="button" className="btn btn-primary btn-sm" id="btn-send-bmrk" onClick={() => sendthisbookmark()}>Send bookmark</button>

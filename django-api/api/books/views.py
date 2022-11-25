@@ -113,31 +113,22 @@ def art(request, pk):
     msg = request.GET.get('msg', '')
     signature = request.GET.get('sig', 'default')
     sender = request.GET.get('sender', '')
-    tokenid = request.GET.get('tokenid', 'default')
 
     bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
     
-    if bmsupply == 0:
-        bookmarkcontractid = bookcontent.bm_contract_address
-        bookcontractid = bookcontent.bt_contract_address
-        hardboundcontractid = bookcontent.hb_contract_address
-        verifyRewards(bookmarkcontractid, bookcontractid)
-        getBookmarkTotalSupply(bookmarkcontractid)
+    # if bmsupply == 0:
+    #     bookmarkcontractid = bookcontent.bm_contract_address
+    #     bookcontractid = bookcontent.bt_contract_address
+    #     hardboundcontractid = bookcontent.hb_contract_address
+    #     verifyRewards(bookmarkcontractid, bookcontractid)
+    #     getBookmarkTotalSupply(bookmarkcontractid)
         
-    if (tokenid == 'default'):
-        tokenOwner = ''
-    else:
-        contract_abi = json.load(open('/home/john/bakerydemo/brownie/BookTradable.json'))
-        myContract = web3.eth.contract(address=bookcontent.bt_contract_address, abi=contract_abi)
-        tokenOwner = myContract.functions.ownerOf(tokenid).call()
-        print("token owner ==========", tokenOwner)
-    # sender = moralis.getSender(msg, signature)
-    # bookcontractid = bookcontent.bt_contract_address
-    # tokenOwner = moralis.getTokenOwner(bookcontractid, tokenid)
-    sender = ''
-    tokenOwner = ''
+    contract_abi = json.load(open('/home/john/bakerydemo/brownie/BookTradable.json'))
+    bt_address = Web3.toChecksumAddress(bookcontent.bt_contract_address)
+    bt_Contract = web3.eth.contract(address=bt_address, abi=contract_abi)
+    token_cnt = bt_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
 
-    if sender == tokenOwner:
+    if (token_cnt > 0) & (sender != ''):
         cur_num = bmsupply - 1
         content = bookcontent.content
         figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
