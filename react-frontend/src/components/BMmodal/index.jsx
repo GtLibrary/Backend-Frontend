@@ -7,6 +7,7 @@ import printingpress_abi from "../../utils/contract/PrintingPress.json"
 import NBT_abi from "../../utils/contract/BookTradable.json"
 import Marketplace_abi from "../../utils/contract/MarketPlace.json"
 import CC_abi from "../../utils/contract/CultureCoin.json"
+import Hero_abi from "../../utils/contract/Hero.json"
 
 function BMdetailModal(props) {
     const { user } = useMoralis();
@@ -16,9 +17,11 @@ function BMdetailModal(props) {
     const printpress_abi = printingpress_abi;
     const marketplace_abi = Marketplace_abi;
     const cc_abi = CC_abi;
+    const hero_abi = Hero_abi;
     const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
     const cultureCoinAddress = process.env.REACT_APP_CULTURECOINADDRESS;
+    const hero_address = process.env.REACT_APP_HEROADDRESS
     const cc_initial_balance = process.env.REACT_APP_CC_INITIAL_BALANCE;
     const ccTotalSupplyStart = process.env.REACT_APP_CCTOTALSUPPLYSTART;
 
@@ -165,6 +168,17 @@ function BMdetailModal(props) {
     const getRewardRate = async () => {
         const cc = new web3.eth.Contract(cc_abi, cultureCoinAddress);
         return await cc.methods.getRewardPerHour().call()
+    }
+
+    const minthero = async (_token_id, _class, _price) => {
+        const to_address = user.get("ethAddress")
+        const from_address = user.get("ethAddress")
+        const token_price = web3.utils.toWei(_price)
+
+        const HEROS = new web3.eth.Contract(hero_abi, hero_address);
+        const ret = await HEROS.methods.heroMint(_token_id, to_address, _class, token_price).send({from: from_address});
+    
+        console.log("mintHero: " + JSON.stringify(ret));
     }
 
     return (

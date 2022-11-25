@@ -94,8 +94,8 @@ const SingleProduct = ({ match }) => {
       setPdfimage(res.data.book_image);
 
       var chunks = [];
-      for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += (charsLength/(res.data.curserial_num))) {
-          chunks.push(res.data.content.substring(i, i + (charsLength/(res.data.curserial_num))));
+      for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += (charsLength/(2000))) {
+          chunks.push(res.data.content.substring(i, i + (charsLength/(2000))));
       }
       setPdfcontent(chunks);
     })
@@ -134,7 +134,7 @@ const SingleProduct = ({ match }) => {
     const tempEl = document.createElement("a");
     document.body.appendChild(tempEl);
     tempEl.href = url;
-    tempEl.download = "download.html";
+    tempEl.download = title + ".download.html";
     tempEl.click();
     setTimeout(() => {
       URL.revokeObjectURL(url);
@@ -197,7 +197,7 @@ const SingleProduct = ({ match }) => {
               <div className="bookmark-content">
                 <div className="bookmark-imagearea">
                     <div className="bookimage-area">
-                      {/* <img className="img-responsive" src={}></img> */}
+                      <img className="img-responsive" src="/assets/bookmark.png" alt="bookmark image"></img>
                     </div>
                 </div>
                 <div className="bookmark-description">
