@@ -155,6 +155,11 @@ const SingleProduct = ({ match }) => {
     <Layout>
       <div className='single-product-container container'>
         <div className="row">
+          <div className="top-hr">
+            <img src="/assets/img/top-hr.png"></img>
+          </div>
+        </div>
+        <div className="row">
           <div className='col-md-4'>
             <div className="product-brandimage">
               <img className="img-responsive" src={image_url}></img>
@@ -162,11 +167,35 @@ const SingleProduct = ({ match }) => {
           </div>
           <div className="col-md-8 detail-area">
             <div className="product-detailinfo">
-              <h5>{title}</h5>
-              <h6>By {author_name}</h6>
-              <div className="product-category">Sci/Fi Fantasy</div>
-              <p>{introduction}</p>
+              <h4 className="book-title">{title}</h4>
+              <h6 className="book-authorname">By {author_name}</h6>
+              <span className="book-category">Sci/Fi Fantasy</span>
+              <div className="book-introduction">{introduction}</div>
             </div>
+          </div>
+        </div>
+        <div className="row additional-area">
+          <div className="left-decorader img-responsive">
+            <img src="/assets/img/left-decorader.png"></img>
+          </div>
+          <div className="additional-title">
+            Additional
+          </div>
+          <div className="right-decorader img-responsive">
+            <img src="/assets/img/right-decorader.png"></img>
+          </div>
+        </div>
+        <div className="row addtional-content">
+          <div className="col-md-4">
+            <div className="addtional-item">
+              
+            </div>
+          </div>
+          <div className="col-md-4">
+
+          </div>
+          <div className="col-md-4">
+
           </div>
         </div>
         <div className="row">
@@ -197,7 +226,7 @@ const SingleProduct = ({ match }) => {
               <div className="bookmark-content">
                 <div className="bookmark-imagearea">
                     <div className="bookimage-area">
-                      <img className="img-responsive" src="/assets/bookmark.png" alt="bookmark image"></img>
+                      <img className="img-responsive" src="/assets/img/bookmark.png" alt="bookmark image"></img>
                     </div>
                 </div>
                 <div className="bookmark-description">

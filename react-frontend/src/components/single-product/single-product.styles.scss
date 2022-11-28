@@ -6,12 +6,30 @@
   }
   .detail-area {
     display: flex;
-    align-items: center;
-    justify-content: flex-start;
+    padding: 40px;
   }
 
-  .product-details {
-    
+  .product-detailinfo {
+    .book-title {
+      color: #B95951;
+      text-transform: uppercase;
+      // font-family: ;
+    }
+    .book-authorname {
+      font-style: italic;
+      font-family: "Lato";
+      font-size: 1rem;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+    .book-category {
+      background-color: #F9D963;
+      padding: 5px;
+      border-radius: 10px;
+    }
+    .book-introduction {
+      margin-top: 40px;
+    }
   }
   .pdf-maincontent {
     width: 800px;
@@ -72,5 +90,28 @@
   .bookmark-content {
     display: flex;
     align-items: center;
+  }
+  .top-hr{
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 40px;
+  }
+  .additional-area {
+    align-items: center;
+    margin-top: 100px;
+  }
+  .additional-title {
+    font-size: 3rem;
+    text-align: center;
+    color: #B95951;
+    width: 20%;
+  }
+  .left-decorader {
+    text-align: right;
+    width: 40%;
+  }
+  .right-decorader {
+    text-align: left;
+    width: 40%;
   }
 }

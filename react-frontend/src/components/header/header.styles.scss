@@ -27,5 +27,24 @@
   }
 }
 .header {
-  background-color: #30200D;
+  position: relative;
+  background-color: #493016;
+  z-index: 10;
+}
+.header-lefteffect {
+  width: 40%;
+  position: absolute;
+  top: 30px;
+  img {
+    height: 90px;
+  }
+}
+.header-righteffect {
+  width: 65%;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  img {
+    height: 75px;
+  }
 }
