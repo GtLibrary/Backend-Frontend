@@ -155,6 +155,11 @@ const SingleProduct = ({ match }) => {
     <Layout>
       <div className='single-product-container container'>
         <div className="row">
+          <div className="top-hr">
+            <img src="/assets/img/top-hr.png"></img>
+          </div>
+        </div>
+        <div className="row">
           <div className='col-md-4'>
             <div className="product-brandimage">
               <img className="img-responsive" src={image_url}></img>
@@ -162,11 +167,95 @@ const SingleProduct = ({ match }) => {
           </div>
           <div className="col-md-8 detail-area">
             <div className="product-detailinfo">
-              <h5>{title}</h5>
-              <h6>By {author_name}</h6>
-              <div className="product-category">Sci/Fi Fantasy</div>
-              <p>{introduction}</p>
+              <h4 className="book-title">{title}</h4>
+              <h6 className="book-authorname">By {author_name}</h6>
+              <span className="book-category">Sci/Fi Fantasy</span>
+              <div className="book-introduction">{introduction}</div>
             </div>
+          </div>
+        </div>
+        <div className="row additional-area">
+          <div className="left-decorader img-responsive">
+            <img src="/assets/img/left-decorader.png"></img>
+          </div>
+          <div className="additional-title">
+            Additional
+          </div>
+          <div className="right-decorader img-responsive">
+            <img src="/assets/img/right-decorader.png"></img>
+          </div>
+        </div>
+        <div className="addtional-content">
+          <div className="additional-itemarea">
+            <div className="row">
+              <div className="col-md-4">
+                <div className="addtional-item">
+                  <div className="img-area">
+                    <img src="/assets/img/bookmark.png"></img>
+                  </div>
+                  <h4 className="item-title">Book</h4>
+                  <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
+                  <div className="action-area">
+                    <span className="price-area">0.0</span>
+                    <button className="btn btn-item">Buy Now</button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="addtional-item">
+                  <div className="img-area">
+                    <img src="/assets/img/bookmark.png"></img>
+                  </div>
+                  <h4 className="item-title">Book</h4>
+                  <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
+                  <div className="action-area">
+                    <span className="price-area">0.0</span>
+                    <button className="btn btn-item">Buy Now</button>
+                  </div>
+                </div>
+              </div>
+              <div className="col-md-4">
+                <div className="addtional-item">
+                  <div className="img-area">
+                    <img src="/assets/img/bookmark.png"></img>
+                  </div>
+                  <h4 className="item-title">Book</h4>
+                  <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
+                  <div className="action-area">
+                    <span className="price-area">0.0</span>
+                    <button className="btn btn-item">Buy Now</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <img src="/assets/img/additional-bg.png" className="additional-bg"></img>
+        </div>
+        <div className="row">
+          <div className="col-md-12">
+            <div className="bottom-hr">
+              <img src="/assets/img/bottom-hr.png"></img>
+            </div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col-md-3"></div>
+          <div className="col-md-6">
+            <div className="include-head">
+              <span className="head-title">Book May Also Include:</span>
+              <img src="/assets/img/owl.png" className="owl-tip"></img>
+            </div>
+          </div>
+          <div className="col-md-3"></div>
+          <div className="col-md-2"></div>
+          <div className="col-md-8">
+            <p className="include-content">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
+          </div>
+          <div className="col-md-2"></div>
+        </div>
+        <div className="row">
+          <div className="col-md-6">
+            
           </div>
         </div>
         <div className="row">
@@ -187,30 +276,6 @@ const SingleProduct = ({ match }) => {
                   )
                 })}
               </div>
-            </div>
-          </div>
-        </div>
-        <div className="row">
-          <div className="col-md-12">
-            <div className="bookmark-area">      
-              <h3 className="bookmark-title">BookMark</h3>
-              <div className="bookmark-content">
-                <div className="bookmark-imagearea">
-                    <div className="bookimage-area">
-                      <img className="img-responsive" src="/assets/bookmark.png" alt="bookmark image"></img>
-                    </div>
-                </div>
-                <div className="bookmark-description">
-                  <p>Purchasing the bookmark will progress the story for others, and you will be able to read the full book free. Currently BETA.</p>
-                  <p><b>Book May Also Include:</b></p>
-                  <ul>
-                    <li>Free Audio Book Code</li>
-                    <li>BEN, the AI cat</li>
-                    <li>Ticket for the Movie</li>
-                    <li>Author's Brain-In-A-Jar</li>
-                  </ul>  
-                </div>
-              </div> 
             </div>
           </div>
         </div>
