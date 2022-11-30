@@ -171,6 +171,10 @@ const SingleProduct = ({ match }) => {
               <h6 className="book-authorname">By {author_name}</h6>
               <span className="book-category">Sci/Fi Fantasy</span>
               <div className="book-introduction">{introduction}</div>
+              <div className="buybook-area">
+                <span className="bookprice-tag">{book_price}</span>
+                <button type="button" className="btn btn-buybook">Buy Now</button>
+              </div>
             </div>
           </div>
         </div>
@@ -206,7 +210,7 @@ const SingleProduct = ({ match }) => {
                   <div className="img-area">
                     <img src="/assets/img/bookmark.png"></img>
                   </div>
-                  <h4 className="item-title">Book</h4>
+                  <h4 className="item-title">Hardbound</h4>
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
                   <div className="action-area">
                     <span className="price-area">0.0</span>
@@ -219,7 +223,7 @@ const SingleProduct = ({ match }) => {
                   <div className="img-area">
                     <img src="/assets/img/bookmark.png"></img>
                   </div>
-                  <h4 className="item-title">Book</h4>
+                  <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
                   <div className="action-area">
                     <span className="price-area">0.0</span>
@@ -253,9 +257,58 @@ const SingleProduct = ({ match }) => {
           </div>
           <div className="col-md-2"></div>
         </div>
-        <div className="row">
+        <div className="row bookdetail-area">
           <div className="col-md-6">
-            
+            <div className="detail-item">
+              <div className="icon-area">
+                <img src="/assets/img/headphone.png" className="img-responsive"></img>
+              </div>
+              <div className="content-area">
+                <div className="detail-title">Free Audio Book Code</div>
+                <div className="detail-content">
+                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem Lorem ipsum 
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="detail-item">
+              <div className="icon-area">
+                <img src="/assets/img/tip.png" className="img-responsive"></img>
+              </div>
+              <div className="content-area">
+                <div className="detail-title">Ticket for the Movie</div>
+                <div className="detail-content">
+                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem Lorem ipsum 
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="detail-item">
+              <div className="icon-area">
+                <img src="/assets/img/footprint.png" className="img-responsive"></img>
+              </div>
+              <div className="content-area">
+                <div className="detail-title">BEN, the AI cat</div>
+                <div className="detail-content">
+                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem Lorem ipsum 
+                </div>
+              </div>
+            </div>
+          </div>
+          <div className="col-md-6">
+            <div className="detail-item">
+              <div className="icon-area">
+                <img src="/assets/img/brain.png" className="img-responsive"></img>
+              </div>
+              <div className="content-area">
+                <div className="detail-title">Author's Brain-In-A-Jar</div>
+                <div className="detail-content">
+                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem Lorem ipsum 
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div className="row">

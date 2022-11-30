@@ -20,16 +20,17 @@
   .social-icon {
     width: 40px;
     height: 40px;
+    border: 1px solid #F9D963;
     border-radius: 50%;
-    background-color: white;
-    color: #493016;
+    background-color: #493016;
+    color: #F9D963;
     position: relative;
     margin-left: 9px;
   }
   .social-icon svg {
     position: absolute;
     top: 9px;
-    left: 9px;
+    left: 8px;
     color: #493016;
   }
 }
