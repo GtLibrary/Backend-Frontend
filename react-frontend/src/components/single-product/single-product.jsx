@@ -10,6 +10,8 @@ import BMdetailModal from "../BMmodal"
 import printingpress_abi from "../../utils/contract/PrintingPress.json"
 import BT_abi from "../../utils/contract/BookTradable.json"
 import Web3 from 'web3';
+import LoadingOverlay from "react-loading-overlay";
+LoadingOverlay.propTypes = undefined;
 
 
 const SingleProduct = ({ match }) => {
@@ -36,6 +38,7 @@ const SingleProduct = ({ match }) => {
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
   const [curserialnum, setCurserialnum] = useState(0)
+  const [loading, setLoading] = useState(false);
 
 
   useEffect(() => {
@@ -65,23 +68,25 @@ const SingleProduct = ({ match }) => {
 
   // while we check for product
   if (!product) { return null }
-  const { image_url, title, author_name, book_price, datamine, introduction, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address, booktype } = product;
+  const { image_url, title, author_name, book_price, datamine, introduction, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address, book_type_id } = product;
 
   const onBuyBook = async () => {
+      setLoading(true);
       const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
       const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
       const transaction = await bt_contract.methods.setAddon(printpress_address, true);
       const options = {
-          from    : account,
-          to      : transaction._parent._address,
-          data    : transaction.encodeABI(),
+        from    : account,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
           gas     : premiumGas
-      };
+        };
       const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
       const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-
+      
       await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(String(book_price))});
+      setLoading(false);
   }
 
   const getPdfData = async (testurl) => {
@@ -102,6 +107,7 @@ const SingleProduct = ({ match }) => {
   }
 
   const onReadBook = async () => {
+    setLoading(true);
     const cur_address = user.get("ethAddress")
     const options = {
       address: cur_address,
@@ -124,7 +130,7 @@ const SingleProduct = ({ match }) => {
     }
   
     getPdfData(testurl);
-
+    setLoading(false);
   }
 
   const onSaveBook = () => {
@@ -153,6 +159,34 @@ const SingleProduct = ({ match }) => {
 
   return (
     <Layout>
+      {loading && (
+        <div
+          style={{
+            background: "#00000055",
+            width: "100%",
+            height: "100%",
+            zIndex: "1000",
+            position: "fixed",
+            top: 0,
+            left: 0
+          }}
+        >
+          <LoadingOverlay
+            active={true}
+            spinner={true}
+            text="Loading ..."
+            styles={{
+              overlay: (base) => ({
+                ...base,
+                background: "rgba(255, 255, 255)",
+                position: "absolute",
+                marginTop: "300px",
+              }),
+            }}
+            fadeSpeed={9000}
+          ></LoadingOverlay>
+        </div>
+      )}
       <div className='single-product-container container'>
         <div className="row">
           <div className="top-hr">
@@ -169,11 +203,13 @@ const SingleProduct = ({ match }) => {
             <div className="product-detailinfo">
               <h4 className="book-title">{title}</h4>
               <h6 className="book-authorname">By {author_name}</h6>
-              <span className="book-category">Sci/Fi Fantasy</span>
-              <div className="book-introduction">{introduction}</div>
+              <span className="book-category">{book_type_id.booktype}</span>
+              <div className="book-introduction">
+                {introduction}
+              </div>
               <div className="buybook-area">
                 <span className="bookprice-tag">{book_price}</span>
-                <button type="button" className="btn btn-buybook">Buy Now</button>
+                <button type="button" className="btn btn-buybook" onClick={() => onBuyBook()}>Buy Now</button>
               </div>
             </div>
           </div>
@@ -201,7 +237,7 @@ const SingleProduct = ({ match }) => {
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
                   <div className="action-area">
                     <span className="price-area">0.0</span>
-                    <button className="btn btn-item">Buy Now</button>
+                    <button className="btn btn-item" onClick={() => onBuyBook()}>Buy Now</button>
                   </div>
                 </div>
               </div>
@@ -318,7 +354,7 @@ const SingleProduct = ({ match }) => {
               <button className="btn btn-action" onClick={() => onSaveBook()}><i className="fa fa-download"></i> Save Book</button>
               <button className="btn btn-action" onClick={() => onReadBook()}><i className="fa fa-book"></i> Read Book</button>
               <button className="btn btn-action"><i className="fa fa-headphones"></i> Audio Book</button>
-              <button className="btn btn-action" onClick={() => onBuyBook()}><i className="fa fa-money"></i> Buy Book</button>
+              {/* <button className="btn btn-action" onClick={() => onBuyBook()}><i className="fa fa-money"></i> Buy Book</button> */}
             </div>
             <div className="pdf-maincontent">
               <div className="pdf-image" dangerouslySetInnerHTML={{__html: pdfimage}} />
