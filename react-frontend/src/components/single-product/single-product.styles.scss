@@ -3,6 +3,9 @@
 
   .product-brandimage {
     padding: 40px;
+    img {
+      box-shadow: 4px -4px 10px #F9D963;
+    }
   }
   .detail-area {
     display: flex;
@@ -24,15 +27,41 @@
     }
     .book-category {
       background-color: #F9D963;
-      padding: 5px;
+      padding: 5px 10px;
       border-radius: 10px;
+      text-transform: uppercase;
+      gap: 10px;
+      font-weight: 500;
+      font-size: 14px;
     }
     .book-introduction {
       margin-top: 40px;
+      white-space: pre-line;
+    }
+    .buybook-area {
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      background-color: white;
+      border-radius: 50px;
+      width: max-content;
+      .bookprice-tag {
+        margin: 0 10px 0 20px;
+      }
+      .btn-buybook {
+        // background-color: #F9D963;
+        background-image: url("../../assets/img/button.png");
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
+        color: black;
+        border-radius: 20px;
+        padding: 8px 25px;
+        font-family: "Leander";
+      }
     }
   }
   .pdf-maincontent {
-    width: 800px;
+    max-width: 800px;
     height: 100vh;
     background-color: white;
     overflow: auto;
@@ -55,9 +84,12 @@
       font-size: 18px;
     }
     .action-area {
-      width: 800px;
+      max-width: 800px;
       margin: 0 auto;
       margin-bottom: 20px;
+      .btn-action {
+        margin-top: 5px;
+      }
     }
   }
   .btn-item {
@@ -105,7 +137,11 @@
       background-color: #493016;
       padding: 16px;
       border-radius: 16px;
-
+      .img-area {
+        img {
+          border-radius: 12px;
+        }
+      }
       .action-area {
         margin: 0 auto;
         margin-top: 20px;
@@ -156,5 +192,34 @@
   .include-content {
     text-align: center;
     margin-top: 35px;
+  }
+  .bookdetail-area {
+    margin-top: 50px;
+    .detail-item {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: center;
+      margin-top: 30px;
+    }
+    .icon-area {
+      width: 50px;
+      height: 50px;
+      border-radius: 15px;
+      background-color: #F9D963;
+      padding: 8px;
+      display: flex;
+      align-items: center;
+    }
+    .icon-area img {
+      width: 34px;
+    }
+    .content-area {
+      margin-left: 1.5rem;
+      .detail-title {
+        font-family: "Merriweather";
+        font-size: 1.75rem;
+      }
+    }
   }
 }

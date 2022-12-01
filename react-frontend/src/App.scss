@@ -9,6 +9,9 @@
 .app {
   position: relative;
   min-height: 100vh;
+  background-image: url("./assets/img/bg.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
 }
 
 img {
@@ -21,7 +24,7 @@ img {
 }
 
 main {
-  background-color: #F8F3E7;
+  backdrop-filter: blur(2px);
 }
 #shop-now {
   font-weight: 600; 
@@ -30,7 +33,11 @@ main {
     background-color: #606060;
   }
 }
-
+// ._loading_overlay_content {
+//   top: 45%;
+//   left: 35%;
+//   position: fixed;
+// }
 // Featured products section
 .featured-collection {
   margin-top: 6rem;

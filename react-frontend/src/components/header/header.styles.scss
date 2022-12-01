@@ -11,6 +11,7 @@
 
   .logo {
     font-size: 2.5rem;
+    font-family: "Merriweather";
   }
 
   ul {
@@ -23,6 +24,7 @@
       margin: 0 1rem;
       cursor: pointer;
       color: white;
+      text-transform: uppercase;
     }
   }
 }
@@ -35,6 +37,7 @@
   width: 40%;
   position: absolute;
   top: 30px;
+  z-index: 1;
   img {
     height: 90px;
   }
@@ -44,6 +47,7 @@
   position: absolute;
   top: 40px;
   right: 0;
+  z-index: 1;
   img {
     height: 75px;
   }
