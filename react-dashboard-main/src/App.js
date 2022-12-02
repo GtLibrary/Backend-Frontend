@@ -3,6 +3,8 @@ import { useSelector } from 'react-redux';
 
 import { ThemeProvider } from '@material-ui/core/styles';
 import { CssBaseline, StyledEngineProvider } from '@material-ui/core';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 // routing
@@ -24,6 +26,7 @@ const App = () => {
                 <CssBaseline />
                 <NavigationScroll>
                     <Routes />
+                    <ToastContainer />
                 </NavigationScroll>
             </ThemeProvider>
         </StyledEngineProvider>

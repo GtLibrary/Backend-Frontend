@@ -3,7 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
-import { useMoralisQuery } from "react-moralis";
+import LoadingOverlay from "react-loading-overlay";
+import { toast } from "react-toastify";
 // material-ui
 import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 // project imports
@@ -14,6 +15,8 @@ import "./styles.css"
 import printingpress_abi from './../../../contract-json/PrintingPress.json';
 import CC_abi from './../../../contract-json/CultureCoin.json';
 import bt_abi from "./../../../contract-json/BookTradable.json";
+
+LoadingOverlay.propTypes = undefined;
 
 const BookAdd = (props) => {
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
@@ -53,6 +56,7 @@ const BookAdd = (props) => {
     const [booktypes, setBooktypes] = useState('');
     const [origintypes, setOrigintypes] = useState('');
     const [previosImg, setPreviosImg] = useState('');
+    const [loading, setLoading] = useState(false);
 
     const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
@@ -142,6 +146,7 @@ const BookAdd = (props) => {
     };
 
     const saveBook = async () => {
+        setLoading(true);
         let form_data = new FormData();
         if (brandimage) {
             form_data.append('image_url', brandimage, brandimage.name);
@@ -171,11 +176,24 @@ const BookAdd = (props) => {
                     }
                 })
                 .then(function (response) {
-                    
+                    toast.success("successfully save data", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
                 })
-                .catch(function (error) {});
+                .catch(function (error) {
+                    toast.error("failed save book data", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                });
         } else {
-            console.log("to wei book price", web3.utils.toWei(bookprice))
             const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbooksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), authorwallet);
             const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice), new BigNumber(startpoint), authorwallet)
             const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(hardbound), web3.utils.toWei(hardboundprice), new BigNumber(startpoint), authorwallet)
@@ -208,14 +226,58 @@ const BookAdd = (props) => {
                         // setHardbound('');
                         // setHardboundfrom('');
                         setHardboundprice('');
+                        toast.success("successfully saved", {
+                            position: "top-right",
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                        });
                     }
                 })
-                .catch(function (error) {});
+                .catch(function (error) {
+                    toast.error("failed save data", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                });
         }
+        setLoading(false);
     };
 
     return (
         <MainCard title={title}>
+            {loading && (
+            <div
+                style={{
+                background: "#00000055",
+                width: "100%",
+                height: "100%",
+                zIndex: "1000",
+                position: "fixed",
+                top: 0,
+                left: 0
+                }}
+            >
+                <LoadingOverlay
+                active={true}
+                spinner={true}
+                text="Loading ..."
+                styles={{
+                    overlay: (base) => ({
+                    ...base,
+                    background: "rgba(255, 255, 255)",
+                    position: "absolute",
+                    marginTop: "300px",
+                    }),
+                }}
+                fadeSpeed={9000}
+                ></LoadingOverlay>
+            </div>
+            )}
             <Link to="/dashboard/booklist">
                 <Button variant="filled">Back To List</Button>
             </Link>
