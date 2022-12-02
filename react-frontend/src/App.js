@@ -7,6 +7,8 @@ import NotFound from './components/not-found';
 import Books from './components/pages/books/books';
 import SingleProduct from './components/single-product/single-product';
 import { BrowserRouter } from 'react-router-dom';
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import './App.scss';
 
 function App() {
@@ -20,6 +22,7 @@ function App() {
           <Route path='*' element={<NotFound />} />
         </Routes>
       </BrowserRouter>
+      <ToastContainer />
     </div>
   );
 }

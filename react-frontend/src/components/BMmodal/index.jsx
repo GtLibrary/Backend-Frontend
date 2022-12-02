@@ -77,14 +77,14 @@ function BMdetailModal(props) {
         
         const approved = await NBTcontract.methods.getApproved(tokenid).call();
     
-        if (approved != marketPlaceAddress){
+        if (approved !== marketPlaceAddress){
             const tokenOnwner = await NBTcontract.methods.ownerOf(tokenid).call();
             console.log("tokenOnwner:", tokenOnwner);
             await approveMarketPlace(bm_contract_address, tokenid);
             for(var i = 0; i < 10; i++) {
                 const approved = await NBTcontract.methods.getApproved(tokenid).call();
                 console.log("approved:", approved);
-                if (approved.toLowerCase() == marketPlaceAddress.toLowerCase()) {
+                if (approved.toLowerCase() === marketPlaceAddress.toLowerCase()) {
                     break;
                 }
                 await sleep(3000);
@@ -111,7 +111,7 @@ function BMdetailModal(props) {
         var  tokenOwner = await NBTcontract.methods.ownerOf(tokenid).call();
         console.log("tokenOwner:", tokenOwner);
     
-        if(user_wallet.toLowerCase() != tokenOwner.toLowerCase()) {
+        if(user_wallet.toLowerCase() !== tokenOwner.toLowerCase()) {
             // alert("You are not the owner of this token. You cannot give it away... Trying anyway. Failure likely...");
         }
     

@@ -71,7 +71,7 @@ const BookContent = (props) => {
                     }
                 })
                 .catch(function (error) {
-                    console.log("catch error === ")
+                    
                 });
         }
     }
@@ -163,7 +163,6 @@ const BookContent = (props) => {
     const uploadcontent = async (event) => {
 
         const pdfinfo = await readFileAsync(event);
-        // console.log("pdfinfo == == ",pdfinfo.data)
         const loadpdf = pdfjs.getDocument({data: pdfinfo.dataarr})
         loadpdf.promise.then(pdf => {
             var pdfDocument = pdf;
@@ -185,7 +184,7 @@ const BookContent = (props) => {
             });
 
         }, function (reason) {
-            console.error(reason);
+            // console.error(reason);
         });
     }
     return (
