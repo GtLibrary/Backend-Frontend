@@ -293,7 +293,10 @@ const BookAdd = (props) => {
                         style={{ margin: 8 }}
                         placeholder="Please input the author wallet address"
                         helperText="Introduction"
-                        fullWidth
+                        fullWidth  
+                        multiline
+                        rows={10}
+                        maxRows={20}
                         // margin="normal"
                         InputLabelProps={{
                             shrink: true

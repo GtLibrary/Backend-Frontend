@@ -2,7 +2,7 @@ from django.db import models
 import os
 from django.conf import settings
 from dotenv import load_dotenv
-from api.booktype.models import Booktype
+from api.booktype.models import BookType
 
 load_dotenv()
 # Create your models here.
@@ -17,7 +17,7 @@ class Books(models.Model):
     curserial_number = models.CharField(max_length=200, default='')
     datamine = models.CharField(max_length=200, default='')
     origin_type_id = models.BigIntegerField(default=0)
-    book_type_id = models.ForeignKey("Booktype", default=0)
+    book_type_id = models.ForeignKey(BookType, related_name="booktypes", db_column="book_type_id", on_delete=models.DO_NOTHING, default=0)
     max_bookmark_supply = models.BigIntegerField(default=-1)
     max_book_supply = models.BigIntegerField(default=-1)
     start_point = models.BigIntegerField(default=1)
