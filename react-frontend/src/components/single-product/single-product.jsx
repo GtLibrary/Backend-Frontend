@@ -12,6 +12,7 @@ import BT_abi from "../../utils/contract/BookTradable.json"
 import Web3 from 'web3';
 import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
+import { useSpeechSynthesis } from "react-speech-kit";
 
 LoadingOverlay.propTypes = undefined;
 
@@ -19,6 +20,7 @@ const SingleProduct = ({ match }) => {
   
   const { user } = useMoralis();
   const Web3Api = useMoralisWeb3Api();
+  const { speak } = useSpeechSynthesis();
   const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
   const web3 = new Web3(window.ethereum);
@@ -34,6 +36,7 @@ const SingleProduct = ({ match }) => {
 
   const navigate = useNavigate();
   const [pdfcontent, setPdfcontent] = useState([]);
+  const [pdftext, setPdftext] = useState('');
   const [pdfimage, setPdfimage] = useState('');
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -72,6 +75,9 @@ const SingleProduct = ({ match }) => {
   const { image_url, title, author_name, book_price, datamine, introduction, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address, book_type_id } = product;
 
   const onBuyBook = async () => {
+      if (!user) {
+        return
+      }
       setLoading(true);
       try {
         const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
@@ -116,7 +122,7 @@ const SingleProduct = ({ match }) => {
     await axios(config)
     .then(res => {
       setPdfimage(res.data.book_image);
-
+      setPdftext(res.data.content)
       var chunks = [];
       for (let i = 0, charsLength = (res.data.content)?.length; i < charsLength; i += (charsLength/(2000))) {
           chunks.push(res.data.content.substring(i, i + (charsLength/(2000))));
@@ -126,6 +132,9 @@ const SingleProduct = ({ match }) => {
   }
 
   const onReadBook = async () => {
+    if (!user) {
+      return
+    }
     setLoading(true);
     const cur_address = user.get("ethAddress")
     const options = {
@@ -153,6 +162,9 @@ const SingleProduct = ({ match }) => {
   }
 
   const onSaveBook = () => {
+    if (!user) {
+      return
+    }
     const pageHTML = document.querySelector(".pdf-content").outerHTML;
     const blob = new Blob([pageHTML], { type: "text/html" });
     const url = URL.createObjectURL(blob);
@@ -167,11 +179,21 @@ const SingleProduct = ({ match }) => {
     }, 2000);
   }
 
+  const onAudioBook = () => {
+    if (!user) {
+      return
+    }
+    speak({ text: pdftext })
+  }
+
   const onRefresh = () => {
     window.location.reload();
   }
 
   const showBMModal = (index) => {
+    if (!user) {
+      return
+    }
     setCurserialnum(index)
     setModalShow(true)
   }
@@ -288,7 +310,7 @@ const SingleProduct = ({ match }) => {
               </div>
             </div>
           </div>
-          <img src="/assets/img/additional-bg.png" className="additional-bg"></img>
+          {/* <img src="/assets/img/additional-bg.png" className="additional-bg"></img> */}
         </div>
         <div className="row">
           <div className="col-md-12">
@@ -372,7 +394,7 @@ const SingleProduct = ({ match }) => {
               <button className="btn btn-action" onClick={() => onRefresh()}><i className="fa fa-refresh"></i> Refresh</button>
               <button className="btn btn-action" onClick={() => onSaveBook()}><i className="fa fa-download"></i> Save Book</button>
               <button className="btn btn-action" onClick={() => onReadBook()}><i className="fa fa-book"></i> Read Book</button>
-              <button className="btn btn-action"><i className="fa fa-headphones"></i> Audio Book</button>
+              <button className="btn btn-action" onClick={() => onAudioBook()}><i className="fa fa-headphones"></i> Audio Book</button>
             </div>
             <div className="pdf-maincontent">
               <div className="pdf-image" dangerouslySetInnerHTML={{__html: pdfimage}} />

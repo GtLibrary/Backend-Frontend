@@ -116,19 +116,19 @@
     margin-top: 100px;
   }
   .additional-title {
-    font-size: 3rem;
+    font-size: 3.5vw;
     font-family: "Merriweather";
     text-align: center;
     color: #B95951;
-    width: 20%;
+    width: 30%;
   }
   .left-decorader {
     text-align: right;
-    width: 40%;
+    width: 35%;
   }
   .right-decorader {
     text-align: left;
-    width: 40%;
+    width: 35%;
   }
   .addtional-content {
     margin-top: 100px;
@@ -155,13 +155,19 @@
     .additional-bg {
       width: 100%;
       top: 0;
+      position: absolute;
     }
     .additional-itemarea {
-      position: absolute;
-      padding: 0 50px;
+      padding: 120px 50px;
       top: 75px;
       z-index: 10;
       color: white;
+      background-image: url("../../assets/img/additional-bg.png");
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      .addtional-item {
+        margin-top: 20px;
+      }
       .item-title {
         margin-top: 24px;
       }
