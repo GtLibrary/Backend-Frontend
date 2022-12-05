@@ -1,37 +1,30 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import WalletConnect from '../walletconnect/walletconnect';
+import Container from 'react-bootstrap/Container';
+import Nav from 'react-bootstrap/Nav';
+import Navbar from 'react-bootstrap/Navbar';
+import NavDropdown from 'react-bootstrap/NavDropdown';
 import './header.styles.scss';
 
 const Header = () => {
   return (
-    <div>
-      <div className="header">
-        <nav className='nav-menu container'>
-          <div className='logo'>
-            <Link to='/'>The Great Library</Link>
-          </div>
-          <ul>
-            <li>
-              <Link to='/books'>
-                Books
-              </Link>
-            </li>
-            <li>Authors</li>
-            <li>Contact Us</li>
-            <li>
-              <a href="https://thegreatlibrary-unity-game-thegreatlibrary.vercel.app/" target="_blank">Game</a>
-            </li>
-          </ul>
-          <WalletConnect />
-        </nav>
-      </div>
-      <div className="header-lefteffect">
-        <img src="/assets/img/header-left.png"></img>
-      </div>
-      <div className="header-righteffect">
-        <img src="/assets/img/header-right.png"></img>
-      </div>
+    <div className="header">
+      <Navbar expand="lg">
+        <Container>
+          <Navbar.Brand href="/">The Great Library</Navbar.Brand>
+          <Navbar.Toggle aria-controls="basic-navbar-nav" className="navbar-btn" />
+          <Navbar.Collapse id="basic-navbar-nav">
+            <Nav className="nav-list">
+              <Nav.Link href="/books">Books</Nav.Link>
+              <Nav.Link href="/authors">Authors</Nav.Link>
+              <Nav.Link href="/contactus">Contact Us</Nav.Link>
+            </Nav>
+            <WalletConnect />
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <img className="header-effect" src="/assets/img/navbarbg.png" alt="header effect" />
     </div>
   );
 }
