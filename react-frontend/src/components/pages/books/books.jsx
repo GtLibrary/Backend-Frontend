@@ -24,7 +24,7 @@ const Books = () => {
 
   return (
     <Layout>
-      <div className='product-list-container'>
+      <div className='product-list-container container'>
         <h2 className='product-list-title'>Books</h2>
         <div className='product-list row'>
           {

@@ -1,5 +1,6 @@
 import React from 'react';
 import FeaturedProduct from '../shared/featured-product';
+import './featured-collection.styles.scss'
 
 const FeaturedCollection = (props) => {
   const { products } = props;

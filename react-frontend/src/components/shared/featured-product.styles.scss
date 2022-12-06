@@ -1,10 +1,46 @@
 .featured-product {
   border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 5px;
+  border-radius: 15px;
   box-shadow: 5px 5px 10px gray;
-  padding: 1rem;
+  padding: 7px;
   margin-left: 1rem 0;
+  margin-top: 1rem;
 }
 .featured-product img {
   border-radius: 1rem;
+}
+.featured-body {
+  margin-top: 10px;
+  .item-title {
+    font-size: 1.25rem;
+    font-family: 'Crimson Text';
+    font-weight: 600;
+    width: 100%;
+    text-overflow: ellipsis;
+    white-space: nowrap; 
+    overflow: hidden;
+  }
+  .item-author {
+    font-size: 1rem;
+    font-family: 'Crimson Text';
+    line-height: 26px;
+    color: rgba(0, 0, 0, 0.8);
+  }
+  .button-area {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    .btn-buy {
+      background-color: #F9D54C;
+    }
+    .btn-cart {
+      background: #faf5e0;
+    }
+    .button {
+      border-radius: 12px;
+      border: 1px solid #F9D54C !important;
+    }
+  }
 }
