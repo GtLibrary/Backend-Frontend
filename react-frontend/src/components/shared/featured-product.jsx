@@ -5,7 +5,7 @@ import './featured-product.styles.scss';
 
 const FeaturedProduct = (props) => {
   const navigate = useNavigate();
-  const { title, image_url, price, id, description } = props;
+  const { title, image_url, book_price, author_name, id, description } = props;
 
   return (
     <div className='col-md-3 col-sm-6 col-xs-12'>
@@ -13,22 +13,18 @@ const FeaturedProduct = (props) => {
         <div className='featured-image' onClick={() => navigate(`/product/${id}`)}>
           <img src={image_url} alt='product' />
         </div>
-        <div className='name-price'>
-          <h4>{title}</h4>
-          {/* <p>$ {price}</p> */}
-          {/* { 
+        <div className='featured-body'>
+          <div className="item-title">{title}</div>
+          <p className="item-author">By {author_name}</p>
+          <span className="item-price">${book_price}</span>
+          <div className="button-area">
             <button 
-              className='button is-black nomad-btn'
-              onClick={() => addProduct(product)}>
-                ADD TO CART</button>
-          }
-          {
+              className='button btn-buy'>
+                Buy Now</button>
             <button 
-              className='button is-white nomad-btn'
-              id='btn-white-outline'
-              onClick={()=> increase(product)}>
-                ADD MORE</button>
-          } */}
+              className='button btn-cart'>
+                Add To Cart</button>
+          </div> 
           
         </div>
       </div>

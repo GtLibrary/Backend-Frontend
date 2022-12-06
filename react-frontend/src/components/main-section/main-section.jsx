@@ -7,12 +7,12 @@ import './main-section.styles.scss';
 const MainSection = () => {
   const navigate = useNavigate();
   return (
-    <div className='main-section-container'>
-      <div className='main-section-middle'>
-        <div className='ms-m-image'>
+    <div className='main-section-container container'>
+      <div className='main-section-middle row'>
+        <div className='ms-m-image col-md-4'>
           <img src={bigScore} alt='the big score'/>
         </div>
-        <div className='ms-m-description'>
+        <div className='ms-m-description col-md-8'>
           <h2>The Lightshy Crow: Book One of the Scarab Cycle</h2>
           <p>Tomin Ocrin lives only to work glass, so he hides the fact that he is a Marked and wanted man. The scales growing on his chest grant him magic powers which he must never use.
 

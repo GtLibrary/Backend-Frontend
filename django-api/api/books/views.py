@@ -35,8 +35,8 @@ moralisdir = "/home/john/bakerydemo/moralis/"
 # Create your views here.
 @api_view(['GET'])
 def getbooklist(request):
-    fields = ('id', 'title','image_url')
-    books = Books.objects.all().only('id', 'title','image_url')
+    fields = ('id', 'author_name', 'book_price', 'title','image_url')
+    books = Books.objects.all().only('id', 'author_name', 'book_price', 'title','image_url')
     data = BooksSerializer(books, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 

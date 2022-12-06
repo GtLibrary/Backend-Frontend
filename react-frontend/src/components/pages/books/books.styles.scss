@@ -17,12 +17,8 @@
     .product-list {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
+      justify-content: flex-start;
       align-items: stretch;
-      // margin: 0 5rem;
-      div {
-        flex: 0 0 300px;
-      }
     }
   }
 }
