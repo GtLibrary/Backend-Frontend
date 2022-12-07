@@ -388,7 +388,10 @@ const SingleProduct = ({ match }) => {
             </div>
           </div>
         </div>
-        <div className="row">
+        <div className="row product-main-content">
+          <div className="angel-with-bowl">
+            <img src="/assets/img/angel-with-bowl.png"></img>
+          </div>
           <div className="product-content">
             <div className="action-area">
               <button className="btn btn-action" onClick={() => onRefresh()}><i className="fa fa-refresh"></i> Refresh</button>
