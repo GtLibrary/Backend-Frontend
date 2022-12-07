@@ -1,5 +1,6 @@
 .single-product-container {
   padding: 2rem;
+  font-family: "Crimson Text";
 
   .product-brandimage {
     padding: 40px;
@@ -16,11 +17,11 @@
     .book-title {
       color: #B95951;
       text-transform: uppercase;
-      // font-family: ;
+      font-family: Leander;
     }
     .book-authorname {
       font-style: italic;
-      font-family: "Lato";
+      font-family: "Crimson Text";
       font-size: 1rem;
       text-transform: uppercase;
       margin-bottom: 20px;
@@ -31,12 +32,14 @@
       border-radius: 10px;
       text-transform: uppercase;
       gap: 10px;
+      font-family: "Crimson Text";
       font-weight: 500;
       font-size: 14px;
     }
     .book-introduction {
       margin-top: 40px;
       white-space: pre-line;
+      font-family: "Crimson Text";
     }
     .buybook-area {
       margin-top: 20px;
@@ -60,36 +63,47 @@
       }
     }
   }
-  .pdf-maincontent {
-    max-width: 800px;
-    height: 100vh;
-    background-color: white;
-    overflow: auto;
-    padding: 20px;
-    color: #000;
-    margin: 0 auto;
-    p {
-      font-size: 18px;
-    }
-  }
-  .pdf-maincontent img{
-    width: 100% !important;
-    height: auto !important;
-  }
-  .product-content {
-    border-radius: 10px;
-    margin-top: 135px;
-    margin-bottom: 110px;
-    span {
-      font-size: 18px;
-    }
-    .action-area {
-      max-width: 800px;
-      margin: 0 auto;
-      margin-bottom: 20px;
-      .btn-action {
-        margin-top: 5px;
+  .product-main-content {
+    position: relative;
+    .product-content {
+      border-radius: 10px;
+      margin-top: 135px;
+      margin-bottom: 110px;
+      span {
+        font-size: 18px;
       }
+      .action-area {
+        max-width: 800px;
+        margin: 0 auto;
+        margin-bottom: 20px;
+        z-index: 10;
+        .btn-action {
+          margin-top: 5px;
+        }
+      }
+      .pdf-maincontent {
+        max-width: 800px;
+        height: 100vh;
+        background-color: white;
+        overflow: auto;
+        padding: 20px;
+        color: #000;
+        margin: 0 auto;
+        z-index: 10;
+        p {
+          font-size: 18px;
+        }
+        img{
+          width: 100% !important;
+          height: auto !important;
+        }
+      }
+    }
+    .angel-with-bowl {
+      position: absolute;
+      width: 15%;
+      top: 20px;
+      right: 0%;
     }
   }
   .btn-item {
@@ -117,7 +131,6 @@
   }
   .additional-title {
     font-size: 3.5vw;
-    font-family: "Merriweather";
     text-align: center;
     color: #B95951;
     width: 30%;
@@ -182,7 +195,6 @@
     position: relative;
     margin-top: 120px;
     text-align: center;
-    font-family: 'Merriweather';
     .head-title {
       font-size: 3rem;
       color: #B95951;
@@ -223,9 +235,16 @@
     .content-area {
       margin-left: 1.5rem;
       .detail-title {
-        font-family: "Merriweather";
         font-size: 1.75rem;
       }
+    }
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  .product-main-content{
+    .angel-with-bowl {
+      display: none;
     }
   }
 }
