@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
+import { useWeb3React } from "@web3-react/core";
 import withRouter from '../../withRouter';
 import Layout from '../shared/layout';
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
 import './single-product.styles.scss';
-import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import BMdetailModal from "../BMmodal"
 import printingpress_abi from "../../utils/contract/PrintingPress.json"
 import BT_abi from "../../utils/contract/BookTradable.json"
@@ -18,8 +18,8 @@ LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
   
-  const { user } = useMoralis();
-  const Web3Api = useMoralisWeb3Api();
+  
+  const { account, activate, deactivate, error, active, chainId } = useWeb3React();
   const { speak } = useSpeechSynthesis();
   const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
@@ -75,7 +75,7 @@ const SingleProduct = ({ match }) => {
   const { image_url, title, author_name, book_price, datamine, introduction, bookmark_price, bt_contract_address, bm_contract_address, hb_contract_address, book_type_id } = product;
 
   const onBuyBook = async () => {
-      if (!user) {
+      if (!account) {
         return
       }
       setLoading(true);
@@ -93,7 +93,7 @@ const SingleProduct = ({ match }) => {
         const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
         const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
         
-        await printpress_contract.methods.buyBook(bt_contract_address).send({from: user.get("ethAddress"), value: web3.utils.toWei(String(book_price))});
+        await printpress_contract.methods.buyBook(bt_contract_address).send({from: account, value: web3.utils.toWei(String(book_price))});
         setLoading(false);
         toast.success("successfully buy book!", {
           position: "top-right",
@@ -132,29 +132,29 @@ const SingleProduct = ({ match }) => {
   }
 
   const onReadBook = async () => {
-    if (!user) {
+    if (!account) {
       return
     }
     setLoading(true);
-    const cur_address = user.get("ethAddress")
+    const cur_address = account
     const options = {
       address: cur_address,
       token_address: bt_contract_address,
     };
-    const bookTokens = await Web3Api.account.getNFTsForContract(options);
+    const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
+    const booktoken_cnt = await bt_contract.methods.balanceOf(account).call();
   
     let testurl;
     var sender;
-    if(user) {
+    if(account) {
       sender = cur_address
     } else {
       sender = "";
     }
-    if (bookTokens.total === 0) {
+    if (booktoken_cnt === 0) {
       testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
     } else {
-      let tokenId = bookTokens.result[0].token_id;
-      testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender + `&tokenid=` + tokenId;
+      testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
     }
   
     getPdfData(testurl);
@@ -162,7 +162,7 @@ const SingleProduct = ({ match }) => {
   }
 
   const onSaveBook = () => {
-    if (!user) {
+    if (!account) {
       return
     }
     const pageHTML = document.querySelector(".pdf-content").outerHTML;
@@ -180,7 +180,7 @@ const SingleProduct = ({ match }) => {
   }
 
   const onAudioBook = () => {
-    if (!user) {
+    if (!account) {
       return
     }
     speak({ text: pdftext })
@@ -191,7 +191,7 @@ const SingleProduct = ({ match }) => {
   }
 
   const showBMModal = (index) => {
-    if (!user) {
+    if (!account) {
       return
     }
     setCurserialnum(index)
@@ -310,7 +310,6 @@ const SingleProduct = ({ match }) => {
               </div>
             </div>
           </div>
-          {/* <img src="/assets/img/additional-bg.png" className="additional-bg"></img> */}
         </div>
         <div className="row">
           <div className="col-md-12">
