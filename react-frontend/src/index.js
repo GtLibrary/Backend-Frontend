@@ -3,19 +3,18 @@ import { render } from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { MoralisProvider } from "react-moralis";
+import { Web3ReactProvider } from '@web3-react/core'
+import { Web3Provider } from "@ethersproject/providers";
 
-const appId = "gmDA8QccmPHQvtnZcEiGemyCcZi7Sgr1meq9GgPz";
-const serverUrl = "https://qzzj9cxkd0zd.usemoralis.com:2053/server";
+function getLibrary(provider) {
+  return new Web3Provider(provider);
+}
 
 render(
   <React.StrictMode>
-    <MoralisProvider
-      serverUrl={serverUrl}
-      appId={appId}
-    >
+    <Web3ReactProvider getLibrary={getLibrary}>
       <App />
-    </MoralisProvider>
+    </Web3ReactProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

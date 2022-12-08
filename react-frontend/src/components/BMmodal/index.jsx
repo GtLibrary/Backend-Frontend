@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { useMoralis } from "react-moralis";
+import { useWeb3React } from "@web3-react/core";
 import Web3 from 'web3';
 import printingpress_abi from "../../utils/contract/PrintingPress.json"
 import NBT_abi from "../../utils/contract/BookTradable.json"
@@ -10,7 +10,7 @@ import CC_abi from "../../utils/contract/CultureCoin.json"
 import Hero_abi from "../../utils/contract/Hero.json"
 
 function BMdetailModal(props) {
-    const { user } = useMoralis();
+    const { account, activate, deactivate, error, active, chainId } = useWeb3React();
   
     const web3 = new Web3(window.ethereum);
     const { product, curserial_num } = props
@@ -44,8 +44,8 @@ function BMdetailModal(props) {
     }, [])
 
     let user_wallet;
-    if(user) {
-        user_wallet = user.get("ethAddress");
+    if(account) {
+        user_wallet = account;
     } else {
         user_wallet = ""
     }
@@ -171,8 +171,8 @@ function BMdetailModal(props) {
     }
 
     const minthero = async (_token_id, _class, _price) => {
-        const to_address = user.get("ethAddress")
-        const from_address = user.get("ethAddress")
+        const to_address = account
+        const from_address = account
         const token_price = web3.utils.toWei(_price)
 
         const HEROS = new web3.eth.Contract(hero_abi, hero_address);
