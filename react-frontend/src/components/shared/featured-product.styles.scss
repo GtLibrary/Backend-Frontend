@@ -1,10 +1,31 @@
 .featured-product {
-  border: 1px solid rgba(0, 0, 0, 0.125);
-  border-radius: 15px;
-  box-shadow: 5px 5px 10px gray;
+  // border: 1px solid rgba(0, 0, 0, 0.125);
+  // border-radius: 15px;
+  // box-shadow: 5px 5px 10px gray;
   padding: 7px;
   margin-left: 1rem 0;
   margin-top: 1rem;
+  .buybook-area {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border-radius: 50px;
+    width: max-content;
+    .bookprice-tag {
+      margin: 0 10px 0 20px;
+    }
+    .btn-buybook {
+      // background-color: #F9D963;
+      background-image: url("../../assets/img/button.png");
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+      color: black;
+      border-radius: 20px;
+      padding: 8px 25px;
+      font-family: "Leander";
+    }
+  }
 }
 .featured-product img {
   border-radius: 1rem;

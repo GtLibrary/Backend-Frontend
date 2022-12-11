@@ -8,6 +8,18 @@ const MainSection = () => {
   const navigate = useNavigate();
   return (
     <div className='main-section-container container'>
+
+      <div className="row additional-area">
+        <div className="left-decorader img-responsive">
+          <img src="/assets/img/left-decorader.png" alt="left decorader"></img>
+        </div>
+        <div className="additional-title">
+          NEW
+        </div>
+        <div className="right-decorader img-responsive">
+          <img src="/assets/img/right-decorader.png" alt="right decorader"></img>
+        </div>
+      </div>
       <div className='main-section-middle row'>
         <div className='ms-m-image col-md-4'>
           <img src={bigScore} alt='the big score'/>
@@ -20,10 +32,11 @@ const MainSection = () => {
 
 	  With the shop falling to him, Tomrin knows he needs to save it... And he is willing to do almost anything, anything but become the Lightshy Crow. Yet as push comes to shove, Tomrin is forced to choose breaking the god's holy edicts or letting the shop fall to ruin</p>
           <p><i>John R Raymond</i></p>
-          <p><b>1 AVAX ($24)</b></p>
-          <button className='button is-black' id='shop-now' onClick={()=> navigate('/product/11')}>
-            PREORDER
-          </button>
+
+          <div className="buybook-area">
+            <span className="bookprice-tag">$ 23</span>
+            <button type="button" className="btn btn-buybook">Preorder</button>
+          </div>
         </div>
       </div>
     </div>
