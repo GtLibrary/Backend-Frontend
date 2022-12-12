@@ -16,6 +16,11 @@ const FeaturedCollection = (props) => {
           productItems
         }
       </div>
+      <div className="row">
+        <div className="col-md-12 viewmore-area">
+          <button className="btn btn-viewmore">View More</button>
+        </div>
+      </div>
     </div>
   );
 }

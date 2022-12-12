@@ -50,6 +50,8 @@
       width: max-content;
       .bookprice-tag {
         margin: 0 10px 0 20px;
+        font-size: 1.5rem;
+        font-weight: 700;
       }
       .btn-buybook {
         // background-color: #F9D963;
@@ -155,13 +157,28 @@
           border-radius: 12px;
         }
       }
-      .action-area {
-        margin: 0 auto;
+      .buyaction-area {
         margin-top: 20px;
-        text-align: right;
+        display: flex;
+        align-items: center;
+        background-color: white;
+        border-radius: 50px;
+        width: max-content;
         .price-area {
+          margin: 0 10px 0 20px;
+          color: black;
           font-size: 1.5rem;
-          margin-right: 20px;
+          font-weight: 700;
+        }
+        .btn-item {
+          // background-color: #F9D963;
+          background-image: url("../../assets/img/button.png");
+          background-repeat: no-repeat;
+          background-size: 100% 100%;
+          color: black;
+          border-radius: 20px;
+          padding: 8px 25px;
+          font-family: "Leander";
         }
       }
     }

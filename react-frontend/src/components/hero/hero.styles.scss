@@ -24,3 +24,33 @@ a {
     color: black;
   }
 }
+.slider-item {
+  position: relative;
+  .content-area {
+    position: absolute;
+    top: 200px;
+    left: 7%;
+    width: 35%;
+    text-align: left;
+    .content-title {
+      font-size: 4vw;
+      font-weight: 600;
+      font-family: "Crimson Text";
+      text-align: left;
+    }
+    .content-description {
+      font-family: "Crimson Text";
+      font-size: 1.5vw;
+      text-align: left;
+    }
+    .btn-header {
+      background-color: #F9D54C;
+      color: black;
+      left: 0;
+    }
+    .btn-header:hover {
+      background-color: #F9D54C;
+      color: black;
+    }
+  }
+}

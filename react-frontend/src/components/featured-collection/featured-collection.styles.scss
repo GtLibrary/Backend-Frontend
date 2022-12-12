@@ -1,3 +1,12 @@
 .featured-collection {
     margin-bottom: 150px !important;
+    .viewmore-area {
+        text-align: center;
+        margin-top: 60px;
+        .btn-viewmore {
+            margin: 0 auto;
+            background-color: #F9D54C;
+            font-family: "Crimson Text";
+        }
+    }
 }

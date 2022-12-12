@@ -16,16 +16,11 @@ const FeaturedProduct = (props) => {
         <div className='featured-body'>
           <div className="item-title">{title}</div>
           <p className="item-author">By {author_name}</p>
-          <span className="item-price">${book_price}</span>
-          <div className="button-area">
-            <button 
-              className='button btn-buy'>
-                Buy Now</button>
-            <button 
-              className='button btn-cart'>
-                Add To Cart</button>
-          </div> 
           
+          <div className="buybook-area">
+            <span className="bookprice-tag">${book_price}</span>
+            <button type="button" className="btn btn-buybook">Buy Now</button>
+          </div>
         </div>
       </div>
     </div>

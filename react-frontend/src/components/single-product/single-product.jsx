@@ -276,7 +276,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Book</h4>
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
-                  <div className="action-area">
+                  <div className="buyaction-area">
                     <span className="price-area">0.0</span>
                     <button className="btn btn-item" onClick={() => onBuyBook()}>Buy Now</button>
                   </div>
@@ -289,7 +289,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Hardbound</h4>
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
-                  <div className="action-area">
+                  <div className="buyaction-area">
                     <span className="price-area">0.0</span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
@@ -302,7 +302,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
-                  <div className="action-area">
+                  <div className="buyaction-area">
                     <span className="price-area">0.0</span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
