@@ -1,6 +1,6 @@
 import React from 'react';
 import './footer.styles.scss';
-import { GithubIcon, TwitterIcon, LinkIcon } from "./socialIcon"
+import { GithubIcon, TwitterIcon, LinkIcon } from "./socialIcon";
 
 const Footer = () => {
   const year = new Date().getFullYear();

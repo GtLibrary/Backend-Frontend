@@ -12,6 +12,7 @@ import { makeStyles } from '@material-ui/styles';
 import MainCard from '../../../ui-component/cards/MainCard';
 import { gridSpacing } from '../../../store/constant';
 import configData from '../../../config';
+import "./styles.css";
 
 import { pdfjs } from 'react-pdf';
 // import { pdfjs } from "pdfjs-dist";
@@ -196,7 +197,7 @@ const BookContent = (props) => {
                             <Button variant="outlined">Back To List</Button>
                         </Link>
                     </Box>
-                    <Box display="flex" felxDirection="row" p={1} m={1} bgcolor="background.paper">
+                    <Box display="flex" flexDirection="column" className="upload-content" p={1} m={1} bgcolor="background.paper">
                         <input
                             accept="application/pdf"
                             className="hidden"
@@ -204,6 +205,7 @@ const BookContent = (props) => {
                             type="file"
                             onChange={(e) => {uploadcontent(e)}}
                         />
+                        <span>select the pdf file</span>
                     </Box>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
                         <CKEditor
