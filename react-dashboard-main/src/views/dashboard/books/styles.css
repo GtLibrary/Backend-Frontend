@@ -1,3 +1,19 @@
 .mui-formcontrol {
     margin: 20px 5px;
 }
+.bookimg-select {
+    display: flex;
+    flex-direction: column;
+    margin: 8px;
+}
+.ck-editor__editable {
+    min-height: 500px;
+}
+.ck-content {
+    height:500px;
+}
+.upload-content input {
+    width: max-content;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}

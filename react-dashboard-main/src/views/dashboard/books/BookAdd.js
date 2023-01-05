@@ -208,7 +208,7 @@ const BookAdd = (props) => {
                     }
                 })
                 .then(function (response) {
-                    if (response.success === 201) {
+                    if (response.status === 201) {
                         setBooktitle('');
                         setBooktype('');
                         setOrigintype('');
@@ -226,14 +226,14 @@ const BookAdd = (props) => {
                         // setHardbound('');
                         // setHardboundfrom('');
                         setHardboundprice('');
-                        toast.success("successfully saved", {
-                            position: "top-right",
-                            autoClose: 3000,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                        });
                     }
+                    toast.success("successfully saved", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
                 })
                 .catch(function (error) {
                     toast.error("failed save data", {
@@ -308,9 +308,10 @@ const BookAdd = (props) => {
                         }}
                     />
                 </div>
-                <div>
+                <div className="bookimg-select">
                     <img src={previosImg} width="400" alt="" />
                     <input type="file" id="image" accept="image/png, image/jpeg" onChange={handleFileUpload} required />
+                    <p>select the book image</p>
                 </div>
                 <div>
                     <TextField
@@ -353,7 +354,7 @@ const BookAdd = (props) => {
                         id="introduction"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the author wallet address"
+                        placeholder="Please input the introduction of book"
                         helperText="Introduction"
                         fullWidth  
                         multiline
@@ -369,11 +370,13 @@ const BookAdd = (props) => {
                             setIntroduction(e.target.value);
                         }}
                     />
+                </div>
+                <div>
                     <TextField
                         id="maxbooksupply"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the curserial number"
+                        placeholder="Please input the max amount of book"
                         helperText="Max Books Supply"
                         fullWidth
                         type="number"
@@ -387,13 +390,11 @@ const BookAdd = (props) => {
                             setMaxbooksupply(e.target.value);
                         }}
                     />
-                </div>
-                <div>
                     <TextField
                         id="maxbookmarksupply"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the author wallet address"
+                        placeholder="Please input the max amount of bookmark"
                         helperText="Max bookmarks supply"
                         fullWidth
                         type="number"
@@ -407,11 +408,13 @@ const BookAdd = (props) => {
                             setMaxbookmarksupply(e.target.value);
                         }}
                     />
+                </div>
+                <div>
                     <TextField
                         id="startpoint"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the curserial number"
+                        placeholder="Please input the start point"
                         helperText="Start Point"
                         fullWidth
                         type="number"
@@ -425,13 +428,11 @@ const BookAdd = (props) => {
                             setStartpoint(e.target.value);
                         }}
                     />
-                </div>
-                <div>
                     <TextField
                         id="bookprice"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the author wallet address"
+                        placeholder="Please input the book price"
                         helperText="Book Price"
                         fullWidth
                         type="number"
@@ -445,11 +446,13 @@ const BookAdd = (props) => {
                             setBookprice(e.target.value);
                         }}
                     />
+                </div>
+                <div>
                     <TextField
                         id="Bookmarkprice"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the curserial number"
+                        placeholder="Please input the bookmark price"
                         helperText="Bookmark Price"
                         fullWidth
                         type="number"
@@ -463,8 +466,6 @@ const BookAdd = (props) => {
                             setBookmarkprice(e.target.value);
                         }}
                     />
-                </div>
-                <div>
                     <TextField
                         id="curserialnumber"
                         // label="Book  Name"
@@ -482,13 +483,13 @@ const BookAdd = (props) => {
                             setCurserialnumber(e.target.value);
                         }}
                     />
-                {/* </div>
-                <div> */}
+                </div>
+                <div>
                     <TextField
                         id="hardbound"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the author wallet address"
+                        placeholder="Please input the hardbound amount"
                         helperText="Hardbound"
                         fullWidth
                         // margin="normal"
@@ -501,30 +502,11 @@ const BookAdd = (props) => {
                             setHardbound(e.target.value);
                         }}
                     />
-                    {/* <TextField
-                        id="hardboundfrom"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the curserial number"
-                        helperText="Hardbound from"
-                        fullWidth
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={hardboundfrom}
-                        onChange={(e) => {
-                            setHardboundfrom(e.target.value);
-                        }}
-                    /> */}
-                </div>
-                <div>
                     <TextField
                         id="hardboundprice"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the author wallet address"
+                        placeholder="Please input the hardbound price"
                         helperText="Hardbound Price"
                         fullWidth
                         type="number"
@@ -538,11 +520,13 @@ const BookAdd = (props) => {
                             setHardboundprice(e.target.value);
                         }}
                     />
+                </div>
+                <div>
                     <TextField
                         id="datamine"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the author wallet address"
+                        placeholder="Please input the datamine"
                         helperText="DataMine"
                         fullWidth
                         // margin="normal"
