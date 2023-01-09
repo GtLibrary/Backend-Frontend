@@ -88,10 +88,10 @@ $ python manage.py runserver 5000
 
 <br />
 
-### Compile & start the React UI
+### Compile & start the React UI Frontend
 
 ```bash
-$ cd react-ui
+$ cd react-frontend
 $
 $ # Install Modules
 $ yarn
@@ -173,3 +173,20 @@ authorization: JWT_TOKEN (returned by Login request)
 ```
 
 <br />
+
+### Compile and run the Author Portal
+
+```bash
+$ cd react-dashboard-main
+$
+$ # Install Modules
+$ yarn
+$
+$ # Start for development (LIVE Reload)
+$ yarn start 
+```
+
+#### Login and Password
+default username is admin@killer.com
+default password is adminkiller.
+
