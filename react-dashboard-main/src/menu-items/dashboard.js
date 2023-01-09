@@ -1,10 +1,11 @@
 // assets
-import { IconDashboard, IconDeviceAnalytics } from '@tabler/icons';
+import { IconDashboard, IconDeviceAnalytics, IconBook } from '@tabler/icons';
 
 // constant
 const icons = {
     IconDashboard: IconDashboard,
-    IconDeviceAnalytics
+    IconDeviceAnalytics,
+    IconBook
 };
 
 //-----------------------|| DASHBOARD MENU ITEMS ||-----------------------//
@@ -27,7 +28,7 @@ export const dashboard = {
             title: 'Books',
             type: 'item',
             url: '/dashboard/booklist',
-            icon: icons['IconDashboard'],
+            icon: icons['IconBook'],
             breadcrumbs: false
         }
     ]

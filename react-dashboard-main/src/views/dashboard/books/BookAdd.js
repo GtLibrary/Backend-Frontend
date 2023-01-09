@@ -272,6 +272,7 @@ const BookAdd = (props) => {
                     background: "rgba(255, 255, 255)",
                     position: "absolute",
                     marginTop: "300px",
+                    zIndex: "1111"
                     }),
                 }}
                 fadeSpeed={9000}
