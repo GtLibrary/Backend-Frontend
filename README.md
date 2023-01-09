@@ -70,8 +70,9 @@ The product is built using a `two-tier` pattern where the React frontend is deco
 ### Start the Django API 
 
 ```bash
-$ cd django-api
-$ 
+$ #cd django-api
+$ cd api-server-django-1.0.5
+$
 $ # Create a virtual environment
 $ virtualenv env
 $ source env/bin/activate
@@ -88,10 +89,10 @@ $ python manage.py runserver 5000
 
 <br />
 
-### Compile & start the React UI Frontend
+### Compile & start the React UI
 
 ```bash
-$ cd react-frontend
+$ cd react-ui
 $
 $ # Install Modules
 $ yarn
@@ -173,20 +174,3 @@ authorization: JWT_TOKEN (returned by Login request)
 ```
 
 <br />
-
-### Compile and run the Author Portal
-
-```bash
-$ cd react-dashboard-main
-$
-$ # Install Modules
-$ yarn
-$
-$ # Start for development (LIVE Reload)
-$ yarn start 
-```
-
-#### Login and Password
-default username is admin@killer.com
-default password is adminkiller.
-
