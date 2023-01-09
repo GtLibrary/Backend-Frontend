@@ -102,8 +102,11 @@ $ yarn start
 
 <br />
 
-test user id is admin@killer.com and password is adminkiller.
+# Test Login Information
 
+test user id is "admin@killer.com" and password is "adminkiller".
+
+<br />
 ### Configuration (Optional)
 
 > Change the port exposed by the Django API
