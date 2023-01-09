@@ -88,10 +88,10 @@ $ python manage.py runserver 5000
 
 <br />
 
-### Compile & start the React UI Frontend
+### Compile & start the React UI
 
 ```bash
-$ cd react-frontend
+$ cd react-ui
 $
 $ # Install Modules
 $ yarn
@@ -102,11 +102,6 @@ $ yarn start
 
 <br />
 
-# Test Login Information
-
-test user id is "admin@killer.com" and password is "adminkiller".
-
-<br />
 ### Configuration (Optional)
 
 > Change the port exposed by the Django API
@@ -178,20 +173,3 @@ authorization: JWT_TOKEN (returned by Login request)
 ```
 
 <br />
-
-### Compile and run the Author Portal
-
-```bash
-$ cd react-dashboard-main
-$
-$ # Install Modules
-$ yarn
-$
-$ # Start for development (LIVE Reload)
-$ yarn start 
-```
-
-#### Login and Password
-default username is admin@killer.com
-default password is adminkiller.
-
