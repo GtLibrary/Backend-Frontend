@@ -70,8 +70,9 @@ The product is built using a `two-tier` pattern where the React frontend is deco
 ### Start the Django API 
 
 ```bash
-$ cd django-api
-$ 
+$ #cd django-api
+$ cd api-server-django-1.0.5
+$
 $ # Create a virtual environment
 $ virtualenv env
 $ source env/bin/activate
