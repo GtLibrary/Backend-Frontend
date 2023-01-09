@@ -88,7 +88,7 @@ $ python manage.py runserver 5000
 
 <br />
 
-### Compile & start the React UI
+### Compile & start the React UI Frontend
 
 ```bash
 $ cd react-frontend
