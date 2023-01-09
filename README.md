@@ -173,3 +173,16 @@ authorization: JWT_TOKEN (returned by Login request)
 ```
 
 <br />
+
+### Compile and run the Author Portal
+
+```bash
+$ cd react-dashboard-main
+$
+$ # Install Modules
+$ yarn
+$
+$ # Start for development (LIVE Reload)
+$ yarn start 
+```
+
