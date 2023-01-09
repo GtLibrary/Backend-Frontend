@@ -91,7 +91,7 @@ $ python manage.py runserver 5000
 ### Compile & start the React UI
 
 ```bash
-$ cd react-ui
+$ cd react-frontend
 $
 $ # Install Modules
 $ yarn
