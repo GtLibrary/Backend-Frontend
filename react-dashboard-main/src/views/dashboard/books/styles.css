@@ -7,6 +7,7 @@
     margin: 8px;
 }
 .ck-editor__editable {
+    width: 100%;
     min-height: 500px;
 }
 .ck-content {
