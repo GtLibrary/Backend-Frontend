@@ -186,3 +186,7 @@ $ # Start for development (LIVE Reload)
 $ yarn start 
 ```
 
+#### Login and Password
+default username is admin@killer.com
+default password is adminkiller.
+
