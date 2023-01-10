@@ -11,6 +11,7 @@
     "moralis-admin-cli": "^2.1.16",
     "openai": "^2.0.4",
     "password-prompt": "^1.1.2",
-    "web3": "^1.7.0"
+    "web3": "^1.7.0",
+    "web3-eth-contract": "^1.8.1"
   }
 }

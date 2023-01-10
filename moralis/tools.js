@@ -48,7 +48,7 @@ const Contract = require("web3-eth-contract");
 
 // Moralis.start({ serverUrl, appId });
 
-const web3 = new Web3(new Web3.providers.HttpProvider(speedyNode));
+const web3 = new Web3(new Web3.providers.HttpProvider("https://nd-403-110-561.p2pify.com/dd4287180d2d299318a50402bcc4398d/ext/bc/C/rpc"));
 
 const NBT_abi = JSON.parse(
   fs.readFileSync("/home/john/bakerydemo/brownie/BookTradable.json", "utf8")
@@ -125,9 +125,8 @@ async function recover(msg, sig) {
 }
 
 async function getTotalSupply(_contractid) {
-  const contract = new Contract(NBT_abi, _contractid);
+  const contract = new web3.eth.Contract(NBT_abi, _contractid);
   const totalsupply = await contract.methods.totalSupply().call();
-  console.log(totalsupply);
 
   return totalsupply;
 }

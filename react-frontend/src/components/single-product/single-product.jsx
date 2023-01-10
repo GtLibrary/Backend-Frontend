@@ -36,6 +36,7 @@ const SingleProduct = ({ match }) => {
 
   const navigate = useNavigate();
   const [pdfcontent, setPdfcontent] = useState([]);
+  const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState('');
   const [pdfimage, setPdfimage] = useState('');
   const { id } = useParams();
@@ -47,8 +48,22 @@ const SingleProduct = ({ match }) => {
 
   useEffect(() => {
     const bookurl = process.env.REACT_APP_API + `bookdata/${id}`
+    const booktypeurl = process.env.REACT_APP_API + `booktype/list`
     
     async function getBook() {
+      const typeconfig = {
+        method: 'get',
+        url: booktypeurl,
+      }
+      let type_res = await axios(typeconfig)
+      .then(res => {
+        let booktypearr = []
+        res.data.map((item, key) => {
+          if(!booktypearr[item.id])
+            booktypearr[item.id] = item.booktype
+        })
+        setBooktypes(booktypearr);
+      })
       const config = {
         method: 'get',
         url: bookurl,
@@ -244,7 +259,7 @@ const SingleProduct = ({ match }) => {
             <div className="product-detailinfo">
               <h4 className="book-title">{title}</h4>
               <h6 className="book-authorname">By {author_name}</h6>
-              <span className="book-category">{book_type_id.booktype}</span>
+              <span className="book-category">{booktypes[book_type_id]}</span>
               <div className="book-introduction">
                 {introduction}
               </div>
