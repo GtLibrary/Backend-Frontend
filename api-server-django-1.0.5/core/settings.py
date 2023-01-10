@@ -27,14 +27,18 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY', default='insecure-S#perS3crEt_007')
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
 
-try:
-    # expects 1 or 0
-    DEBUG = int(os.environ.get("DEBUG", default=0))
-except:
-    DEBUG = False
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = int(os.environ.get("DEBUG", default=1))
+
+# # SECURITY WARNING: don't run with debug turned on in production!
+# DEBUG = False
+
+# try:
+#     # expects 1 or 0
+#     DEBUG = int(os.environ.get("DEBUG", default=1))
+# except:
+#     DEBUG = False
 
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS", default="*").split(" ")
 
