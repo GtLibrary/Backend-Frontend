@@ -161,7 +161,7 @@ const BookAdd = (props) => {
         form_data.append('book_type_id', booktype);
         form_data.append('book_price', bookprice);
         form_data.append('bookmark_price', bookmarkprice);
-        // form_data.append('hardbound', hardbound);
+        form_data.append('hardbound', hardbound);
         // form_data.append('hardbound_from', hardboundfrom);
         form_data.append('hardbound_price', hardboundprice);
         form_data.append('max_book_supply', maxbooksupply);
@@ -223,7 +223,7 @@ const BookAdd = (props) => {
                         setBookmarkprice('');
                         setBookprice('');
                         setStartpoint('');
-                        // setHardbound('');
+                        setHardbound('');
                         // setHardboundfrom('');
                         setHardboundprice('');
                     }
