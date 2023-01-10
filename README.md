@@ -177,4 +177,5 @@ authorization: JWT_TOKEN (returned by Login request)
 
 
 **Login Information**
+<br />
 default username is admin@killer.com default password is adminkiller.
