@@ -10,6 +10,7 @@ import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
 import ProfileSection from './ProfileSection';
 import NotificationSection from './NotificationSection';
+import ConnectwalletSection from './ConnectwalletSection';
 
 // assets
 import { IconMenu2 } from '@tabler/icons';
@@ -65,6 +66,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
 
             {/* notification & profile */}
             <NotificationSection />
+            <ConnectwalletSection />
             <ProfileSection />
         </React.Fragment>
     );

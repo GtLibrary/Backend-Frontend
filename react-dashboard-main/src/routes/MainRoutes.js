@@ -11,7 +11,7 @@ const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default'
 const Booklist = Loadable(lazy(() => import('../views/dashboard/books/Booklist')));
 const BookAdd = Loadable(lazy(() => import('../views/dashboard/books/BookAdd')));
 const BookContent = Loadable(lazy(() => import('../views/dashboard/books/BookContent')));
-
+const Balance = Loadable(lazy(() => import('../views/dashboard/balance/Balance')));
 // basicsetting routing
 const BookType = Loadable(lazy(() => import('../views/basic/BookType')));
 const NewBookType = Loadable(lazy(() => import('../views/basic/NewBookType')));
@@ -37,6 +37,7 @@ const MainRoutes = () => {
                 '/dashboard/books/addbook',
                 '/dashboard/books/edit/:id',
                 '/dashboard/books/contentedit/:id',
+                '/dashboard/balance',
 
                 '/basic/basic-booktype',
                 '/basic/new-booktype',
@@ -76,6 +77,7 @@ const MainRoutes = () => {
                             <BookContent {...props} action="edit" />
                         )
                         } />
+                        <Route path="/dashboard/balance" component={Balance} />
 
                         <Route path="/basic/basic-booktype" component={BookType} />
                         <Route path="/basic/new-booktype" 

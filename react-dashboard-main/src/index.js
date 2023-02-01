@@ -11,19 +11,27 @@ import { store, persister } from './store';
 import * as serviceWorker from './serviceWorker';
 import App from './App';
 import config from './config';
+import { Web3ReactProvider } from '@web3-react/core'
+import { Web3Provider } from "@ethersproject/providers";
 
 // style + assets
 import './assets/scss/style.scss';
 
 //-----------------------|| REACT DOM RENDER  ||-----------------------//
 
+function getLibrary(provider) {
+    return new Web3Provider(provider);
+}
+
 ReactDOM.render(
 
         <Provider store={store}>
             <PersistGate loading={null} persistor={persister}>
-                <BrowserRouter basename={config.basename}>
-                    <App />
-                </BrowserRouter>
+                <Web3ReactProvider getLibrary={getLibrary}>
+                    <BrowserRouter basename={config.basename}>
+                        <App />
+                    </BrowserRouter>
+                </Web3ReactProvider>
             </PersistGate>
         </Provider>,
     document.getElementById('root')
