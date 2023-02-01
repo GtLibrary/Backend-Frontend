@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "api",
     "api.user",
+    "api.balance",
     "api.authentication",
     "api.booktype",
     "api.origintype",

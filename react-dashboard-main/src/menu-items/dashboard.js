@@ -30,6 +30,14 @@ export const dashboard = {
             url: '/dashboard/booklist',
             icon: icons['IconBook'],
             breadcrumbs: false
+        },
+        {
+            id: 'deposite',
+            title: 'Balance',
+            type: 'item',
+            url: '/dashboard/balance',
+            icon: icons['IconDeviceAnalytics'],
+            breadcrumbs: false
         }
     ]
 };

@@ -62,10 +62,6 @@ const BookAdd = (props) => {
 
     const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
-    const gw100 = web3.utils.toWei('25.01', 'gwei');
-    const gw25 = web3.utils.toWei('25.001', 'gwei');
-    const gw10 = web3.utils.toWei('25.0001', 'gwei');
-
     const getBooksById = async () => {
         const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + id);
 
