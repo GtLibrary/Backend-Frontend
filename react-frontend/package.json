@@ -40,7 +40,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "deploy-production": "react-scripts build && scp -r ./build/* root@128.199.10.185:/var/www/motochristo.com/html"
+    "deploy-dev": "react-scripts build && scp -r ./build/* root@128.199.10.185:/var/www/motochristo.com/html",
+    "deploy-production": "react-scripts build && cp -r ./build/* /var/www/books.greatlibrary.io/html"
   },
   "eslintConfig": {
     "extends": [
