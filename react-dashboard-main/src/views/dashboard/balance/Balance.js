@@ -5,6 +5,7 @@ import { useWeb3React } from "@web3-react/core";
 import axios from 'axios';
 import Web3 from 'web3';
 import { ethers } from "ethers";
+import configData from '../../../config';
 
 
 // material-ui
@@ -22,20 +23,32 @@ const Balance = () => {
     const user_id = userinfo.user._id;
     const { account } = useWeb3React();
     const [curccbal, setCurccbal] = useState(0);
-    const [depositeval, setDepositeval] = useState(0);
+    const [depositval, setDepositval] = useState(0);
     
     const CC_address = process.env.REACT_APP_CULTURECOINADDRESS;
 
-    const depositeCC = async() => {
+    const depositCC = async() => {
         const { ethereum } = window;
 
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
-            await CCportal.approve(account, ethers.utils.parseEther(String(depositeval)))
-            let deposite = await CCportal.transfer(CC_address, ethers.utils.parseEther(String(depositeval)));
-            await deposite.wait();
+            await CCportal.approve(account, ethers.utils.parseEther(String(depositval)))
+            let deposit = await CCportal.transfer(CC_address, ethers.utils.parseEther(String(depositval)));
+            await deposit.wait();
+            await axios.post(configData.API_SERVER + 'deposit', {
+                user_id: user_id,
+                amount: depositval
+            })
+            .then(function (response) {
+                if (response.status === 201) {
+                    console.log("response", response)
+                }
+            })
+            .catch(function (error) {
+                console.log("error", error)
+            });
         }
     }
 
@@ -68,11 +81,11 @@ const Balance = () => {
                     />
 
                     <TextField
-                        id="deposite_val"
+                        id="deposit_val"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the deposite CCoin amount"
-                        helperText="Deposite amount"
+                        placeholder="Please input the deposit CCoin amount"
+                        helperText="Deposit amount"
                         fullWidth
                         type="number"
                         // margin="normal"
@@ -80,14 +93,14 @@ const Balance = () => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={depositeval}
+                        value={depositval}
                         onChange={(e) => {
-                            setDepositeval(e.target.value);
+                            setDepositval(e.target.value);
                         }}
                     />
                 </div>
             </Box>
-            <Button variant="contained" onClick={() => depositeCC()}>Deposite CCoin</Button>
+            <Button variant="contained" onClick={() => depositCC()}>Deposit CCoin</Button>
             <Box
                 component="form"
                 sx={{
@@ -115,11 +128,11 @@ const Balance = () => {
                     />
 
                     <TextField
-                        id="deposite_val"
+                        id="deposit_val"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the deposite CCoin amount"
-                        helperText="Deposite amount"
+                        placeholder="Please input the deposit CCoin amount"
+                        helperText="Deposit amount"
                         fullWidth
                         type="number"
                         // margin="normal"
@@ -129,12 +142,12 @@ const Balance = () => {
                         variant="filled"
                         // value={}
                         // onChange={(e) => {
-                        //     setDepositeval(e.target.value);
+                        //     setDepositval(e.target.value);
                         // }}
                     />
                 </div>
             </Box>
-            <Button variant="contained">Deposite by Credit Card</Button>
+            <Button variant="contained">Deposit by Credit Card</Button>
         </MainCard>
     );
 };

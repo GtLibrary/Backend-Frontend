@@ -14,6 +14,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
 from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, art
+from api.wallet.views import WalletInfo, transaction_detail, deposit_funds, transfer, wallet_transactions
 from api.nft import views as nft_views
 
 router = routers.SimpleRouter(trailing_slash=False)
@@ -48,6 +49,11 @@ urlpatterns = [
     path("bookdata/<int:pk>", getbookdatabyId),
     path("bookcontent/<int:pk>", getBookContentbyId),
     path('art/<int:pk>', art, name='art'),
+    path('wallet_info/', WalletInfo.as_view()),
+    path('wallet/transactions/', wallet_transactions),
+    path('wallet/transactions/<int:transaction_pk>/', transaction_detail),
+    path('deposit/', deposit_funds),
+    path('transfer/', transfer),
 
     url('^nft/', nft_views.nft, name='nft'),
 ]
