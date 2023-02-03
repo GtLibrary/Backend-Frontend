@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-" @ckeditor/ckeditor5-highlight":
-  version "19.0.0"
-  resolved "https://codeload.github.com/ckeditor/ckeditor5-highlight/tar.gz/cdf7edb9f24d778b6f7bb6f7e6254111310c5e22"
-  dependencies:
-    "@ckeditor/ckeditor5-core" "^19.0.0"
-    "@ckeditor/ckeditor5-ui" "^19.0.0"
-
 "@babel/code-frame@7.10.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/code-frame/-/code-frame-7.10.4.tgz#168da1a36e90da68ae8d49c0f1b48c7c6249213a"
@@ -1720,6 +1713,13 @@
   integrity sha512-Rfc/Pa1EBQZIDFrLlL5HXx1gO3x0ZBq8DfeRlZ4Z6mRlOIzxU6Wj74qWsG6wauVJ1/KVVsghUN4zJ3U26SDaPQ==
   dependencies:
     ckeditor5 "^35.0.1"
+
+"@ckeditor/ckeditor5-highlight@ckeditor/ckeditor5-highlight":
+  version "19.0.0"
+  resolved "https://codeload.github.com/ckeditor/ckeditor5-highlight/tar.gz/cdf7edb9f24d778b6f7bb6f7e6254111310c5e22"
+  dependencies:
+    "@ckeditor/ckeditor5-core" "^19.0.0"
+    "@ckeditor/ckeditor5-ui" "^19.0.0"
 
 "@ckeditor/ckeditor5-image@^35.0.1":
   version "35.0.1"

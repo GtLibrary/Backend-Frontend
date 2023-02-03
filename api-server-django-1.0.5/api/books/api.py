@@ -9,7 +9,8 @@ class BooksCreateApi(generics.CreateAPIView):
     serializer_class = BooksSerializer
 
     def perform_create(self, serializer_class):
-        serializer_class.save(user=self.request.user)
+        print(self.request.user.id)
+        serializer_class.save(user=self.request.user.id)
 
 class BooksApi(generics.ListAPIView):
     queryset = Books.objects.all()
@@ -20,7 +21,7 @@ class BooksApi(generics.ListAPIView):
         if(self.request.user.is_superuser):
             return Books.objects.all()
         else:
-            return Books.objects.all().filter(user=self.request.user)
+            return Books.objects.all().filter(user=self.request.user.id)
 
 class BooksUpdateApi(generics.RetrieveUpdateAPIView):
     queryset = Books.objects.all()
