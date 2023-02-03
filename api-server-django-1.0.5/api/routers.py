@@ -13,7 +13,7 @@ from api.user.viewsets import UserViewSet
 from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
-from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, art
+from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, art, myopenai
 from api.wallet.views import WalletInfo, transaction_detail, deposit_funds, transfer, wallet_transactions
 from api.nft import views as nft_views
 
@@ -49,6 +49,7 @@ urlpatterns = [
     path("bookdata/<int:pk>", getbookdatabyId),
     path("bookcontent/<int:pk>", getBookContentbyId),
     path('art/<int:pk>', art, name='art'),
+    path('myopenai', myopenai, name="myopenai"),
     path('wallet_info/', WalletInfo.as_view()),
     path('wallet/transactions/', wallet_transactions),
     path('wallet/transactions/<int:transaction_pk>/', transaction_detail),

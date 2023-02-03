@@ -34,21 +34,26 @@ const Balance = () => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
-            await CCportal.approve(account, ethers.utils.parseEther(String(depositval)))
-            let deposit = await CCportal.transfer(CC_address, ethers.utils.parseEther(String(depositval)));
-            await deposit.wait();
-            await axios.post(configData.API_SERVER + 'deposit', {
-                user_id: user_id,
-                amount: depositval
-            })
-            .then(function (response) {
-                if (response.status === 201) {
-                    console.log("response", response)
-                }
-            })
-            .catch(function (error) {
-                console.log("error", error)
-            });
+            const approveflag = CCportal.allowance(CC_address, account);
+            if(approveflag > 0) {
+                await CCportal.approve(account, ethers.utils.parseEther(String(depositval)))
+                let deposit = await CCportal.transfer(CC_address, ethers.utils.parseEther(String(depositval)));
+                await deposit.wait();
+                await axios.post(configData.API_SERVER + 'deposit', {
+                    user_id: user_id,
+                    amount: depositval
+                })
+                .then(function (response) {
+                    if (response.status === 201) {
+                        console.log("response", response)
+                    }
+                })
+                .catch(function (error) {
+                    console.log("error", error)
+                });
+            } else {
+                alert("This token not approved, please check your wallet!")
+            }
         }
     }
 
