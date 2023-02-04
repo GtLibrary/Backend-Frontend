@@ -5,6 +5,8 @@ import Web3 from 'web3';
 import BigNumber from 'bignumber.js';
 import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
+import { ethers } from "ethers";
+import { useWeb3React } from "@web3-react/core";
 // material-ui
 import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 // project imports
@@ -32,13 +34,14 @@ const BookAdd = (props) => {
     const regularGas = process.env.REACT_APP_REGLUARGAS;
 
     const { id } = useParams();
+    const { account } = useWeb3React();
     const printpress_abi = printingpress_abi;
     const booktradable_abi = bt_abi;
 
     const [booktitle, setBooktitle] = useState('');
     const [title, setTitle] = useState('Book Add');
     const [brandimage, setBrandimage] = useState(null);
-    const [authorwallet, setAuthorwallet] = useState('');
+    const [authorwallet, setAuthorwallet] = useState(account);
     const [authorname, setAuthorname] = useState('');
     const [curserialnumber, setCurserialnumber] = useState('');
     const [datamine, setDatamine] = useState('');
@@ -122,23 +125,46 @@ const BookAdd = (props) => {
         _defaultfrom,
         _mintTo
     ) => {
-        const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
-        const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;
-        const transaction = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA);
         
-        let gas_Price = await web3.eth.getGasPrice();
-        const options = {
-            to      : transaction._parent._address,
-            data    : transaction.encodeABI(),
-            gas     : await transaction.estimateGas({from: account}),
-            gasPrice: gas_Price
-        };
-        const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
-        const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-        const contractdata = await web3.eth.getTransactionReceipt(result.transactionHash);
-        const contract_address = contractdata.logs[0].address;
+        const { ethereum } = window;
+        
+        if(ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const printpress = new ethers.Contract(printingpress_address, printpress_abi, signer);
+            try {
+                
+                let contract = await printpress.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, account);
+                
+                console.log("contract", contract)
+                const contractdata = await contract.wait();
+                console.log("contract data", contractdata)
+                const contract_address = contractdata.logs[0].address;
+    
+                return contract_address;
+            } catch (error) {
+                console.log("error", error)
+            }
+        }
 
-        return contract_address;
+
+        // const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
+        // const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;
+        // const transaction = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA);
+        
+        // let gas_Price = await web3.eth.getGasPrice();
+        // const options = {
+        //     to      : transaction._parent._address,
+        //     data    : transaction.encodeABI(),
+        //     gas     : await transaction.estimateGas({from: account}),
+        //     gasPrice: gas_Price
+        // };
+        // const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
+        // const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+        // const contractdata = await web3.eth.getTransactionReceipt(result.transactionHash);
+        // const contract_address = contractdata.logs[0].address;
+
+        // return contract_address;
     };
 
     const saveBook = async () => {
@@ -190,9 +216,9 @@ const BookAdd = (props) => {
                     });
                 });
         } else {
-            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbooksupply), web3.utils.toWei(bookprice), new BigNumber(startpoint), authorwallet);
-            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(maxbookmarksupply), web3.utils.toWei(bookmarkprice), new BigNumber(startpoint), authorwallet)
-            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, new BigNumber(hardbound), web3.utils.toWei(hardboundprice), new BigNumber(startpoint), authorwallet)
+            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbooksupply), web3.utils.toWei(bookprice), ethers.utils.parseEther(startpoint), account);
+            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbookmarksupply), web3.utils.toWei(bookmarkprice), ethers.utils.parseEther(startpoint), account)
+            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(hardbound), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(startpoint), account)
 
             form_data.append('bt_contract_address', BTcontract);
             form_data.append('bm_contract_address', BMcontract);

@@ -4,11 +4,11 @@
     "private": true,
     "homepage": "https://berrydashboard.io",
     "dependencies": {
-        " ": "ckeditor/ckeditor5-highlight",
         "@ckeditor/ckeditor5-alignment": "^35.0.1",
         "@ckeditor/ckeditor5-build-classic": "^35.0.1",
         "@ckeditor/ckeditor5-ckbox": "^35.0.1",
         "@ckeditor/ckeditor5-core": "^35.0.1",
+        "@ckeditor/ckeditor5-highlight": "ckeditor/ckeditor5-highlight",
         "@ckeditor/ckeditor5-react": "^5.0.2",
         "@emotion/react": "^11.4.0",
         "@emotion/styled": "^11.3.0",
