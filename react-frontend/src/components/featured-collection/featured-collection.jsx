@@ -10,7 +10,7 @@ const FeaturedCollection = (props) => {
 
   return (
     <div className='featured-collection container'>
-      <h2 className='featured-section-title'>Facinating Favorites</h2>
+      <h2 className='featured-section-title'>Fascinating Favorites</h2>
       <div className='products row'>
         {
           productItems
