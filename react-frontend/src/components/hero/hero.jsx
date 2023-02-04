@@ -14,15 +14,15 @@ const Hero = () => {
           <div className="slider-item">
               <img src="assets/img/slider/image2.png" />
               <div className="content-area">
-                <p className="content-title">Books reimagined for mordern life.</p>
-                <p className="content-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla interdum tellus arcu.</p>
+                <p className="content-title">Books reimagined for modern life.</p>
+                <p className="content-description">Books for the new millennium.</p>
                 <button className="btn btn-header">Learn More</button>
               </div>
           </div>
           <div className="slider-item">
               <img src="assets/img/slider/image3.png" />
               <div className="content-area">
-                <p className="content-title">Books reimagined for mordern life.</p>
+                <p className="content-title">Books reimagined for modern life.</p>
               </div>
           </div>
       </Carousel>
