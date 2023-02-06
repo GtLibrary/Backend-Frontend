@@ -35,7 +35,7 @@ class LoginSerializer(serializers.Serializer):
                 {"success": False, "msg": "Password is required to log in."}
             )
         user = authenticate(username=email, password=password)
-        print("user=>", user.is_active)
+        
         if user is None:
             raise exceptions.AuthenticationFailed({"success": False, "msg": "Wrong credentials"})
 
@@ -60,4 +60,6 @@ class LoginSerializer(serializers.Serializer):
             "success": True,
             "token": session.token,
             "user": {"_id": user.pk, "username": user.username, "email": user.email},
+            "is_staff": user.is_staff,
+            "is_superuser": user.is_superuser
         }

@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
+    'rest_framework.authtoken',
     "api",
     "api.user",
     "api.wallet",
@@ -164,8 +165,13 @@ AUTH_USER_MODEL = "api_user.User"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "api.authentication.backends.ActiveSessionAuthentication",
+        "api.authentication.backends.ActiveSessionAuthentication", 
+        'rest_framework.authentication.TokenAuthentication',
     ),
+    # 'DEFAULT_PERMISSION_CLASSES': [
+    #     "rest_framework.permissions.DjangoModelPermissions",
+    #     'rest_framework.permissions.IsAuthenticated',
+    # ],
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),
 }
 

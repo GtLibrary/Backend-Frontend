@@ -5,7 +5,9 @@ export const initialState = {
     token: '',
     isLoggedIn: false,
     isInitialized: false,
-    user: null
+    user: null,
+    is_staff: false,
+    is_superuser: false
 };
 
 //-----------------------|| ACCOUNT REDUCER ||-----------------------//
@@ -13,13 +15,15 @@ export const initialState = {
 const accountReducer = (state = initialState, action) => {
     switch (action.type) {
         case ACCOUNT_INITIALIZE: {
-            const { isLoggedIn, user, token } = action.payload;
+            const { isLoggedIn, user, token, is_staff, is_superuser } = action.payload;
             return {
                 ...state,
                 isLoggedIn,
                 isInitialized: true,
                 token,
-                user
+                user,
+                is_staff,
+                is_superuser
             };
         }
         case LOGIN: {
@@ -35,7 +39,9 @@ const accountReducer = (state = initialState, action) => {
                 ...state,
                 isLoggedIn: false,
                 token: '',
-                user: null
+                user: null,
+                is_staff: false,
+                is_superuser: false
             };
         }
         default: {

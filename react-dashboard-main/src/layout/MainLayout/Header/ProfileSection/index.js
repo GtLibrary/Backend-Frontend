@@ -214,31 +214,15 @@ const ProfileSection = () => {
                                     <CardContent className={classes.cardContent}>
                                         <Grid container direction="column" spacing={0}>
                                             <Grid item className={classes.flex}>
-                                                <Typography variant="h4">Good Morning,</Typography>
+                                                {/* <Typography variant="h4">Good Morning,</Typography> */}
                                                 <Typography component="span" variant="h4" className={classes.name}>
-                                                    John
+                                                    {account.user.username}
                                                 </Typography>
                                             </Grid>
                                             <Grid item>
-                                                <Typography variant="subtitle2">Project Admin</Typography>
+                                                <Typography variant="subtitle2">{account.is_staff ? "Author": "User"}</Typography>
                                             </Grid>
                                         </Grid>
-                                        <OutlinedInput
-                                            className={classes.searchControl}
-                                            id="input-search-profile"
-                                            value={value}
-                                            onChange={(e) => setValue(e.target.value)}
-                                            placeholder="Search profile options"
-                                            startAdornment={
-                                                <InputAdornment position="start">
-                                                    <IconSearch stroke={1.5} size="1.3rem" className={classes.startAdornment} />
-                                                </InputAdornment>
-                                            }
-                                            aria-describedby="search-helper-text"
-                                            inputProps={{
-                                                'aria-label': 'weight'
-                                            }}
-                                        />
                                         <Divider />
                                         <PerfectScrollbar className={classes.ScrollHeight}>
                                             <List component="nav" className={classes.navContainer}>
