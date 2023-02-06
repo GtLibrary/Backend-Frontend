@@ -46,6 +46,10 @@ const OriginType = () => {
         history.push(`/basic/edit-origintype/${id}`);
     };
 
+    const AddOrigintype = () => {
+        history.push(`/basic/new-origintype`);
+    };
+
     const deleteOrigintype = (origintype_id) => {
         axios
             .delete(configData.API_SERVER + 'origintype/delete/' + origintype_id)
@@ -63,9 +67,7 @@ const OriginType = () => {
         <MainCard title="Origin Type">
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                    <Link to="/basic/new-origintype">
-                        <Button variant="contained">New Origin Type</Button>
-                    </Link>
+                    <Button variant="contained" onClick={() => {AddOrigintype()}}>New Origin Type</Button>
                 </Box>
                 <TableContainer sx={{ maxHeight: 440 }}>
                     <Table stickyHeader aria-label="sticky table">

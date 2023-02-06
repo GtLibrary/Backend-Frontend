@@ -46,6 +46,10 @@ const Booklist = () => {
         history.push(`/dashboard/books/edit/${id}`)
     }
 
+    const newBookadd = () => {
+        history.push(`/dashboard/books/addbook`)
+    }
+
     const editBookcontent = (id) => {
         history.push(`/dashboard/books/contentedit/${id}`)
     }
@@ -68,9 +72,7 @@ const Booklist = () => {
         <MainCard title="Book List">
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                    <Link to="/dashboard/books/addbook">
-                        <Button variant="contained">New Book</Button>
-                    </Link>
+                    <Button variant="contained" onClick={() => {newBookadd()}}>Add New Book</Button>
                 </Box>
                 <TableContainer sx={{ maxHeight: 440 }}>
                     <Table stickyHeader aria-label="sticky table">

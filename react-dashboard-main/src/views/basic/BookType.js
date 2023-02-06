@@ -44,6 +44,10 @@ const BookType = () => {
         history.push(`/basic/edit-booktype/${id}`);
     };
 
+    const AddBooktype = () => {
+        history.push(`/basic/new-booktype`);
+    };
+
     const deleteBooktype = (booktype_id) => {
         axios
             .delete(configData.API_SERVER + 'booktype/delete/' + booktype_id)
@@ -61,9 +65,7 @@ const BookType = () => {
         <MainCard title="Book Type">
             <Paper sx={{ width: '100%', overflow: 'hidden' }}>
                 <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                    <Link to="/basic/new-booktype">
-                        <Button variant="contained">New Book Type</Button>
-                    </Link>
+                    <Button variant="contained" onClick={() => {AddBooktype()}}>New Book Type</Button>
                 </Box>
                 <TableContainer sx={{ maxHeight: 440 }}>
                     <Table stickyHeader aria-label="sticky table">
