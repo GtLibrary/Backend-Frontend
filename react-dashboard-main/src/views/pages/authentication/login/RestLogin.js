@@ -115,7 +115,7 @@ const RestLogin = (props, { ...others }) => {
                                 if (response.data.success) {
                                     dispatcher({
                                         type: ACCOUNT_INITIALIZE,
-                                        payload: { isLoggedIn: true, user: response.data.user, token: response.data.token, is_staff: response.data.is_staff, is_superuser: response.is_superuser }
+                                        payload: { isLoggedIn: true, user: response.data.user, token: response.data.token, is_staff: response.data.is_staff, is_superuser: response.data.is_superuser }
                                     });
                                     if (scriptedRef.current) {
                                         setStatus({ success: true });

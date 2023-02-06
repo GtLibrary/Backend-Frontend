@@ -54,9 +54,9 @@ const MenuList = () => {
     });
 
     if(userinfo.is_superuser) {
-        return authornavItems;
-    } else if(userinfo.is_staff) {
         return navItems;
+    } else if((userinfo.is_staff === true) && (userinfo.is_superuser === false)) {
+        return authornavItems;
     } else {
         return nopermnavItems;
     }

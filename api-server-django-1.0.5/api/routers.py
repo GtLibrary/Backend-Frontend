@@ -15,6 +15,7 @@ from django.conf.urls import url
 from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, art, myopenai
 from api.wallet.views import WalletInfo, transaction_detail, deposit_funds, transfer, wallet_transactions
 from api.nft import views as nft_views
+from api.openaikey.views import save_openaikey, get_openaikey
 
 router = routers.SimpleRouter(trailing_slash=False)
 
@@ -53,6 +54,8 @@ urlpatterns = [
     path('wallet/transactions/<int:transaction_pk>/', transaction_detail),
     path('deposit/', deposit_funds),
     path('transfer/', transfer),
+    path('saveapikey', save_openaikey),
+    path('getapikey/<int:pk>', get_openaikey),
 
     url('^nft/', nft_views.nft, name='nft'),
 ]

@@ -64,7 +64,8 @@ INSTALLED_APPS = [
     "api.books",
     "api.uploadimage",
     "api.customers",
-    "api.nft"
+    "api.nft",
+    "api.openaikey"
 ]
 
 MIDDLEWARE = [
