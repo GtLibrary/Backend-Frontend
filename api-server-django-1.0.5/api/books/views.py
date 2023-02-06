@@ -117,13 +117,6 @@ def art(request, pk):
     sender = request.GET.get('sender', '')
 
     bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
-    
-    # if bmsupply == 0:
-    #     bookmarkcontractid = bookcontent.bm_contract_address
-    #     bookcontractid = bookcontent.bt_contract_address
-    #     hardboundcontractid = bookcontent.hb_contract_address
-    #     verifyRewards(bookmarkcontractid, bookcontractid)
-    #     getBookmarkTotalSupply(bookmarkcontractid)
         
     contract_abi = json.load(open('/home/john/bakerydemo/brownie/BookTradable.json'))
     bt_address = Web3.toChecksumAddress(bookcontent.bt_contract_address)
@@ -142,8 +135,7 @@ def art(request, pk):
 
 @api_view(['GET'])
 def myopenai(request):
-    print(request.body)
-
+    
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
     content = body['message']
