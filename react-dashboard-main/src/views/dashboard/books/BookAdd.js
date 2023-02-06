@@ -136,9 +136,7 @@ const BookAdd = (props) => {
                 
                 let contract = await printpress.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, account);
                 
-                console.log("contract", contract)
                 const contractdata = await contract.wait();
-                console.log("contract data", contractdata)
                 const contract_address = contractdata.logs[0].address;
     
                 return contract_address;
@@ -606,7 +604,7 @@ const BookAdd = (props) => {
                     </FormControl>
                 </div>
                 <Button variant="contained" onClick={() => saveBook()}>
-                    Save
+                    Save & Mint Book
                 </Button>
             </Box>
         </MainCard>

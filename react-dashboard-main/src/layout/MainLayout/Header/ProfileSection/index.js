@@ -216,7 +216,7 @@ const ProfileSection = () => {
                                             <Grid item className={classes.flex}>
                                                 {/* <Typography variant="h4">Good Morning,</Typography> */}
                                                 <Typography component="span" variant="h4" className={classes.name}>
-                                                    {account.user.username}
+                                                    {account.user ? account.user.username: ""}
                                                 </Typography>
                                             </Grid>
                                             <Grid item>
@@ -224,21 +224,19 @@ const ProfileSection = () => {
                                             </Grid>
                                         </Grid>
                                         <Divider />
-                                        <PerfectScrollbar className={classes.ScrollHeight}>
-                                            <List component="nav" className={classes.navContainer}>
-                                                <ListItemButton
-                                                    className={classes.listItem}
-                                                    sx={{ borderRadius: customization.borderRadius + 'px' }}
-                                                    selected={selectedIndex === 4}
-                                                    onClick={handleLogout}
-                                                >
-                                                    <ListItemIcon>
-                                                        <IconLogout stroke={1.5} size="1.3rem" />
-                                                    </ListItemIcon>
-                                                    <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
-                                                </ListItemButton>
-                                            </List>
-                                        </PerfectScrollbar>
+                                        <List component="nav" className={classes.navContainer}>
+                                            <ListItemButton
+                                                className={classes.listItem}
+                                                sx={{ borderRadius: customization.borderRadius + 'px' }}
+                                                selected={selectedIndex === 4}
+                                                onClick={handleLogout}
+                                            >
+                                                <ListItemIcon>
+                                                    <IconLogout stroke={1.5} size="1.3rem" />
+                                                </ListItemIcon>
+                                                <ListItemText primary={<Typography variant="body2">Logout</Typography>} />
+                                            </ListItemButton>
+                                        </List>
                                     </CardContent>
                                 </MainCard>
                             </ClickAwayListener>
