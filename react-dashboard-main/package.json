@@ -34,6 +34,7 @@
         "ethers": "^5.7.2",
         "formik": "^2.2.6",
         "framer-motion": "^4.1.13",
+        "generate-api-key": "^1.0.2",
         "material-ui-popup-state": "^1.8.0",
         "moralis": "1.5.4",
         "react": "^17.0.2",

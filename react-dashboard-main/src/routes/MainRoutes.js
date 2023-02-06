@@ -12,6 +12,7 @@ const Booklist = Loadable(lazy(() => import('../views/dashboard/books/Booklist')
 const BookAdd = Loadable(lazy(() => import('../views/dashboard/books/BookAdd')));
 const BookContent = Loadable(lazy(() => import('../views/dashboard/books/BookContent')));
 const Balance = Loadable(lazy(() => import('../views/dashboard/balance/Balance')));
+const GetBenjiKey = Loadable(lazy(() => import('../views/dashboard/getapikey/getapikey')))
 // basicsetting routing
 const BookType = Loadable(lazy(() => import('../views/basic/BookType')));
 const NewBookType = Loadable(lazy(() => import('../views/basic/NewBookType')));
@@ -38,6 +39,7 @@ const MainRoutes = () => {
                 '/dashboard/books/edit/:id',
                 '/dashboard/books/contentedit/:id',
                 '/dashboard/balance',
+                '/dashboard/getapikey',
 
                 '/basic/basic-booktype',
                 '/basic/new-booktype',
@@ -78,6 +80,7 @@ const MainRoutes = () => {
                         )
                         } />
                         <Route path="/dashboard/balance" component={Balance} />
+                        <Route path="/dashboard/getapikey" component={GetBenjiKey} />
 
                         <Route path="/basic/basic-booktype" component={BookType} />
                         <Route path="/basic/new-booktype" 
