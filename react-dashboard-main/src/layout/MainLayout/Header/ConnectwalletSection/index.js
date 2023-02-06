@@ -85,7 +85,7 @@ const WalletConnect = () => {
                   copyToClipBoard()
               }}>{account.slice(0, 5)}...{account.slice(-5)}</Button>
               <Button variant="contained" className="animateButton" onClick={handleLogout}>disconnect</Button>
-              <span id="snackbar">Copied</span>
+              <span id="snackbar">Copied Wallet Address!</span>
           </Flex>
       )}
     </div>

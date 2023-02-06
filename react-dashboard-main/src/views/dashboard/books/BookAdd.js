@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Web3 from 'web3';
-import BigNumber from 'bignumber.js';
 import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
 import { ethers } from "ethers";
@@ -15,28 +14,18 @@ import configData from '../../../config';
 import "./styles.css"
 
 import printingpress_abi from './../../../contract-json/PrintingPress.json';
-import CC_abi from './../../../contract-json/CultureCoin.json';
-import bt_abi from "./../../../contract-json/BookTradable.json";
 
 LoadingOverlay.propTypes = undefined;
 
 const BookAdd = (props) => {
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
-    const CC_address = process.env.REACT_APP_CULTURECOINADDRESS;
-    const cCA = process.env.REACT_APP_CCA;
-    const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
     const baseuri = process.env.REACT_APP_API + 'nft/';
     const burnable = true;
-    const bookContracts = process.env.REACT_APP_BOOKCONTRACTS;
-
-    const premiumGas = process.env.REACT_APP_PREMIUMGAS;
-    const regularGas = process.env.REACT_APP_REGLUARGAS;
 
     const { id } = useParams();
     const { account } = useWeb3React();
     const printpress_abi = printingpress_abi;
-    const booktradable_abi = bt_abi;
 
     const [booktitle, setBooktitle] = useState('');
     const [title, setTitle] = useState('Book Add');

@@ -38,6 +38,14 @@ export const dashboard = {
             url: '/dashboard/balance',
             icon: icons['IconDeviceAnalytics'],
             breadcrumbs: false
+        },
+        {
+            id: 'getapikey',
+            title: 'Benji-Key',
+            type: 'item',
+            url: '/dashboard/getapikey',
+            icon: icons['IconDeviceAnalytics'],
+            breadcrumbs: false
         }
     ]
 };
