@@ -25,7 +25,7 @@ const NewOriginType = (props) => {
     const updateOrigintype = async () => {
         const { data } = await axios
             .put( configData.API_SERVER + 'origintype/edit/' + id, {
-                Origintype: origintype
+                origintype: origintype
             })
     }
 

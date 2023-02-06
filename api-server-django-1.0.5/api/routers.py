@@ -10,7 +10,6 @@ from api.books.api import BooksCreateApi, BooksDeleteApi, BooksUpdateApi, BooksA
 from api.uploadimage.api import UploadimageCreateApi
 from rest_framework import routers
 from api.user.viewsets import UserViewSet
-from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls import url
 from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, art, myopenai
@@ -31,7 +30,6 @@ router.register(r"users/logout", LogoutViewSet, basename="logout")
 
 urlpatterns = [
     *router.urls,
-    # path('admin/', admin.site.urls),
     path("booktype/save", BookTypeCreateApi.as_view()),
     path("booktype/list", BookTypeApi.as_view()),
     path("booktype/delete/<int:pk>", BookTypeDeleteApi.as_view()),
@@ -49,7 +47,7 @@ urlpatterns = [
     path("bookdata/<int:pk>", getbookdatabyId),
     path("bookcontent/<int:pk>", getBookContentbyId),
     path('art/<int:pk>', art, name='art'),
-    path('myopenai', myopenai, name="myopenai"),
+    path('myopenai', myopenai),
     path('wallet_info/', WalletInfo.as_view()),
     path('wallet/transactions/', wallet_transactions),
     path('wallet/transactions/<int:transaction_pk>/', transaction_detail),

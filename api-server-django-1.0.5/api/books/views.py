@@ -140,7 +140,7 @@ def art(request, pk):
     else:
         return Response({"content":"You are not token owner!!"})
 
-@api_view(['POST'])
+@api_view(['GET'])
 def myopenai(request):
     print(request.body)
 
