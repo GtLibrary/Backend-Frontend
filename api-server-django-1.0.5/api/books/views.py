@@ -11,9 +11,9 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from api.books.moralis import Moralis
 from dotenv import load_dotenv
-from api.books.minter import MyFirstMinter
-from api.books.minter import MySecondMinter
-from api.books.minter import Minter
+# from api.books.minter import MyFirstMinter
+# from api.books.minter import MySecondMinter
+# from api.books.minter import Minter
 from web3 import Web3, HTTPProvider
 import openai
 
