@@ -8,12 +8,13 @@ import { Typography } from '@material-ui/core';
 import NavGroup from './NavGroup';
 import menuItem from './../../../../menu-items';
 import nopermission from '../../../../menu-items/nopermission';
+import authormenuItems from '../../../../menu-items/authorpermission';
 
 //-----------------------|| SIDEBAR MENU LIST ||-----------------------//
 
 const MenuList = () => {
     const userinfo = useSelector((state) => state.account);
-    const navPermission = nopermission.items.map((item) => {
+    const nopermnavItems = nopermission.items.map((item) => {
         switch (item.type) {
             case 'group':
                 return <NavGroup key={item.id} item={item} />;
@@ -38,10 +39,26 @@ const MenuList = () => {
         }
     });
 
-    if(userinfo.is_staff) {
+    
+    const authornavItems = authormenuItems.items.map((item) => {
+        switch (item.type) {
+            case 'group':
+                return <NavGroup key={item.id} item={item} />;
+            default:
+                return (
+                    <Typography key={item.id} variant="h6" color="error" align="center">
+                        Menu Items Error
+                    </Typography>
+                );
+        }
+    });
+
+    if(userinfo.is_superuser) {
+        return authornavItems;
+    } else if(userinfo.is_staff) {
         return navItems;
     } else {
-        return navPermission;
+        return nopermnavItems;
     }
 
 };
