@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { useWeb3React } from "@web3-react/core";
 import axios from 'axios';
 import { toast } from "react-toastify";
 import generateApiKey from 'generate-api-key';
@@ -11,19 +10,42 @@ import { Button, Box, TextField } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 
+import configData from '../../../config';
 
 
 const Getapikey = () => {
     const userinfo = useSelector((state) => state.account);
     const user_name = userinfo.user.username;
     const user_id = userinfo.user._id;
-    const { account } = useWeb3React();
     const [benjikey, setBenjikey] = useState("");
 
-    const generateBenjikey = () => {
+    useEffect(() => {
+        getcurrentapikey()
+    }, []);
+
+    const getcurrentapikey = async () => {
+        await axios.get(configData.API_SERVER + 'getapikey/' + user_id).then((response) => {
+            const apikeydata = response.data.api_key
+            setBenjikey(apikeydata)
+        })
+    }
+
+    const generateBenjikey = async () => {
         const random_key =generateApiKey({ method: 'string', length: 16 });
         const temp_key = user_name + ":" + random_key;
         setBenjikey(temp_key)
+        await axios.post(configData.API_SERVER + 'saveapikey', {
+            user_id: user_id,
+            api_key: temp_key
+        })
+        .then(function (response) {
+            if (response.status === 201) {
+                console.log("response", response)
+            }
+        })
+        .catch(function (error) {
+            console.log("error", error)
+        });
     }
 
     const copyBenjikey = () => {
