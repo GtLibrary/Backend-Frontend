@@ -10,9 +10,9 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from api.books.moralis import Moralis
 from dotenv import load_dotenv
-from api.books.minter import MyFirstMinter
-from api.books.minter import MySecondMinter
-from api.books.minter import Minter
+# from api.books.minter import MyFirstMinter
+# from api.books.minter import MySecondMinter
+# from api.books.minter import Minter
 from web3 import Web3, HTTPProvider
 
 load_dotenv()
