@@ -17,11 +17,11 @@ class BooksApi(generics.ListAPIView):
     serializer_class = BooksSerializer
 
     def get_queryset(self):
-        print(self.request.user.is_superuser)
+        print(self.request.user)
         if(self.request.user.is_superuser):
-            return Books.objects.all()
-        else:
             return Books.objects.all().filter(user=self.request.user.id)
+        else:
+            return Books.objects.all()
 
 class BooksUpdateApi(generics.RetrieveUpdateAPIView):
     queryset = Books.objects.all()

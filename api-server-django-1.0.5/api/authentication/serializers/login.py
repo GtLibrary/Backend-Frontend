@@ -10,7 +10,7 @@ from api.authentication.models import ActiveSession
 
 def _generate_jwt_token(user):
     token = jwt.encode(
-        {"id": user.pk, "exp": datetime.utcnow() + timedelta(days=7)},
+        {"id": user.pk, "exp": datetime.utcnow() + timedelta(hours=6)},
         settings.SECRET_KEY,
     )
 
@@ -52,8 +52,9 @@ class LoginSerializer(serializers.Serializer):
             jwt.decode(session.token, settings.SECRET_KEY, algorithms=["HS256"])
 
         except (ObjectDoesNotExist, ValueError, jwt.ExpiredSignatureError):
-            session = ActiveSession.objects.create(
-                user=user, token=_generate_jwt_token(user)
+            session, created = ActiveSession.objects.update_or_create(
+                user=user,
+                defaults={"user_id":user.pk, "token":_generate_jwt_token(user)}
             )
 
         return {

@@ -39,3 +39,11 @@ class UserViewSet(
         self.update(request)
 
         return Response({"success": True}, status.HTTP_200_OK)
+
+    def get_object(self):
+        pk = self.kwargs.get('pk')
+
+        if pk == "current":
+            return self.request.user
+
+        return super(UserViewSet, self).get_object()
