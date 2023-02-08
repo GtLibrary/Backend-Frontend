@@ -15,6 +15,9 @@ from dotenv import load_dotenv
 # from api.books.minter import MySecondMinter
 # from api.books.minter import Minter
 from web3 import Web3, HTTPProvider
+from api.openaikey.models import Apikey
+from api.wallet.models import Wallet, WalletTransaction
+from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
 
 load_dotenv()
@@ -133,23 +136,40 @@ def art(request, pk):
     else:
         return Response({"content":"You are not token owner!!"})
 
-@api_view(['GET'])
+@api_view(['POST'])
 def myopenai(request):
     
     body_unicode = request.body.decode('utf-8')
     body = json.loads(body_unicode)
     content = body['message']
+    apikey = body["apikey"]
+    transferval = body['transferval']
 
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt="Rewrite the following to highlight any grammar, spelling, or clarity issues with the narrative:" + content,
-        temperature=0.7,
-        max_tokens=256,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
-    )
-
-    print(response)
-
-    return JsonResponse({"content":response["choices"][0]["text"].lstrip(), "type":"message"}, safe=False)
+    try:
+        userinfo = Apikey.objects.filter(api_key=apikey).first()
+        user_id = userinfo.user
+        wallet = Wallet.objects.get(user_id=user_id)
+        data = WalletSerializer(wallet).data
+        
+        if(data['balance'] > transferval):
+            WalletTransaction.objects.create(
+                wallet = wallet,
+                transaction_type = "transfer",
+                amount = transferval,
+                source = wallet,
+                destination = wallet,
+            )
+            response = openai.Completion.create(
+                model="text-davinci-003",
+                prompt="Rewrite the following to highlight any grammar, spelling, or clarity issues with the narrative:" + content,
+                temperature=0.7,
+                max_tokens=256,
+                top_p=1,
+                frequency_penalty=0,
+                presence_penalty=0
+            )
+            return JsonResponse({"content":response["choices"][0]["text"].lstrip(), "type":"message"}, safe=False)
+        else:
+            return JsonResponse({"content":"current balance", "type": "error"}, safe=False)
+    except Apikey.DoesNotExist:
+        return JsonResponse({"content":"not exist user", "type": "error"}, safe=False)

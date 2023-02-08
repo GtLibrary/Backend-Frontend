@@ -3,30 +3,32 @@ from rest_framework import generics
 from rest_framework.response import Response
 from .serializers import BooksSerializer
 from .models import Books
+from api.books.permissions import IsStaff
 
 class BooksCreateApi(generics.CreateAPIView):
+    permission_classes = (IsStaff,)
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
 
     def perform_create(self, serializer_class):
-        print(self.request.user.id)
-        serializer_class.save(user=self.request.user.id)
+        serializer_class.save(user=self.request.user)
 
 class BooksApi(generics.ListAPIView):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
 
     def get_queryset(self):
-        print(self.request.user)
         if(self.request.user.is_superuser):
-            return Books.objects.all().filter(user=self.request.user.id)
-        else:
             return Books.objects.all()
+        else:
+            return Books.objects.all().filter(user=self.request.user)
 
 class BooksUpdateApi(generics.RetrieveUpdateAPIView):
+    permission_classes = (IsStaff,)
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
 
 class BooksDeleteApi(generics.DestroyAPIView):
+    permission_classes = (IsStaff,)
     queryset = Books.objects.all()
     serializer_class = BooksSerializer

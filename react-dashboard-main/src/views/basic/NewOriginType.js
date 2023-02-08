@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 // material-ui
 import { Grid, Button, Box, TextField } from '@material-ui/core';
@@ -13,12 +14,14 @@ import configData from '../../config';
 
 const NewOriginType = (props) => {
     const { id } = useParams();
+    const accountinfo = useSelector((state) => state.account);
     const [ origintype, setOrigintype ] = useState('');
     const [ title, setTitle ] = useState('Origin Type Add');
 
     const getOrigintypesById = async () => {
         const { data } = await axios
-            .get( configData.API_SERVER + 'origintype/edit/' + id)
+            .get( configData.API_SERVER + 'origintype/edit/' + id,
+            { headers: { Authorization: `${accountinfo.token}` } })
         setOrigintype(data.origintype)
     }
 
@@ -26,7 +29,8 @@ const NewOriginType = (props) => {
         const { data } = await axios
             .put( configData.API_SERVER + 'origintype/edit/' + id, {
                 origintype: origintype
-            })
+            },
+            { headers: { Authorization: `${accountinfo.token}` } })
     }
 
     useEffect(() => {
@@ -43,7 +47,8 @@ const NewOriginType = (props) => {
             axios
                 .post( configData.API_SERVER + 'origintype/save', {
                     origintype: origintype
-                })
+                },
+                { headers: { Authorization: `${accountinfo.token}` } })
                 .then(function (response) {
                     if (response.success == 201) {
                         setOrigintype("")
