@@ -6,6 +6,7 @@ import LoadingOverlay from "react-loading-overlay";
 import { toast } from "react-toastify";
 import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
+import { useSelector } from 'react-redux';
 // material-ui
 import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
 // project imports
@@ -26,6 +27,7 @@ const BookAdd = (props) => {
     const { id } = useParams();
     const { account } = useWeb3React();
     const printpress_abi = printingpress_abi;
+    const accountinfo = useSelector((state) => state.account);
 
     const [booktitle, setBooktitle] = useState('');
     const [title, setTitle] = useState('Book Add');
@@ -55,7 +57,7 @@ const BookAdd = (props) => {
     const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
     const getBooksById = async () => {
-        const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + id);
+        const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + id, { headers: { Authorization: `${accountinfo.token}` } });
 
         setBooktitle(data.title);
         setBooktype(data.book_type_id);
@@ -89,12 +91,12 @@ const BookAdd = (props) => {
     }, []);
 
     const getBooktypes = async () => {
-        const { data } = await axios.get(configData.API_SERVER + 'booktype/list');
+        const { data } = await axios.get(configData.API_SERVER + 'booktype/list', { headers: { Authorization: `${accountinfo.token}` } });
         setBooktypes(data);
     };
 
     const getOrigintypes = async () => {
-        const { data } = await axios.get(configData.API_SERVER + 'origintype/list');
+        const { data } = await axios.get(configData.API_SERVER + 'origintype/list', { headers: { Authorization: `${accountinfo.token}` } });
         setOrigintypes(data);
     };
 
@@ -181,8 +183,9 @@ const BookAdd = (props) => {
             await axios
                 .put(configData.API_SERVER + 'books/edit/' + id, form_data, {
                     headers: {
-                        'content-type': 'multipart/form-data'
-                    }
+                        'content-type': 'multipart/form-data',
+                        Authorization: `${accountinfo.token}`
+                    },
                 })
                 .then(function (response) {
                     toast.success("successfully save data", {
@@ -213,7 +216,8 @@ const BookAdd = (props) => {
             await axios
                 .post(configData.API_SERVER + 'books/save', form_data, {
                     headers: {
-                        'content-type': 'multipart/form-data'
+                        'content-type': 'multipart/form-data',
+                        Authorization: `${accountinfo.token}`
                     }
                 })
                 .then(function (response) {

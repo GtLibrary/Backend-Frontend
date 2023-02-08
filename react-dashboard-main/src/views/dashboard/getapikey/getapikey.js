@@ -14,9 +14,8 @@ import configData from '../../../config';
 
 
 const Getapikey = () => {
-    const userinfo = useSelector((state) => state.account);
-    const user_name = userinfo.user.username;
-    const user_id = userinfo.user._id;
+    const accountinfo = useSelector((state) => state.account);
+    const user_name = accountinfo.user.username;
     const [benjikey, setBenjikey] = useState("");
 
     useEffect(() => {
@@ -24,7 +23,9 @@ const Getapikey = () => {
     }, []);
 
     const getcurrentapikey = async () => {
-        await axios.get(configData.API_SERVER + 'getapikey/' + user_id).then((response) => {
+        await axios.get(configData.API_SERVER + 'getapikey',
+                { headers: { Authorization: `${accountinfo.token}` } }
+            ).then((response) => {
             const apikeydata = response.data.api_key
             setBenjikey(apikeydata)
         })
@@ -35,9 +36,10 @@ const Getapikey = () => {
         const temp_key = user_name + ":" + random_key;
         setBenjikey(temp_key)
         await axios.post(configData.API_SERVER + 'saveapikey', {
-            user_id: user_id,
             api_key: temp_key
-        })
+        },
+        { headers: { Authorization: `${accountinfo.token}` } }
+        )
         .then(function (response) {
             if (response.status === 201) {
                 console.log("response", response)

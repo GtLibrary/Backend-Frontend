@@ -58,14 +58,14 @@ INSTALLED_APPS = [
     "api",
     "api.user",
     "api.wallet",
-    "api.authentication",
     "api.booktype",
     "api.origintype",
     "api.books",
     "api.uploadimage",
     "api.customers",
     "api.nft",
-    "api.openaikey"
+    "api.openaikey",
+    "api.authentication",
 ]
 
 MIDDLEWARE = [
@@ -167,11 +167,9 @@ AUTH_USER_MODEL = "api_user.User"
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
-        "api.authentication.backends.ActiveSessionAuthentication", 
-        'rest_framework.authentication.TokenAuthentication',
+        "api.authentication.backends.ActiveSessionAuthentication",
     ),
     # 'DEFAULT_PERMISSION_CLASSES': [
-    #     "rest_framework.permissions.DjangoModelPermissions",
     #     'rest_framework.permissions.IsAuthenticated',
     # ],
     "DEFAULT_RENDERER_CLASSES": ("rest_framework.renderers.JSONRenderer",),

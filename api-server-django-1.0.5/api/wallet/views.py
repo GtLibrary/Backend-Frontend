@@ -13,10 +13,23 @@ from django.utils import timezone
 
 class WalletInfo(APIView):
     def get(self, request):
+        # user_id = request.data['user_id']
         wallet = Wallet.objects.get(user=request.user)
         data = WalletSerializer(wallet).data
         return Response(data)
 
+@api_view(['GET'])
+def getwalletinfo(request):
+    wallet = object
+    try:
+        wallet = Wallet.objects.get(user=request.user)
+    except Wallet.DoesNotExist:
+        wallet, created = Wallet.objects.update_or_create(
+            user = request.user,
+            defaults={ "user_id": request.user.id, 'currency': 'CC'}
+        )
+    data = WalletSerializer(wallet).data
+    return Response(data)
 
 @api_view(['GET'])
 def wallet_transactions(request):
@@ -46,11 +59,11 @@ def transaction_detail(request, transaction_pk):
 def deposit_funds(request):
     wallet = object
     try:
-        wallet = Wallet.objects.get(user=request.data['user_id'])
+        wallet = Wallet.objects.get(user=request.user)
     except Wallet.DoesNotExist:
         wallet, created = Wallet.objects.update_or_create(
-            user_id = request.data['user_id'],
-            defaults={ 'user_id': request.data['user_id'], 'currency': 'CC'}
+            user = request.user,
+            defaults={ "user_id": request.user.id, 'currency': 'CC'}
         )
 
     deposit = WalletTransaction.objects.create(
@@ -68,7 +81,7 @@ def deposit_funds(request):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def transfer(request):
     wallet = object
     try:
@@ -79,7 +92,7 @@ def transfer(request):
             defaults={ 'user_id': request.data['user_id'], 'currency': 'CC'}
         )
 
-    deposit = WalletTransaction.objects.create(
+    transfer = WalletTransaction.objects.create(
         wallet = wallet,
         transaction_type = "transfer",
         amount = request.data['amount'],
@@ -88,7 +101,7 @@ def transfer(request):
     )
 
     try:
-        serializer = WalletTransactionSerializer(deposit)
+        serializer = WalletTransactionSerializer(transfer)
         return Response(serializer.data)
-    except deposit.DoesNotExist:
+    except transfer.DoesNotExist:
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

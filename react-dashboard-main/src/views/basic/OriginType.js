@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 // material-ui
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
@@ -21,6 +22,7 @@ const columns = [
 
 const OriginType = () => {
     const history = useHistory();
+    const accountinfo = useSelector((state) => state.account);
     const [origintypes, setOrigintypes] = useState([]);
 
     const [page, setPage] = React.useState(0);
@@ -34,7 +36,8 @@ const OriginType = () => {
     };
 
     const getOrigintypes = async () => {
-        const { data } = await axios.get(configData.API_SERVER + 'origintype/list');
+        const { data } = await axios.get(configData.API_SERVER + 'origintype/list',
+        { headers: { Authorization: `${accountinfo.token}` } });
         setOrigintypes(data);
     };
 
@@ -52,7 +55,8 @@ const OriginType = () => {
 
     const deleteOrigintype = (origintype_id) => {
         axios
-            .delete(configData.API_SERVER + 'origintype/delete/' + origintype_id)
+            .delete(configData.API_SERVER + 'origintype/delete/' + origintype_id,
+            { headers: { Authorization: `${accountinfo.token}` } })
             .then(function (response) {
                 if (response.status === '204') {
                     getOrigintypes();
