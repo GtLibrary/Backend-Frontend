@@ -29,7 +29,7 @@ web3 = Web3(Web3.HTTPProvider(os.environ["speedyNode"]))
 securePort = os.environ['securePort']
 secureHost = os.environ['secureHost']
 cCAPrivateKey = os.environ['cCAPrivateKey']
-
+openai.api_key = "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"
 marketPlaceAddress = os.environ['marketPlaceAddress']
 if not marketPlaceAddress:
     #marketPlaceAddress = "0x0000000000000000000000000000000000000000"
