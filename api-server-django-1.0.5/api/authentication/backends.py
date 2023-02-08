@@ -14,9 +14,7 @@ class ActiveSessionAuthentication(authentication.BaseAuthentication):
     def authenticate(self, request):
 
         request.user = None
-
         auth_header = authentication.get_authorization_header(request)
-
         if not auth_header:
             return None
 
@@ -29,7 +27,7 @@ class ActiveSessionAuthentication(authentication.BaseAuthentication):
         try:
             jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
         except:
-            raise exceptions.AuthenticationFailed(self.auth_error_message)
+            raise exceptions.AuthenticationFailed({"success": False, "msg": "Could not decoded token."})
 
         try:
             active_session = ActiveSession.objects.get(token=token)

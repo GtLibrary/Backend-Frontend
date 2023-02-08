@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 // material-ui
 import { Grid, Button, Box, TextField } from '@material-ui/core';
@@ -13,12 +14,14 @@ import configData from '../../config';
 
 const NewBookType = (props) => {
     const { id } = useParams();
+    const accountinfo = useSelector((state) => state.account);
     const [ booktype, setBooktype ] = useState('');
     const [ title, setTitle ] = useState('Book Type Add');
 
     const getBooktypesById = async () => {
         const { data } = await axios
-            .get( configData.API_SERVER + 'booktype/edit/' + id)
+            .get( configData.API_SERVER + 'booktype/edit/' + id,
+            { headers: { Authorization: `${accountinfo.token}` } })
         setBooktype(data.booktype)
     }
 
@@ -26,7 +29,8 @@ const NewBookType = (props) => {
         const { data } = await axios
             .put( configData.API_SERVER + 'booktype/edit/' + id, {
                 booktype: booktype
-            })
+            },
+            { headers: { Authorization: `${accountinfo.token}` } })
     }
 
     useEffect(() => {
@@ -43,7 +47,8 @@ const NewBookType = (props) => {
             axios
                 .post( configData.API_SERVER + 'booktype/save', {
                     booktype: booktype
-                })
+                },
+                { headers: { Authorization: `${accountinfo.token}` } })
                 .then(function (response) {
                     if (response.success === 201) {
                         setBooktype("")

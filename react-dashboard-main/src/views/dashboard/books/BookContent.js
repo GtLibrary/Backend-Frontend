@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { useSelector } from 'react-redux';
 
 // material-ui
 import { Grid, Button, Box } from '@material-ui/core';
@@ -34,11 +35,13 @@ const BookContent = (props) => {
     const { id } = useParams();
     const [ bookcontent, setBookcontent ] = useState('<p>Hello from CKEditor 5!</p>');
     const [ title, setTitle ] = useState('Book Content Edit');
+    const accountinfo = useSelector((state) => state.account);
     const classes = useStyles();
 
     const getBookcontentById = async () => {
         const { data } = await axios
-            .get( configData.API_SERVER + 'books/edit/' + id)
+            .get( configData.API_SERVER + 'books/edit/' + id,
+            {headers: { Authorization: `${accountinfo.token}` }})
         setBookcontent(data.content)
     }
 
@@ -46,7 +49,8 @@ const BookContent = (props) => {
         const { data } = await axios
             .put( configData.API_SERVER + 'books/edit/' + id, {
                 content: bookcontent
-            })
+            },
+            {headers: { Authorization: `${accountinfo.token}` }})
     }
 
     useEffect(() => {
@@ -62,6 +66,7 @@ const BookContent = (props) => {
         } else {
             axios
                 .post( configData.API_SERVER + 'bookcontent/save', {
+                    headers: { Authorization: `${accountinfo.token}` },
                     content: bookcontent
                 })
                 .then(function (response) {

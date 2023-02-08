@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
 // material-ui
 import { Button, Box } from '@material-ui/core';
@@ -19,6 +20,7 @@ const columns = [
 
 const BookType = () => {
     const history = useHistory();
+    const accountinfo = useSelector((state) => state.account);
     const [booktypes, setBooktypes] = useState([]);
 
     const [page, setPage] = React.useState(0);
@@ -32,7 +34,8 @@ const BookType = () => {
     };
 
     const getBooktypes = async () => {
-        const { data } = await axios.get(configData.API_SERVER + 'booktype/list');
+        const { data } = await axios.get(configData.API_SERVER + 'booktype/list',
+                { headers: { Authorization: `${accountinfo.token}` } });
         setBooktypes(data);
     };
 
@@ -50,7 +53,8 @@ const BookType = () => {
 
     const deleteBooktype = (booktype_id) => {
         axios
-            .delete(configData.API_SERVER + 'booktype/delete/' + booktype_id)
+            .delete(configData.API_SERVER + 'booktype/delete/' + booktype_id,
+            { headers: { Authorization: `${accountinfo.token}` } })
             .then(function (response) {
                 if (response.status === '204') {
                     getBooktypes();
