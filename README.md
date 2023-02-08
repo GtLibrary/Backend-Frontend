@@ -185,4 +185,5 @@ default username is admin@killer.com default password is adminkiller.
 <br />
 default username is 'admin@me.com' default password is 'superadmin'.
 
-Super Admin can allow the normal author in super admin pannel. that url is http://localhost:8000/admin. (*backendurl*/admin)
+Super Admin can allow the normal author in super admin pannel. 
+that url is http://localhost:8000/admin. (*backendurl*/admin)
