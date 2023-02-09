@@ -18,6 +18,7 @@ const BookType = Loadable(lazy(() => import('../views/basic/BookType')));
 const NewBookType = Loadable(lazy(() => import('../views/basic/NewBookType')));
 const OriginType = Loadable(lazy(() => import('../views/basic/OriginType')));
 const NewOriginType = Loadable(lazy(() => import('../views/basic/NewOriginType')));
+const SetAIPrice = Loadable(lazy(() => import('../views/basic/SetAIPrice')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('../views/utilities/Color')));
@@ -47,6 +48,7 @@ const MainRoutes = () => {
                 '/basic/basic-origintype',
                 '/basic/new-origintype',
                 '/basic/edit-origintype/:id',
+                '/basic/setaiprice',
                 // 'books/edit/:id',
                 // 'books/add',
                 
@@ -104,6 +106,8 @@ const MainRoutes = () => {
                             <NewOriginType {...props} action="edit" />
                         )
                         }  />
+                        <Route path="/basic/setaiprice" component={SetAIPrice} />
+
                         <Route path="/utils/util-typography" component={UtilsTypography} />
                         <Route path="/utils/util-color" component={UtilsColor} />
                         <Route path="/utils/util-shadow" component={UtilsShadow} />
