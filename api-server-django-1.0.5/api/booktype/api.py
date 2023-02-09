@@ -1,7 +1,5 @@
 from rest_framework import generics
-from rest_framework.response import Response
 from .serializers import BookTypeSerializer
-from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from .models import BookType
 from api.booktype.permissions import IsSuperUser
 
