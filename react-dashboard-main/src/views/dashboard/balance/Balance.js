@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
-import Web3 from 'web3';
 import { ethers } from 'ethers';
+import { toast } from "react-toastify";
 import configData from '../../../config';
 
 // material-ui
@@ -59,6 +58,13 @@ const Balance = () => {
                         { headers: { Authorization: `${accountinfo.token}` } }
                         )
                         .then(function (response) {
+                            toast.success("Deposited CC.", {
+                                position: "top-right",
+                                autoClose: 3000,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true,
+                            });
                             getcurBalance();
                             setDepositval(0)
                         })

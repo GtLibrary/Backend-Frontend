@@ -9,9 +9,6 @@ class BooksCreateApi(generics.CreateAPIView):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
 
-    def perform_create(self, serializer_class):
-        serializer_class.save(user=self.request.user)
-
 class BooksApi(generics.ListAPIView):
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
