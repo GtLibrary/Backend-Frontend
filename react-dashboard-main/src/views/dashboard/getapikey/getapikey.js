@@ -41,9 +41,13 @@ const Getapikey = () => {
         { headers: { Authorization: `${accountinfo.token}` } }
         )
         .then(function (response) {
-            if (response.status === 201) {
-                console.log("response", response)
-            }
+            toast.success("Generated Benji API Key", {
+                position: "top-right",
+                autoClose: 3000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
         })
         .catch(function (error) {
             console.log("error", error)

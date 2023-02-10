@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { toast } from "react-toastify";
 
 // material-ui
 import { Grid, Button, Box, TextField } from '@material-ui/core';
@@ -33,9 +34,13 @@ const SetAIPrice = (props) => {
             },
             { headers: { Authorization: `${accountinfo.token}` } })
             .then(function (response) {
-                if (response.success === 201) {
-                    
-                }
+                toast.success("Saved AI price", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             })
             .catch(function (error) {
                 console.log("catch error === ", error)

@@ -21,6 +21,6 @@ def getaiprice(request):
     return Response(aiprice)
 
 class AIpriceSet(generics.CreateAPIView):
+    permission_classes = (IsSuperUser,)
     queryset = AIpricemodel.objects.all()
     serializer_class = AIpriceSerializer
-    permission_classes = (IsSuperUser,)

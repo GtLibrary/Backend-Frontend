@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { toast } from "react-toastify";
 
 // material-ui
 import { Grid, Button, Box, TextField } from '@material-ui/core';
@@ -31,6 +32,16 @@ const NewBookType = (props) => {
                 booktype: booktype
             },
             { headers: { Authorization: `${accountinfo.token}` } })
+            .then((response) => {
+                
+                toast.success("Updated Book Type", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            })
     }
 
     useEffect(() => {
@@ -50,6 +61,13 @@ const NewBookType = (props) => {
                 },
                 { headers: { Authorization: `${accountinfo.token}` } })
                 .then(function (response) {
+                    toast.success("Saved Book Type", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
                     if (response.success === 201) {
                         setBooktype("")
                     } else {    
