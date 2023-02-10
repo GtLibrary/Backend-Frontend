@@ -56,11 +56,7 @@ const BookType = () => {
             .delete(configData.API_SERVER + 'booktype/delete/' + booktype_id,
             { headers: { Authorization: `${accountinfo.token}` } })
             .then(function (response) {
-                if (response.status === '204') {
-                    getBooktypes();
-                } else {
-                    getBooktypes();
-                }
+                getBooktypes();
             })
             .catch(function (error) {});
     };
