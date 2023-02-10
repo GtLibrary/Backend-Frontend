@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 from web3 import Web3, HTTPProvider
 from api.openaikey.models import Apikey
 from api.wallet.models import Wallet, WalletTransaction
+from api.aiprice.models import AIpricemodel
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
 
@@ -143,7 +144,11 @@ def myopenai(request):
     body = json.loads(body_unicode)
     content = body['message']
     apikey = body["apikey"]
-    transferval = body['transferval']
+    aiprice = AIpricemodel.objects.last()
+    if(aiprice):
+        transferval = aiprice.aiprice
+    else:
+        transferval = 1
 
     try:
         userinfo = Apikey.objects.filter(api_key=apikey).first()

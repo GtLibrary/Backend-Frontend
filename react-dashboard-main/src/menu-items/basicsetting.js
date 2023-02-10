@@ -29,5 +29,13 @@ export const basicsetting = {
             icon: icons['IconSettings'],
             breadcrumbs: false
         },
+        {
+            id: 'basic-setaiprice',
+            title: 'Set AI Price',
+            type: 'item',
+            url: '/basic/setaiprice',
+            icon: icons['IconSettings'],
+            breadcrumbs: false
+        },
     ]
 };

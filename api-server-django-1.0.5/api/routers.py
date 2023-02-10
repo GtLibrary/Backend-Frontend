@@ -16,6 +16,7 @@ from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, ar
 from api.wallet.views import WalletInfo, transaction_detail, deposit_funds, transfer, wallet_transactions, getwalletinfo
 from api.nft import views as nft_views
 from api.openaikey.views import save_openaikey, get_openaikey
+from api.aiprice.views import AIpriceSet, getaiprice
 
 router = routers.SimpleRouter(trailing_slash=False)
 
@@ -56,6 +57,9 @@ urlpatterns = [
     path('transfer', transfer),
     path('saveapikey', save_openaikey),
     path('getapikey', get_openaikey),
+    path('getaiprice', getaiprice),
+    path('setaiprice', AIpriceSet.as_view()),
+
 
     url('^nft/', nft_views.nft, name='nft'),
 ]
