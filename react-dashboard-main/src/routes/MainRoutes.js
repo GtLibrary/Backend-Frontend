@@ -19,6 +19,9 @@ const NewBookType = Loadable(lazy(() => import('../views/basic/NewBookType')));
 const OriginType = Loadable(lazy(() => import('../views/basic/OriginType')));
 const NewOriginType = Loadable(lazy(() => import('../views/basic/NewOriginType')));
 const SetAIPrice = Loadable(lazy(() => import('../views/basic/SetAIPrice')));
+// profile setting
+const ProfileSetting = Loadable(lazy(() => import('../views/profile/setting')));
+const ChangePass = Loadable(lazy(() => import('../views/profile/changepassword')));
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('../views/utilities/Color')));
@@ -51,6 +54,9 @@ const MainRoutes = () => {
                 '/basic/setaiprice',
                 // 'books/edit/:id',
                 // 'books/add',
+
+                '/profile/setting',
+                '/profile/changepassword',
                 
                 '/utils/util-typography',
                 '/utils/util-color',
@@ -107,6 +113,9 @@ const MainRoutes = () => {
                         )
                         }  />
                         <Route path="/basic/setaiprice" component={SetAIPrice} />
+
+                        <Route path="/profile/setting" component={ProfileSetting} />
+                        <Route path="/profile/changepassword" component={ChangePass} />
 
                         <Route path="/utils/util-typography" component={UtilsTypography} />
                         <Route path="/utils/util-color" component={UtilsColor} />
