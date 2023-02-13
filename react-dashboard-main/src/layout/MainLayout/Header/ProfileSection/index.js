@@ -1,6 +1,7 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configData from '../../../../config';
+import { useHistory } from 'react-router';
 
 // material-ui
 import { makeStyles, useTheme } from '@material-ui/styles';
@@ -119,6 +120,7 @@ const useStyles = makeStyles((theme) => ({
 const ProfileSection = () => {
     const classes = useStyles();
     const theme = useTheme();
+    const history = useHistory();
     const customization = useSelector((state) => state.customization);
     const account = useSelector((state) => state.account);
     const dispatcher = useDispatch();
@@ -147,6 +149,9 @@ const ProfileSection = () => {
                 console.log('error - ', error);
             });
     };
+    const gosetting = () => {
+        history.push("/basic/profilesetting")
+    }
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
     };
@@ -223,6 +228,20 @@ const ProfileSection = () => {
                                                 <Typography variant="subtitle2">{account.is_staff ? "Author": "User"}</Typography>
                                             </Grid>
                                         </Grid>
+                                        <Divider />
+                                        <List component="nav" className={classes.navContainer}>
+                                            <ListItemButton
+                                                className={classes.listItem}
+                                                sx={{ borderRadius: customization.borderRadius + 'px' }}
+                                                selected={selectedIndex === 4}
+                                                onClick={gosetting}
+                                            >
+                                                <ListItemIcon>
+                                                    <IconSettings stroke={1.5} size="1.3rem" />
+                                                </ListItemIcon>
+                                                <ListItemText primary={<Typography variant="body2">Setting</Typography>} />
+                                            </ListItemButton>
+                                        </List>
                                         <Divider />
                                         <List component="nav" className={classes.navContainer}>
                                             <ListItemButton

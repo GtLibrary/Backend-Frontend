@@ -62,7 +62,6 @@ INSTALLED_APPS = [
     "api.origintype",
     "api.books",
     "api.uploadimage",
-    "api.customers",
     "api.nft",
     "api.openaikey",
     "api.authentication",

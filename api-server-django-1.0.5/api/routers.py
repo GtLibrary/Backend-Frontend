@@ -10,6 +10,7 @@ from api.books.api import BooksCreateApi, BooksDeleteApi, BooksUpdateApi, BooksA
 from api.uploadimage.api import UploadimageCreateApi
 from rest_framework import routers
 from api.user.viewsets import UserViewSet
+from api.user.views import changepassword
 from django.urls import path, include
 from django.conf.urls import url
 from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, art, myopenai
@@ -59,6 +60,7 @@ urlpatterns = [
     path('getapikey', get_openaikey),
     path('getaiprice', getaiprice),
     path('setaiprice', AIpriceSet.as_view()),
+    path('changepassword', changepassword),
 
 
     url('^nft/', nft_views.nft, name='nft'),
