@@ -43,6 +43,8 @@ moralisdir = "/home/john/bakerydemo/moralis/"
 def getbooklist(request):
     fields = ('id', 'author_name', 'book_price', 'title','image_url')
     books = Books.objects.all().only('id', 'author_name', 'book_price', 'title','image_url')
+    # books = Books.objects.all().filter(user=1).only("user", "id")
+    print(books)
     data = BooksSerializer(books, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 
