@@ -18,6 +18,7 @@ from web3 import Web3, HTTPProvider
 from api.openaikey.models import Apikey
 from api.wallet.models import Wallet, WalletTransaction
 from api.aiprice.models import AIpricemodel
+from django.db.models import Q
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
 
@@ -42,9 +43,7 @@ moralisdir = "/home/john/bakerydemo/moralis/"
 @api_view(['GET'])
 def getbooklist(request):
     fields = ('id', 'author_name', 'book_price', 'title','image_url')
-    books = Books.objects.all().only('id', 'author_name', 'book_price', 'title','image_url')
-    # books = Books.objects.all().filter(user=1).only("user", "id")
-    print(books)
+    books = Books.objects.filter(Q(user__is_verify=True)).only('id', 'author_name', 'book_price', 'title','image_url')
     data = BooksSerializer(books, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 

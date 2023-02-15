@@ -1,6 +1,7 @@
 from api.books.models import Books
 from rest_framework import serializers
 from api.booktype.serializers import BookTypeSerializer
+from api.user.serializers import UserSerializer
 
 class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 
@@ -20,7 +21,6 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class BooksSerializer(DynamicFieldsModelSerializer):
     pub_date = serializers.DateTimeField(read_only=True)
     image_url = serializers.ImageField(required=False)
-    # book_type_id = BookTypeSerializer(read_only=True)
 
     class Meta:
         model = Books
