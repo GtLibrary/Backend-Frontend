@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useWeb3React } from "@web3-react/core";
 import withRouter from '../../withRouter';
 import Layout from '../shared/layout';
@@ -19,20 +19,20 @@ LoadingOverlay.propTypes = undefined;
 const SingleProduct = ({ match }) => {
   
   
-  const { account, activate, deactivate, error, active, chainId } = useWeb3React();
+  const { account } = useWeb3React();
   const { speak } = useSpeechSynthesis();
-  const providerUrl = process.env.REACT_APP_PROVIDERURL;
+  // const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
   const web3 = new Web3(window.ethereum);
 
   const printpress_abi = printingpress_abi;
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
-  const cCA = process.env.REACT_APP_CCA;
-  const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
+  // const cCA = process.env.REACT_APP_CCA;
+  // const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
 
-  const premiumGas = process.env.REACT_APP_PREMIUMGAS;
-  const gw100 = web3.utils.toWei('25.01', 'gwei');
+  // const premiumGas = process.env.REACT_APP_PREMIUMGAS;
+  // const gw100 = web3.utils.toWei('25.01', 'gwei');
 
   const navigate = useNavigate();
   const [pdfcontent, setPdfcontent] = useState([]);
@@ -49,15 +49,13 @@ const SingleProduct = ({ match }) => {
   useEffect(() => {
     const bookurl = process.env.REACT_APP_API + `bookdata/${id}`
     const booktypeurl = process.env.REACT_APP_API + `booktype/list`
-
-    console.log("booktypeurl",booktypeurl)
     
     async function getBook() {
       const typeconfig = {
         method: 'get',
         url: booktypeurl,
       }
-      let type_res = await axios(typeconfig)
+      await axios(typeconfig)
       .then(res => {
         let booktypearr = []
         res.data.map((item, key) => {
@@ -70,7 +68,7 @@ const SingleProduct = ({ match }) => {
         method: 'get',
         url: bookurl,
       }
-      let res = await axios(config)
+      await axios(config)
       .then(res => {
         if (res.status !== 200) {
           return navigate('/books');
@@ -98,17 +96,17 @@ const SingleProduct = ({ match }) => {
       setLoading(true);
       try {
         const printpress_contract = new web3.eth.Contract(printpress_abi, printpress_address);
-        const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-        const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
-        const transaction = await bt_contract.methods.setAddon(printpress_address, true);
-        const options = {
-          from    : account,
-          to      : transaction._parent._address,
-          data    : transaction.encodeABI(),
-          gas     : premiumGas
-        };
-        const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
-        const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+        // const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
+        // const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
+        // const transaction = await bt_contract.methods.setAddon(printpress_address, true);
+        // const options = {
+        //   from    : account,
+        //   to      : transaction._parent._address,
+        //   data    : transaction.encodeABI(),
+        //   gas     : premiumGas
+        // };
+        // const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
+        // const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
         
         await printpress_contract.methods.buyBook(bt_contract_address).send({from: account, value: web3.utils.toWei(String(book_price))});
         setLoading(false);
@@ -248,13 +246,13 @@ const SingleProduct = ({ match }) => {
       <div className='single-product-container container'>
         <div className="row">
           <div className="top-hr">
-            <img src="/assets/img/top-hr.png" alt="top hr image"></img>
+            <img src="/assets/img/top-hr.png" alt="top hr" />
           </div>
         </div>
         <div className="row">
           <div className='col-md-4'>
             <div className="product-brandimage">
-              <img className="img-responsive" src={image_url} alt="product brand image"></img>
+              <img className="img-responsive" src={image_url} alt="product brand "></img>
             </div>
           </div>
           <div className="col-md-8 detail-area">
@@ -289,7 +287,7 @@ const SingleProduct = ({ match }) => {
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img src="/assets/img/bookmark.png" alt="bookmark brand image"></img>
+                    <img src="/assets/img/bookmark.png" alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Book</h4>
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
@@ -302,7 +300,7 @@ const SingleProduct = ({ match }) => {
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img src="/assets/img/bookmark.png" alt="bookmark brand image"></img>
+                    <img src="/assets/img/bookmark.png" alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Hardbound</h4>
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
@@ -315,7 +313,7 @@ const SingleProduct = ({ match }) => {
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img src="/assets/img/bookmark.png" alt="bookmark brand image"></img>
+                    <img src="/assets/img/bookmark.png" alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem </p>
@@ -331,7 +329,7 @@ const SingleProduct = ({ match }) => {
         <div className="row">
           <div className="col-md-12">
             <div className="bottom-hr">
-              <img src="/assets/img/bottom-hr.png" alt="bottom hr image"></img>
+              <img src="/assets/img/bottom-hr.png" alt="bottom hr"></img>
             </div>
           </div>
         </div>
@@ -340,7 +338,7 @@ const SingleProduct = ({ match }) => {
           <div className="col-md-6">
             <div className="include-head">
               <span className="head-title">Book May Also Include:</span>
-              <img src="/assets/img/owl.png" className="owl-tip" alt="owl image"></img>
+              <img src="/assets/img/owl.png" className="owl-tip" alt="owl"></img>
             </div>
           </div>
           <div className="col-md-3"></div>
@@ -406,7 +404,7 @@ const SingleProduct = ({ match }) => {
         </div>
         <div className="row product-main-content">
           <div className="angel-with-bowl">
-            <img src="/assets/img/angel-with-bowl.png"></img>
+            <img src="/assets/img/angel-with-bowl.png" alt=''></img>
           </div>
           <div className="product-content">
             <div className="action-area">
