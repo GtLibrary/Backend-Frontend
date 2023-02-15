@@ -49,6 +49,8 @@ const SingleProduct = ({ match }) => {
   useEffect(() => {
     const bookurl = process.env.REACT_APP_API + `bookdata/${id}`
     const booktypeurl = process.env.REACT_APP_API + `booktype/list`
+
+    console.log("booktypeurl",booktypeurl)
     
     async function getBook() {
       const typeconfig = {
