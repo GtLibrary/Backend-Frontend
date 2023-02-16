@@ -10,7 +10,7 @@ import CC_abi from "../../utils/contract/CultureCoin.json"
 import Hero_abi from "../../utils/contract/Hero.json"
 
 function BMdetailModal(props) {
-    const { account, activate, deactivate, error, active, chainId } = useWeb3React();
+    const { account } = useWeb3React();
   
     const web3 = new Web3(window.ethereum);
     const { product, curserial_num } = props
@@ -35,12 +35,14 @@ function BMdetailModal(props) {
     const [xmsprate, setXmsprate] = useState(0);
     const [ccrate, setCcrate] = useState(0);
     const [bmContractowner, setBmContractowner] = useState('');
+    const NBTcontract = new web3.eth.Contract(NBT_abi,bm_contract_address);
 
-    useEffect(async () => {
-        
-        const NBTcontract = new web3.eth.Contract(NBT_abi,bm_contract_address);
-        const contractOwner = await NBTcontract.methods.owner().call();
-        setBmContractowner(contractOwner)
+    useEffect(() => {
+        async function setcontractowner() {
+            const contractOwner = await NBTcontract.methods.owner().call();
+            setBmContractowner(contractOwner)
+        }
+        setcontractowner()
     }, [])
 
     let user_wallet;
@@ -73,7 +75,7 @@ function BMdetailModal(props) {
     const sellthisbookmark = async () => {
 
         const NBTcontract = new web3.eth.Contract(NBT_abi,bm_contract_address);
-        const contractOwner = await NBTcontract.methods.owner().call();
+        // const contractOwner = await NBTcontract.methods.owner().call();
         
         const approved = await NBTcontract.methods.getApproved(tokenid).call();
     
@@ -83,7 +85,6 @@ function BMdetailModal(props) {
             await approveMarketPlace(bm_contract_address, tokenid);
             for(var i = 0; i < 10; i++) {
                 const approved = await NBTcontract.methods.getApproved(tokenid).call();
-                console.log("approved:", approved);
                 if (approved.toLowerCase() === marketPlaceAddress.toLowerCase()) {
                     break;
                 }
