@@ -13,14 +13,14 @@ export const profilesetting = {
     title: 'Profile Setting',
     type: 'group',
     children: [
-        // {
-        //     id: 'profile-setting',
-        //     title: 'Profile',
-        //     type: 'item',
-        //     url: '/profile/setting',
-        //     icon: icons['IconSettings'],
-        //     breadcrumbs: false
-        // },
+        {
+            id: 'profile-setting',
+            title: 'Profile',
+            type: 'item',
+            url: '/profile/setting',
+            icon: icons['IconSettings'],
+            breadcrumbs: false
+        },
         {
             id: 'profile-password',
             title: 'Change Password',
