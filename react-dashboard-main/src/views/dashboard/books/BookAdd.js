@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from 'react-redux';
 // material-ui
-import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Input, Fab } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import configData from '../../../config';
@@ -324,8 +324,18 @@ const BookAdd = (props) => {
                 </div>
                 <div className="bookimg-select">
                     <img src={previosImg} width="400" alt="" />
-                    <input type="file" id="image" accept="image/png, image/jpeg" onChange={handleFileUpload} required />
-                    <p>select the book image</p>
+                    <label htmlFor="image">
+                    <Input type="file" style={{ display: 'none' }} id="image" accept="image/png, image/jpeg" fullWidth onChange={handleFileUpload} required />
+                        <Fab
+                            color="secondary"
+                            size="small"
+                            component="span"
+                            aria-label="add"
+                            variant="extended"
+                        >
+                            Upload photo
+                        </Fab>
+                    </label>
                 </div>
                 <div>
                     <TextField
