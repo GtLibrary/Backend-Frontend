@@ -7,7 +7,7 @@ from api.authentication.viewsets import (
 from api.booktype.api import BookTypeCreateApi, BookTypeDeleteApi, BookTypeUpdateApi, BookTypeApi
 from api.origintype.api import OriginTypeCreateApi, OriginTypeDeleteApi, OriginTypeUpdateApi, OriginTypeApi
 from api.books.api import BooksCreateApi, BooksDeleteApi, BooksUpdateApi, BooksApi
-from api.authorinfo.views import AuthorinfoApi, AuthorinfoCreateApi, AuthorinfoUpdateApi, AuthorinfoDeleteApi
+from api.authorinfo.views import save_authorinfo, get_authorinfo
 from api.uploadimage.api import UploadimageCreateApi
 from rest_framework import routers
 from api.user.viewsets import UserViewSet
@@ -62,10 +62,8 @@ urlpatterns = [
     path('getaiprice', getaiprice),
     path('setaiprice', AIpriceSet.as_view()),
     path('changepassword', changepassword),
-    path("authorinfo/save", AuthorinfoCreateApi.as_view()),
-    path("authorinfo/list", AuthorinfoApi.as_view()),
-    path("authorinfo/delete/<int:pk>", AuthorinfoDeleteApi.as_view()),
-    path("authorinfo/edit/<int:pk>", AuthorinfoUpdateApi.as_view()),
+    path('authorinfo/save', save_authorinfo),
+    path('authorinfo/get', get_authorinfo),
 
 
     url('^nft/', nft_views.nft, name='nft'),
