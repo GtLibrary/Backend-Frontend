@@ -1,27 +1,23 @@
-from rest_framework import generics
+from rest_framework.decorators import api_view
+from api.authorinfo.models import Authorinfo
 from rest_framework.response import Response
 from api.authorinfo.serializers import AuthorinfoSerializer
-from api.authorinfo.models import Authorinfo
-from api.authorinfo.permissions import IsStaff
 
-class AuthorinfoCreateApi(generics.CreateAPIView):
-    permission_classes = (IsStaff,)
-    queryset = Authorinfo.objects.all()
-    serializer_class = AuthorinfoSerializer
+# Create your views here.
+@api_view(['POST'])
+def save_authorinfo(request):
+    temp = object
+    author_bio = request.data['author_bio']
+    author_imageurl = request.data['author_imageurl']
+    temp, created = Authorinfo.objects.update_or_create(
+        author = request.user,
+        defaults={ 'author_id': request.user.id, 'author_bio': author_bio, 'author_imageurl':author_imageurl}
+    )
 
-    def perform_create(self, serializer_class):
-        serializer_class.save(user=self.request.user)
+    return Response({"success": "true"})
 
-class AuthorinfoApi(generics.ListAPIView):
-    queryset = Authorinfo.objects.all()
-    serializer_class = AuthorinfoSerializer
-
-class AuthorinfoUpdateApi(generics.RetrieveUpdateAPIView):
-    permission_classes = (IsStaff,)
-    queryset = Authorinfo.objects.all()
-    serializer_class = AuthorinfoSerializer
-
-class AuthorinfoDeleteApi(generics.DestroyAPIView):
-    permission_classes = (IsStaff,)
-    queryset = Authorinfo.objects.all()
-    serializer_class = AuthorinfoSerializer
+@api_view(['GET'])
+def get_authorinfo(request):
+    author = Authorinfo.objects.filter(author=request.user).first()
+    data = AuthorinfoSerializer(author).data
+    return Response(data)
