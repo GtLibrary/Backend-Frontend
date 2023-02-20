@@ -18,7 +18,6 @@ LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
   
-  
   const { account } = useWeb3React();
   const { speak } = useSpeechSynthesis();
   // const providerUrl = process.env.REACT_APP_PROVIDERURL;
@@ -152,10 +151,10 @@ const SingleProduct = ({ match }) => {
     }
     setLoading(true);
     const cur_address = account
-    const options = {
-      address: cur_address,
-      token_address: bt_contract_address,
-    };
+    // const options = {
+    //   address: cur_address,
+    //   token_address: bt_contract_address,
+    // };
     const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
     const booktoken_cnt = await bt_contract.methods.balanceOf(account).call();
   

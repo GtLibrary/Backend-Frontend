@@ -65,7 +65,8 @@ INSTALLED_APPS = [
     "api.nft",
     "api.openaikey",
     "api.authentication",
-    "api.aiprice"
+    "api.aiprice",
+    "api.authorinfo",
 ]
 
 MIDDLEWARE = [
