@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from 'react-redux';
 // material-ui
-import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab } from '@material-ui/core';
+import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import configData from '../../../config';
@@ -43,11 +43,12 @@ const BookAdd = (props) => {
     const [introduction, setIntroduction] = useState('');
     const [maxbooksupply, setMaxbooksupply] = useState(0);
     const [maxbookmarksupply, setMaxbookmarksupply] = useState(0);
+    const [maxhardboundsupply, setMaxhardboundsupply] = useState(0);
     const [startpoint, setStartpoint] = useState(0);
+    const [hardboundstartpoint, setHardboundStartpoint] = useState(0);
+    const [bookmarkstartpoint, setBookmarkStartpoint] = useState(0);
     const [bookprice, setBookprice] = useState(0);
     const [bookmarkprice, setBookmarkprice] = useState(0);
-    const [hardbound, setHardbound] = useState('');
-    // const [hardboundfrom, setHardboundfrom] = useState('');
     const [hardboundprice, setHardboundprice] = useState('');
     const [booktype, setBooktype] = useState('');
     const [origintype, setOrigintype] = useState('');
@@ -71,13 +72,15 @@ const BookAdd = (props) => {
         setAuthorwallet(data.author_wallet);
         setAuthorname(data.author_name);
         setIntroduction(data.introduction);
-        setMaxbooksupply(data.max_book_supply);
-        setMaxbookmarksupply(data.max_bookmark_supply);
-        setHardboundprice(data.hardbound_price)
-        setHardbound(data.hardbound)
-        setStartpoint(data.start_point);
         setBookprice(data.book_price);
         setBookmarkprice(data.bookmark_price);
+        setHardboundprice(data.hardbound_price)
+        setMaxbooksupply(data.max_book_supply);
+        setMaxbookmarksupply(data.max_bookmark_supply);
+        setMaxhardboundsupply(data.hardbound)
+        setStartpoint(data.book_from);
+        setBookmarkStartpoint(data.bookmark_from);
+        setHardboundStartpoint(data.hardbound_from);
         setPreviosImg(data.image_url);
         setBookcontractaddress(data.bt_contract_address);
         setBookmarkcontractaddress(data.bm_contract_address);
@@ -249,10 +252,12 @@ const BookAdd = (props) => {
         setLoading(true);
         try {
             await updatedefaultsupply(bookcontractaddress, ethers.utils.parseEther(startpoint))
-            await updatedefaultsupply(bookmarkcontractaddress, ethers.utils.parseEther(startpoint))
-            await updatedefaultsupply(hardboundcontractaddress, ethers.utils.parseEther(startpoint))
+            await updatedefaultsupply(bookmarkcontractaddress, ethers.utils.parseEther(bookmarkstartpoint))
+            await updatedefaultsupply(hardboundcontractaddress, ethers.utils.parseEther(hardboundstartpoint))
             let form_data = new FormData();
-            form_data.append('start_point', startpoint);
+            form_data.append('book_from', startpoint);
+            form_data.append('bookmark_from', bookmarkstartpoint);
+            form_data.append('hardbound_from', hardboundstartpoint);
     
             await axios
                 .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
@@ -295,6 +300,7 @@ const BookAdd = (props) => {
             let form_data = new FormData();
             form_data.append('max_book_supply', maxbooksupply);
             form_data.append('max_bookmark_supply', maxbookmarksupply);
+            form_data.append('max_hardbound_supply', maxhardboundsupply);
     
             await axios
                 .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
@@ -337,26 +343,27 @@ const BookAdd = (props) => {
         form_data.append('title', booktitle);
         form_data.append('author_wallet', authorwallet);
         form_data.append('author_name', authorname);
+        form_data.append('introduction', introduction);
         form_data.append('curserial_number', curserialnumber);
         form_data.append('datamine', datamine);
         form_data.append('origin_type_id', origintype);
         form_data.append('book_type_id', booktype);
         form_data.append('book_price', bookprice);
         form_data.append('bookmark_price', bookmarkprice);
-        form_data.append('hardbound', hardbound);
-        // form_data.append('hardbound_from', hardboundfrom);
         form_data.append('hardbound_price', hardboundprice);
         form_data.append('max_book_supply', maxbooksupply);
         form_data.append('max_bookmark_supply', maxbookmarksupply);
-        form_data.append('start_point', startpoint);
-        form_data.append('introduction', introduction);
+        form_data.append('max_hardbound_supply', maxhardboundsupply);
+        form_data.append('book_from', startpoint);
+        form_data.append('bookmark_from', bookmarkstartpoint);
+        form_data.append('hardbound_from', hardboundstartpoint);
         if (bookid) {
             
             if(window.confirm("If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?")) {
                 
                 const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbooksupply), web3.utils.toWei(bookprice), ethers.utils.parseEther(startpoint), account);
-                const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbookmarksupply), web3.utils.toWei(bookmarkprice), ethers.utils.parseEther(startpoint), account)
-                const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(hardbound), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(startpoint), account)
+                const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbookmarksupply), web3.utils.toWei(bookmarkprice), ethers.utils.parseEther(bookmarkstartpoint), account)
+                const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxhardboundsupply), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(hardboundstartpoint), account)
 
                 form_data.append('bt_contract_address', BTcontract);
                 form_data.append('bm_contract_address', BMcontract);
@@ -379,14 +386,15 @@ const BookAdd = (props) => {
                             setAuthorname('');
                             setBrandimage('');
                             setIntroduction('');
-                            setMaxbookmarksupply('');
-                            setMaxbooksupply('');
                             setBookmarkprice('');
                             setBookprice('');
-                            setStartpoint('');
-                            setHardbound('');
-                            // setHardboundfrom('');
                             setHardboundprice('');
+                            setMaxbooksupply('');
+                            setMaxbookmarksupply('');
+                            setMaxhardboundsupply('');
+                            setStartpoint('');
+                            setBookmarkStartpoint('');
+                            setHardboundStartpoint('');
                         }
                         toast.success("successfully saved", {
                             position: "top-right",
@@ -411,8 +419,8 @@ const BookAdd = (props) => {
             }
         } else {
             const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbooksupply), web3.utils.toWei(bookprice), ethers.utils.parseEther(startpoint), account);
-            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbookmarksupply), web3.utils.toWei(bookmarkprice), ethers.utils.parseEther(startpoint), account)
-            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(hardbound), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(startpoint), account)
+            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbookmarksupply), web3.utils.toWei(bookmarkprice), ethers.utils.parseEther(bookmarkstartpoint), account)
+            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxhardboundsupply), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(hardboundstartpoint), account)
 
             form_data.append('bt_contract_address', BTcontract);
             form_data.append('bm_contract_address', BMcontract);
@@ -435,14 +443,15 @@ const BookAdd = (props) => {
                         setAuthorname('');
                         setBrandimage('');
                         setIntroduction('');
-                        setMaxbookmarksupply('');
-                        setMaxbooksupply('');
                         setBookmarkprice('');
                         setBookprice('');
-                        setStartpoint('');
-                        setHardbound('');
-                        // setHardboundfrom('');
                         setHardboundprice('');
+                        setMaxbooksupply('');
+                        setMaxbookmarksupply('');
+                        setMaxhardboundsupply('');
+                        setStartpoint('');
+                        setBookmarkStartpoint('');
+                        setHardboundStartpoint('');
                     }
                     toast.success("successfully saved", {
                         position: "top-right",
@@ -601,6 +610,61 @@ const BookAdd = (props) => {
                 </div>
                 <div>
                     <TextField
+                        id="datamine"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the datamine"
+                        helperText="DataMine"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={datamine}
+                        onChange={(e) => {
+                            setDatamine(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="curserialnumber"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the curserial number"
+                        helperText="Curserial Number"
+                        fullWidth
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={curserialnumber}
+                        onChange={(e) => {
+                            setCurserialnumber(e.target.value);
+                        }}
+                    />
+                </div>
+                <Divider>Book detail</Divider>
+                <div>
+                    <TextField
+                        id="bookprice"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the book price"
+                        helperText="Book Price"
+                        fullWidth
+                        type="number"
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={bookprice}
+                        onChange={(e) => {
+                            setBookprice(e.target.value);
+                        }}
+                    />
+                    <TextField
                         id="maxbooksupply"
                         // label="Book  Name"
                         style={{ margin: 8 }}
@@ -616,6 +680,47 @@ const BookAdd = (props) => {
                         value={maxbooksupply}
                         onChange={(e) => {
                             setMaxbooksupply(e.target.value);
+                        }}
+                    />
+                </div>
+                <div>
+                    <TextField
+                        id="startpoint"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the start point"
+                        helperText="Start Point"
+                        fullWidth
+                        type="number"
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={startpoint}
+                        onChange={(e) => {
+                            setStartpoint(e.target.value);
+                        }}
+                    />
+                </div>
+                <Divider>Bookmark detail</Divider>
+                <div>
+                    <TextField
+                        id="Bookmarkprice"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the bookmark price"
+                        helperText="Bookmark Price"
+                        fullWidth
+                        type="number"
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={bookmarkprice}
+                        onChange={(e) => {
+                            setBookmarkprice(e.target.value);
                         }}
                     />
                     <TextField
@@ -639,11 +744,11 @@ const BookAdd = (props) => {
                 </div>
                 <div>
                     <TextField
-                        id="startpoint"
+                        id="bookmarkstartpoint"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the start point"
-                        helperText="Start Point"
+                        placeholder="Please input the Bookmark start point"
+                        helperText="Bookmark Start Point"
                         fullWidth
                         type="number"
                         // margin="normal"
@@ -651,85 +756,14 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={startpoint}
+                        value={bookmarkstartpoint}
                         onChange={(e) => {
-                            setStartpoint(e.target.value);
-                        }}
-                    />
-                    <TextField
-                        id="bookprice"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the book price"
-                        helperText="Book Price"
-                        fullWidth
-                        type="number"
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={bookprice}
-                        onChange={(e) => {
-                            setBookprice(e.target.value);
+                            setBookmarkStartpoint(e.target.value);
                         }}
                     />
                 </div>
+                <Divider>Hardbound detail</Divider>
                 <div>
-                    <TextField
-                        id="Bookmarkprice"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the bookmark price"
-                        helperText="Bookmark Price"
-                        fullWidth
-                        type="number"
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={bookmarkprice}
-                        onChange={(e) => {
-                            setBookmarkprice(e.target.value);
-                        }}
-                    />
-                    <TextField
-                        id="curserialnumber"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the curserial number"
-                        helperText="Curserial Number"
-                        fullWidth
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={curserialnumber}
-                        onChange={(e) => {
-                            setCurserialnumber(e.target.value);
-                        }}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        id="hardbound"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the hardbound amount"
-                        helperText="Hardbound"
-                        fullWidth
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={hardbound}
-                        onChange={(e) => {
-                            setHardbound(e.target.value);
-                        }}
-                    />
                     <TextField
                         id="hardboundprice"
                         // label="Book  Name"
@@ -748,23 +782,41 @@ const BookAdd = (props) => {
                             setHardboundprice(e.target.value);
                         }}
                     />
-                </div>
-                <div>
                     <TextField
-                        id="datamine"
+                        id="hardbound"
+                        type="number"
                         // label="Book  Name"
                         style={{ margin: 8 }}
-                        placeholder="Please input the datamine"
-                        helperText="DataMine"
+                        placeholder="Please input the hardbound amount"
+                        helperText="Hardbound"
                         fullWidth
                         // margin="normal"
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
-                        value={datamine}
+                        value={maxhardboundsupply}
                         onChange={(e) => {
-                            setDatamine(e.target.value);
+                            setMaxhardboundsupply(e.target.value);
+                        }}
+                    />
+                </div>
+                <div>
+                    <TextField
+                        id="hardboundstartpoint"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the Hardbound start point"
+                        helperText="Hardbound Start Point"
+                        fullWidth
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={hardboundstartpoint}
+                        onChange={(e) => {
+                            setHardboundStartpoint(e.target.value);
                         }}
                     />
                 </div>
