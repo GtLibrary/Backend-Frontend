@@ -49,7 +49,7 @@ const BookAdd = (props) => {
     const [bookmarkstartpoint, setBookmarkStartpoint] = useState(0);
     const [bookprice, setBookprice] = useState(0);
     const [bookmarkprice, setBookmarkprice] = useState(0);
-    const [hardboundprice, setHardboundprice] = useState('');
+    const [hardboundprice, setHardboundprice] = useState(0);
     const [booktype, setBooktype] = useState('');
     const [origintype, setOrigintype] = useState('');
     const [booktypes, setBooktypes] = useState([]);
@@ -788,7 +788,7 @@ const BookAdd = (props) => {
                         // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the hardbound amount"
-                        helperText="Hardbound"
+                        helperText="Max Hardbound supply"
                         fullWidth
                         // margin="normal"
                         InputLabelProps={{
