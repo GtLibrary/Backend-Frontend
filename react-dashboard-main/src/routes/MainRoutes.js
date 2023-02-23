@@ -40,7 +40,7 @@ const MainRoutes = () => {
                 '/dashboard/default',
                 '/dashboard/booklist',
                 '/dashboard/books/addbook',
-                '/dashboard/books/edit/:id',
+                '/dashboard/books/edit/:bookid',
                 '/dashboard/books/contentedit/:id',
                 '/dashboard/balance',
                 '/dashboard/getapikey',
@@ -77,7 +77,7 @@ const MainRoutes = () => {
                             <BookAdd {...props} action="new" />
                         )
                         } />
-                        <Route path="/dashboard/books/edit/:id" 
+                        <Route path="/dashboard/books/edit/:bookid" 
                         render = {(props) => (
                             <BookAdd {...props} action="edit" />
                         )
