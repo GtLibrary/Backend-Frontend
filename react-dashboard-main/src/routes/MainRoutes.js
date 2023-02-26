@@ -11,6 +11,7 @@ const DashboardDefault = Loadable(lazy(() => import('../views/dashboard/Default'
 const Booklist = Loadable(lazy(() => import('../views/dashboard/books/Booklist')));
 const BookAdd = Loadable(lazy(() => import('../views/dashboard/books/BookAdd')));
 const BookContent = Loadable(lazy(() => import('../views/dashboard/books/BookContent')));
+const PrintBook = Loadable(lazy(() => import('../views/dashboard/books/PrintBook')));
 const Balance = Loadable(lazy(() => import('../views/dashboard/balance/Balance')));
 const GetBenjiKey = Loadable(lazy(() => import('../views/dashboard/getapikey/getapikey')))
 // basicsetting routing
@@ -42,6 +43,7 @@ const MainRoutes = () => {
                 '/dashboard/books/addbook',
                 '/dashboard/books/edit/:bookid',
                 '/dashboard/books/contentedit/:id',
+                '/dashboard/books/printbook/:bookid',
                 '/dashboard/balance',
                 '/dashboard/getapikey',
 
@@ -85,6 +87,11 @@ const MainRoutes = () => {
                         <Route path="/dashboard/books/contentedit/:id" 
                         render = {(props) => (
                             <BookContent {...props} action="edit" />
+                        )
+                        } />
+                        <Route path="/dashboard/books/printbook/:bookid"
+                        render={(props) => (
+                            <PrintBook {...props} action="edit" />
                         )
                         } />
                         <Route path="/dashboard/balance" component={Balance} />
