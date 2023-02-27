@@ -19,18 +19,15 @@ class Books(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, related_name='user', null=True, on_delete=models.CASCADE)
     book_type_id = models.BigIntegerField(default=0)
-    # max_bookmark_supply = models.BigIntegerField(default=-1)
     max_book_supply = models.BigIntegerField(default=-1)
     max_hardbound_supply = models.BigIntegerField(default=-1)
     book_price = models.DecimalField(max_digits = 10,decimal_places=3, default=0.0)
-    # bookmark_price = models.DecimalField(max_digits = 10,decimal_places=3, default=0.0)
     hardbound_price = models.DecimalField(max_digits = 10,decimal_places=3, default=0.0)
     book_from = models.BigIntegerField(default=1)
-    # bookmark_from = models.BigIntegerField(default=1)
     hardbound_from = models.BigIntegerField(default=1)
     bt_contract_address = models.CharField(max_length=200, default='')
-    # bm_contract_address = models.CharField(max_length=200, default='')
     hb_contract_address = models.CharField(max_length=200, default='')
+    is_ads = models.BooleanField(default=False)
     pub_date = models.DateTimeField('date published',auto_now=True, null=False, blank=False)
     class Meta:
         ordering = ['title']
