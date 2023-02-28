@@ -40,6 +40,7 @@ function BookAddItem({ inputList, setInputList }) {
                                         placeholder="Please input the bookmark token name"
                                         helperText="Bookmark Token Name"
                                         fullWidth
+                                        className='input-item'
                                         InputLabelProps={{
                                             shrink: true
                                         }}
@@ -54,6 +55,7 @@ function BookAddItem({ inputList, setInputList }) {
                                         placeholder="Please input the bookmark price"
                                         helperText="Bookmark Price"
                                         fullWidth
+                                        className='input-item'
                                         type="number"
                                         InputLabelProps={{
                                             shrink: true
@@ -69,6 +71,7 @@ function BookAddItem({ inputList, setInputList }) {
                                         placeholder="Please input the max amount of bookmark"
                                         helperText="Max bookmarks supply"
                                         fullWidth
+                                        className='input-item'
                                         type="number"
                                         InputLabelProps={{
                                             shrink: true
@@ -84,6 +87,7 @@ function BookAddItem({ inputList, setInputList }) {
                                         placeholder="Please input the Bookmark start point"
                                         helperText="Bookmark Start Point"
                                         fullWidth
+                                        className='input-item'
                                         type="number"
                                         InputLabelProps={{
                                             shrink: true
@@ -92,7 +96,6 @@ function BookAddItem({ inputList, setInputList }) {
                                         value={item.bookmarkstartpoint}
                                         onChange={e => handleInputChange(e, i)}
                                     />
-                                    {/* <div className="btn-box"> */}
                                     { inputList.length !== 1 && 
                                         <Button
                                             variant="contained"
@@ -112,7 +115,6 @@ function BookAddItem({ inputList, setInputList }) {
                                             <IconPlus />
                                         </Button>
                                     }
-                                    {/* </div> */}
                                 </div>
                             );
                         })}
