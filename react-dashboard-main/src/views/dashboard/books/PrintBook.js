@@ -34,7 +34,7 @@ const PrintBook = (props) => {
     const getPrintBookById = async () => {
         const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + bookid, { headers: { Authorization: `${accountinfo.token}` } });
         
-        setBooktitle('"'+ data.title + '" Book Mint');
+        setBooktitle('"'+ data.title + '" Book Mint By Author');
         setBookcontractaddress(data.bt_contract_address);
         setMaxbooksupply(data.max_book_supply);
     }

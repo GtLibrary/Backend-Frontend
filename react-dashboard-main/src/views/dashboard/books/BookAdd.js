@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from 'react-redux';
 // material-ui
-import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider } from '@material-ui/core';
+import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Stack, FormControlLabel, Checkbox, Grid } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import BookAddItem from './BookAddItem';
@@ -32,10 +32,11 @@ const BookAdd = (props) => {
     const accountinfo = useSelector((state) => state.account);
 
     const [booktitle, setBooktitle] = useState('');
+    const [checked, setChecked] = useState(false);
     const [bookcontractaddress, setBookcontractaddress] = useState('');
     const [bookmarkcontractaddress, setBookmarkcontractaddress] = useState('');
     const [hardboundcontractaddress, setHardboundcontractaddress] = useState('');
-    const [title, setTitle] = useState('Book Add');
+    const [title, setTitle] = useState('Add New Book');
     const [brandimage, setBrandimage] = useState(null);
     const [authorwallet, setAuthorwallet] = useState(account);
     const [authorname, setAuthorname] = useState('');
@@ -87,7 +88,8 @@ const BookAdd = (props) => {
         setBookcontractaddress(data.bt_contract_address);
         setBookmarkcontractaddress(data.bm_contract_address);
         setHardboundcontractaddress(data.hb_contract_address);
-        setInputList(data.bookmarks)
+        setInputList(data.bm_listdata);
+        setChecked(data.is_ads);
     };
 
     useEffect(() => {
@@ -95,7 +97,7 @@ const BookAdd = (props) => {
         getOrigintypes();
         if (bookid) {
             getBooksById();
-            setTitle('Book Edit');
+            setTitle('Edit Book');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -300,7 +302,7 @@ const BookAdd = (props) => {
             await updatedefaultmaxsupply(hardboundcontractaddress, ethers.utils.parseEther(maxbooksupply))
             let form_data = new FormData();
             form_data.append('max_book_supply', maxbooksupply);
-            form_data.append('max_bookmark_supply', maxbookmarksupply);
+            // form_data.append('max_bookmark_supply', maxbookmarksupply);
             form_data.append('max_hardbound_supply', maxhardboundsupply);
     
             await axios
@@ -356,8 +358,9 @@ const BookAdd = (props) => {
         form_data.append('max_bookmark_supply', maxbookmarksupply);
         form_data.append('max_hardbound_supply', maxhardboundsupply);
         form_data.append('book_from', startpoint);
-        form_data.append('bookmark_from', bookmarkstartpoint);
+        // form_data.append('bookmark_from', bookmarkstartpoint);
         form_data.append('hardbound_from', hardboundstartpoint);
+        form_data.append('is_ads', checked);
         if (bookid) {
             
             if(window.confirm("If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?")) {
@@ -374,7 +377,7 @@ const BookAdd = (props) => {
                     let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(itemmaxbookmarksupply), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(itembookmarkstartpoint), account)
                     inputList[index]["item_bmcontract_address"] = BMcontract;
                 }
-                form_data.append('bm_contract_addresses', JSON.stringify(inputList));
+                form_data.append('bm_listdata', inputList);
                 
                 form_data.append('bt_contract_address', BTcontract);
                 form_data.append('hb_contract_address', HBcontract);
@@ -405,6 +408,7 @@ const BookAdd = (props) => {
                             setStartpoint('');
                             setBookmarkStartpoint('');
                             setHardboundStartpoint('');
+                            setChecked(false);
                         }
                         toast.success("successfully saved", {
                             position: "top-right",
@@ -440,7 +444,7 @@ const BookAdd = (props) => {
                 let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(itemmaxbookmarksupply), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(itembookmarkstartpoint), account)
                 inputList[index]["item_bmcontract_address"] = BMcontract;
             }
-            form_data.append('bm_contract_addresses', JSON.stringify(inputList));
+            form_data.append('bm_listdata', inputList);
 
             form_data.append('bt_contract_address', BTcontract);
             form_data.append('hb_contract_address', HBcontract);
@@ -471,6 +475,7 @@ const BookAdd = (props) => {
                         setStartpoint('');
                         setBookmarkStartpoint('');
                         setHardboundStartpoint('');
+                        setChecked(false);
                     }
                     toast.success("successfully saved", {
                         position: "top-right",
@@ -530,7 +535,7 @@ const BookAdd = (props) => {
             <Box
                 component="form"
                 sx={{
-                    '& .MuiTextField-root': { m: 1, width: '35ch' }
+                    '& .MuiTextField-root.input-item': { m: 1, width: '35ch' }
                 }}
                 noValidate
                 autoComplete="off"
@@ -538,12 +543,11 @@ const BookAdd = (props) => {
                 <div>
                     <TextField
                         id="book-title"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the book title"
                         helperText="Book Title"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -572,12 +576,11 @@ const BookAdd = (props) => {
                 <div>
                     <TextField
                         id="authorwallet"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the author wallet address"
                         helperText="Author Wallet"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -589,12 +592,11 @@ const BookAdd = (props) => {
                     />
                     <TextField
                         id="author_name"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the author name"
                         helperText="Author Name"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -605,37 +607,36 @@ const BookAdd = (props) => {
                         }}
                     />
                 </div>
-                <div>
-                    <TextField
-                        id="introduction"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the introduction of book"
-                        helperText="Introduction"
-                        fullWidth  
-                        multiline
-                        rows={10}
-                        maxRows={20}
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={introduction}
-                        onChange={(e) => {
-                            setIntroduction(e.target.value);
-                        }}
-                    />
-                </div>
+                <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="introduction"
+                            style={{ margin: 8 }}
+                            placeholder="Please input the introduction of book"
+                            helperText="Introduction"
+                            fullWidth  
+                            multiline
+                            rows={10}
+                            maxRows={20}
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                            variant="filled"
+                            value={introduction}
+                            onChange={(e) => {
+                                setIntroduction(e.target.value);
+                            }}
+                        />
+                    </Grid>
+                </Grid>
                 <div>
                     <TextField
                         id="datamine"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the datamine"
                         helperText="DataMine"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -647,12 +648,11 @@ const BookAdd = (props) => {
                     />
                     <TextField
                         id="curserialnumber"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the curserial number"
                         helperText="Curserial Number"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -667,13 +667,12 @@ const BookAdd = (props) => {
                 <div>
                     <TextField
                         id="bookprice"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the book price"
                         helperText="Book Price"
                         fullWidth
+                        className='input-item'
                         type="number"
-                        // margin="normal"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -685,13 +684,12 @@ const BookAdd = (props) => {
                     />
                     <TextField
                         id="maxbooksupply"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the max amount of book"
                         helperText="Max Books Supply"
                         fullWidth
+                        className='input-item'
                         type="number"
-                        // margin="normal"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -703,13 +701,12 @@ const BookAdd = (props) => {
                     />
                     <TextField
                         id="startpoint"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the start point"
                         helperText="Start Point"
                         fullWidth
+                        className='input-item'
                         type="number"
-                        // margin="normal"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -724,13 +721,12 @@ const BookAdd = (props) => {
                 <div>
                     <TextField
                         id="hardboundprice"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the hardbound price"
                         helperText="Hardbound Price"
                         fullWidth
+                        className='input-item'
                         type="number"
-                        // margin="normal"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -743,12 +739,11 @@ const BookAdd = (props) => {
                     <TextField
                         id="hardbound"
                         type="number"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the hardbound amount"
                         helperText="Max Hardbound supply"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -765,6 +760,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the Hardbound start point"
                         helperText="Hardbound Start Point"
                         fullWidth
+                        className='input-item'
                         type="number"
                         InputLabelProps={{
                             shrink: true
@@ -777,46 +773,63 @@ const BookAdd = (props) => {
                     />
                 </div>
                 {<BookAddItem inputList={inputList} setInputList={setInputList} />}
-                <div>
-                    <FormControl className="mui-formcontrol" fullWidth>
-                        <InputLabel id="booktype">Book Type</InputLabel>
-                        <Select
-                            labelId="booktype"
-                            id="booktype-select"
-                            value={booktype}
-                            label="Book Type"
-                            onChange={(e) => setBooktype(e.target.value)}
-                        >
-                            {booktypes &&
-                                booktypes.map((item, i) => {
-                                    return (
-                                        <MenuItem key={i} value={item.id}>
-                                            {item.booktype}
-                                        </MenuItem>
-                                    );
-                                })}
-                        </Select>
-                    </FormControl>
-                    <FormControl className="mui-formcontrol" fullWidth>
-                        <InputLabel id="origintype">Origin Type</InputLabel>
-                        <Select
-                            labelId="origintype"
-                            id="origintype-select"
-                            value={origintype}
-                            label="Origin Type"
-                            onChange={(e) => setOrigintype(e.target.value)}
-                        >
-                            {origintypes &&
-                                origintypes.map((item, i) => {
-                                    return (
-                                        <MenuItem key={i} value={item.id}>
-                                            {item.origintype}
-                                        </MenuItem>
-                                    );
-                                })}
-                        </Select>
-                    </FormControl>
-                </div>
+                <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                        <FormControl className="mui-formcontrol" fullWidth>
+                            <InputLabel id="booktype">Book Type</InputLabel>
+                            <Select
+                                labelId="booktype"
+                                id="booktype-select"
+                                value={booktype}
+                                label="Book Type"
+                                onChange={(e) => setBooktype(e.target.value)}
+                            >
+                                {booktypes &&
+                                    booktypes.map((item, i) => {
+                                        return (
+                                            <MenuItem key={i} value={item.id}>
+                                                {item.booktype}
+                                            </MenuItem>
+                                        );
+                                    })}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl className="mui-formcontrol" fullWidth>
+                            <InputLabel id="origintype">Origin Type</InputLabel>
+                            <Select
+                                labelId="origintype"
+                                id="origintype-select"
+                                value={origintype}
+                                label="Origin Type"
+                                onChange={(e) => setOrigintype(e.target.value)}
+                            >
+                                {origintypes &&
+                                    origintypes.map((item, i) => {
+                                        return (
+                                            <MenuItem key={i} value={item.id}>
+                                                {item.origintype}
+                                            </MenuItem>
+                                        );
+                                    })}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox
+                                checked={checked}
+                                onChange={(event) => setChecked(event.target.checked)}
+                                name="checked"
+                                color="primary"
+                            />
+                        }
+                        label="Free with Ads"
+                    />
+                </Stack>
                 { bookid > 0 ? (
                     <div>
                         <Button variant="contained" onClick={() => saveBook()}>
