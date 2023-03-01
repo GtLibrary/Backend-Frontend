@@ -8,7 +8,7 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from 'react-redux';
 // material-ui
-import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Stack, FormControlLabel, Checkbox, Grid } from '@material-ui/core';
+import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Grid } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import BookAddItem from './BookAddItem';
@@ -32,7 +32,6 @@ const BookAdd = (props) => {
     const accountinfo = useSelector((state) => state.account);
 
     const [booktitle, setBooktitle] = useState('');
-    const [checked, setChecked] = useState(false);
     const [bookcontractaddress, setBookcontractaddress] = useState('');
     const [bookmarkcontractaddress, setBookmarkcontractaddress] = useState('');
     const [hardboundcontractaddress, setHardboundcontractaddress] = useState('');
@@ -89,7 +88,6 @@ const BookAdd = (props) => {
         setBookmarkcontractaddress(data.bm_contract_address);
         setHardboundcontractaddress(data.hb_contract_address);
         setInputList(data.bm_listdata);
-        setChecked(data.is_ads);
     };
 
     useEffect(() => {
@@ -360,7 +358,6 @@ const BookAdd = (props) => {
         form_data.append('book_from', startpoint);
         // form_data.append('bookmark_from', bookmarkstartpoint);
         form_data.append('hardbound_from', hardboundstartpoint);
-        form_data.append('is_ads', checked);
         if (bookid) {
             
             if(window.confirm("If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?")) {
@@ -408,7 +405,6 @@ const BookAdd = (props) => {
                             setStartpoint('');
                             setBookmarkStartpoint('');
                             setHardboundStartpoint('');
-                            setChecked(false);
                         }
                         toast.success("successfully saved", {
                             position: "top-right",
@@ -475,7 +471,6 @@ const BookAdd = (props) => {
                         setStartpoint('');
                         setBookmarkStartpoint('');
                         setHardboundStartpoint('');
-                        setChecked(false);
                     }
                     toast.success("successfully saved", {
                         position: "top-right",
@@ -817,19 +812,6 @@ const BookAdd = (props) => {
                         </FormControl>
                     </Grid>
                 </Grid>
-                <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={checked}
-                                onChange={(event) => setChecked(event.target.checked)}
-                                name="checked"
-                                color="primary"
-                            />
-                        }
-                        label="Free with Ads"
-                    />
-                </Stack>
                 { bookid > 0 ? (
                     <div>
                         <Button variant="contained" onClick={() => saveBook()}>

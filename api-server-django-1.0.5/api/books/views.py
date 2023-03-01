@@ -59,6 +59,12 @@ def getbookdatabyId(request, pk):
 def getBookContentbyId(request, pk):
     content = Books.objects.get(pk=pk)
     return Response(content.content)
+
+@api_view(['GET'])
+def getBookAdContentbyId(request, pk):
+    content = Books.objects.get(pk=pk)
+    return Response(content.adcontent)
+
 #
 # Calulate the portential of the contract/work of art.
 #
