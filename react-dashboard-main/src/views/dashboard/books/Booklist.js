@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 // material-ui
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
 import { Button, Box } from '@material-ui/core';
-import { IconNotes, IconEdit, IconTrash, IconPrinter } from '@tabler/icons';
+import { IconNotes, IconEdit, IconTrash, IconPrinter, IconAd } from '@tabler/icons';
 
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
@@ -46,6 +46,10 @@ const Booklist = () => {
 
     const editBooklist = (id) => {
         history.push(`/dashboard/books/edit/${id}`)
+    }
+
+    const BookAdSet = (id) => {
+        history.push(`/dashboard/books/adcontent/${id}`)
     }
 
     const newBookadd = () => {
@@ -103,6 +107,13 @@ const Booklist = () => {
                                                 onClick={() => printBook(row.id)}
                                             >
                                                 <IconPrinter />
+                                            </Button>
+                                            <Button
+                                                style={{ marginLeft: '10px' }}
+                                                variant="contained"
+                                                onClick={() => BookAdSet(row.id)}
+                                            >
+                                                <IconAd />
                                             </Button>
                                             <Button
                                                 style={{ marginLeft: '10px' }}

@@ -9,6 +9,7 @@ class Books(models.Model):
     title = models.CharField(max_length=200, default='')
     introduction = models.TextField(default = '')
     content = models.TextField(default = '')
+    adcontent = models.TextField(default = '')
     image_url = models.ImageField(upload_to='post_main_images', blank=True, null=True)
     author_name = models.CharField(max_length=200, default='')
     author_wallet = models.CharField(max_length=200, default='')
@@ -16,7 +17,7 @@ class Books(models.Model):
     curserial_number = models.CharField(max_length=200, default='')
     datamine = models.CharField(max_length=200, default='')
     origin_type_id = models.BigIntegerField(default=0)
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='user', null=True, on_delete=models.CASCADE)
     book_type_id = models.BigIntegerField(default=0)
     max_book_supply = models.BigIntegerField(default=-1)

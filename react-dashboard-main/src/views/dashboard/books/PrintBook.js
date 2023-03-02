@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import { ethers } from "ethers";
-import Web3 from 'web3';
-import { useWeb3React } from "@web3-react/core";
 import { useSelector } from 'react-redux';
 // material-ui
 import { Grid, Button, Box, TextField } from '@material-ui/core';

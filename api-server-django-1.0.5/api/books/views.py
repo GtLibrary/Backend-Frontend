@@ -49,8 +49,8 @@ def getbooklist(request):
 
 @api_view(['GET'])
 def getbookdatabyId(request, pk):
-    fields = ('id', 'title','image_url', 'author_name', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id')
-    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id')
+    fields = ('id', 'title','image_url', 'author_name', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads')
+    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads')
     data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 
@@ -59,6 +59,19 @@ def getbookdatabyId(request, pk):
 def getBookContentbyId(request, pk):
     content = Books.objects.get(pk=pk)
     return Response(content.content)
+
+@api_view(['GET'])
+def getBookAdContentbyId(request, pk):
+    adcontent = Books.objects.get(pk=pk)
+    content = adcontent.adcontent
+    if(content.find("<figure") > 0):
+        figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
+        temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
+    else:
+        figure_content = ''
+        temp_content = content.replace('<p>', '').replace('</p>', '')
+    return Response({"content": temp_content, "book_image": figure_content, "origincontent": content})
+
 #
 # Calulate the portential of the contract/work of art.
 #
@@ -121,19 +134,23 @@ def art(request, pk):
     signature = request.GET.get('sig', 'default')
     sender = request.GET.get('sender', '')
 
-    bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
-        
-    contract_abi = json.load(open('/home/john/bakerydemo/brownie/BookTradable.json'))
+    # bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
+    cwd = os.getcwd()
+    path = (cwd + '/static/BookTradable.json')
+    contract_abi = json.load(open(path))
     bt_address = Web3.toChecksumAddress(bookcontent.bt_contract_address)
     bt_Contract = web3.eth.contract(address=bt_address, abi=contract_abi)
     token_cnt = bt_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
 
     if (token_cnt > 0) & (sender != ''):
-        cur_num = bmsupply - 1
+        # cur_num = bmsupply - 1
         content = bookcontent.content
-        figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
-        temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
-
+        if(content.find("<figure") > 0):
+            figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
+            temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
+        else:
+            figure_content = ''
+            temp_content = content.replace('<p>', '').replace('</p>', '')
         return Response({"content": temp_content, "book_image": figure_content, "curserial_num": curserial_num})
     else:
         return Response({"content":"You are not token owner!!"})
