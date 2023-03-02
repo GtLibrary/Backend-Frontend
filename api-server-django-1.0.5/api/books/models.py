@@ -17,7 +17,7 @@ class Books(models.Model):
     curserial_number = models.CharField(max_length=200, default='')
     datamine = models.CharField(max_length=200, default='')
     origin_type_id = models.BigIntegerField(default=0)
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='user', null=True, on_delete=models.CASCADE)
     book_type_id = models.BigIntegerField(default=0)
     max_book_supply = models.BigIntegerField(default=-1)

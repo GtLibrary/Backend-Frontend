@@ -25,12 +25,15 @@ const SingleProduct = ({ match }) => {
   const printpress_abi = printingpress_abi;
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
+  const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
 
   const navigate = useNavigate();
   const [pdfcontent, setPdfcontent] = useState([]);
   const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState("");
   const [pdfimage, setPdfimage] = useState("");
+  const [adcontent, setAdcontent] = useState("");
+  const [originadcontent, setOriginadcontent] = useState("");
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
@@ -62,7 +65,6 @@ const SingleProduct = ({ match }) => {
           if (res.status !== 200) {
             return navigate("/books");
           } else {
-            console.log(res);
             setProduct(res.data[0]);
           }
         })
@@ -76,7 +78,7 @@ const SingleProduct = ({ match }) => {
   if (!product) {
     return false;
   }
-  console.log(product);
+  
   const {
     image_url,
     title,
@@ -87,6 +89,7 @@ const SingleProduct = ({ match }) => {
     bt_contract_address,
     hb_contract_address,
     book_type_id,
+    is_ads
   } = product;
 
   const onBuyBook = async () => {
@@ -103,6 +106,19 @@ const SingleProduct = ({ match }) => {
         printpress_address
       );
 
+      const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
+      const ccaaccount = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
+      const transaction = await bt_contract.methods.setAddon(printpress_address, true);
+      const options = {
+        from    : ccaaccount,
+        to      : transaction._parent._address,
+        data    : transaction.encodeABI(),
+        gas     : await transaction.estimateGas({from: ccaaccount}),
+        gasPrice: await web3.eth.getGasPrice()
+      };
+      const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
+      const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+      console.log(result)
       await printpress_contract.methods
         .buyBook(bt_contract_address)
         .send({ from: account, value: web3.utils.toWei(String(book_price)) });
@@ -147,6 +163,7 @@ const SingleProduct = ({ match }) => {
   };
 
   const onReadBook = async () => {
+    setAdcontent("")
     if (!account) {
       return;
     }
@@ -155,10 +172,6 @@ const SingleProduct = ({ match }) => {
     }
     setLoading(true);
     const cur_address = account;
-    // const options = {
-    //   address: cur_address,
-    //   token_address: bt_contract_address,
-    // };
     const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
     const booktoken_cnt = await bt_contract.methods.balanceOf(account).call();
 
@@ -203,6 +216,18 @@ const SingleProduct = ({ match }) => {
     }
     speak({ text: pdftext });
   };
+
+  const onPreviewBook = async () => {
+    const config = {
+      method: "get",
+      url: process.env.REACT_APP_API + `bookadcontent/${id}`,
+    };
+    await axios(config).then((res) => {
+      setPdftext(res.data.content);
+      setAdcontent(res.data.content);
+      setOriginadcontent(res.data.origincontent);
+    });
+  }
 
   const onRefresh = () => {
     window.location.reload();
@@ -486,6 +511,11 @@ const SingleProduct = ({ match }) => {
               <button className="btn btn-action" onClick={() => onAudioBook()}>
                 <i className="fa fa-headphones"></i> Audio Book
               </button>
+              {is_ads ? (
+                <button className="btn btn-action" onClick={() => onPreviewBook()}>
+                  <i className="fa fa-book"></i> Preview Book
+                </button>
+              ): (<></>)}
             </div>
             <div className="pdf-maincontent">
               <div
@@ -493,13 +523,21 @@ const SingleProduct = ({ match }) => {
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
               />
               <div className="pdf-content">
-                {pdfcontent.map((item, i) => {
-                  return (
-                    <span className="" key={i} onClick={() => showBMModal(i)}>
-                      {item}
-                    </span>
-                  );
-                })}
+                {adcontent === "" ? (
+                  <>
+                  {pdfcontent.map((item, i) => {
+                    return (
+                      <span className="" key={i} onClick={() => showBMModal(i)}>
+                        {item}
+                      </span>
+                    );
+                  })}
+                  </>
+                ) : (
+                  <>
+                  <div dangerouslySetInnerHTML={{ __html: originadcontent }}></div>
+                  </>
+                )}
               </div>
             </div>
           </div>

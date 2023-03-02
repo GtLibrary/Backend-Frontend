@@ -79,7 +79,7 @@ const BookAdd = (props) => {
         setHardboundprice(data.hardbound_price)
         setMaxbooksupply(data.max_book_supply);
         setMaxbookmarksupply(data.max_bookmark_supply);
-        setMaxhardboundsupply(data.hardbound)
+        setMaxhardboundsupply(data.max_hardbound_supply)
         setStartpoint(data.book_from);
         setBookmarkStartpoint(data.bookmark_from);
         setHardboundStartpoint(data.hardbound_from);
@@ -362,8 +362,8 @@ const BookAdd = (props) => {
             
             if(window.confirm("If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?")) {
                 
-                const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbooksupply), web3.utils.toWei(bookprice), ethers.utils.parseEther(startpoint), account);
-                const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxhardboundsupply), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(hardboundstartpoint), account)
+                const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(maxbooksupply)), web3.utils.toWei(bookprice), ethers.utils.parseEther(String(startpoint)), account);
+                const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(maxhardboundsupply)), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(String(hardboundstartpoint)), account)
                 
                 for (let index = 0; index < inputList.length; index++) {
                     let item = inputList[index];
@@ -371,15 +371,15 @@ const BookAdd = (props) => {
                     let itembookmarkprice = item['bookmarkprice']
                     let itemmaxbookmarksupply = item['maxbookmarksupply']
                     let itembookmarkstartpoint = item['bookmarkstartpoint']
-                    let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(itemmaxbookmarksupply), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(itembookmarkstartpoint), account)
+                    let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(itemmaxbookmarksupply)), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(String(itembookmarkstartpoint)), account)
                     inputList[index]["item_bmcontract_address"] = BMcontract;
                 }
-                form_data.append('bm_listdata', inputList);
+                form_data.append('bm_listdata', JSON.stringify(inputList));
                 
                 form_data.append('bt_contract_address', BTcontract);
                 form_data.append('hb_contract_address', HBcontract);
                 await axios
-                    .post(configData.API_SERVER + 'books/save', form_data, {
+                    .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
                         headers: {
                             'content-type': 'multipart/form-data',
                             Authorization: `${accountinfo.token}`
@@ -389,6 +389,7 @@ const BookAdd = (props) => {
                         if (response.status === 201) {
                             setBooktitle('');
                             setBooktype('');
+                            setPreviosImg('');
                             setOrigintype('');
                             setDatamine('');
                             setCurserialnumber('');
@@ -440,7 +441,7 @@ const BookAdd = (props) => {
                 let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(itemmaxbookmarksupply), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(itembookmarkstartpoint), account)
                 inputList[index]["item_bmcontract_address"] = BMcontract;
             }
-            form_data.append('bm_listdata', inputList);
+            form_data.append('bm_listdata', JSON.stringify(inputList));
 
             form_data.append('bt_contract_address', BTcontract);
             form_data.append('hb_contract_address', HBcontract);
@@ -455,6 +456,7 @@ const BookAdd = (props) => {
                     if (response.status === 201) {
                         setBooktitle('');
                         setBooktype('');
+                        setPreviosImg('');
                         setOrigintype('');
                         setDatamine('');
                         setCurserialnumber('');
