@@ -546,7 +546,8 @@ const SingleProduct = ({ match }) => {
       <BMdetailModal
         show={modalShow}
         onHide={() => setModalShow(false)}
-        product={product}
+        // product={product}
+        id={id}
         curserial_num={curserialnum}
       />
     </Layout>
