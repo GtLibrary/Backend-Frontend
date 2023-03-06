@@ -3,7 +3,7 @@ from django.conf import settings
 # Create your models here.
 
 class Wallet(models.Model):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
     currency = models.CharField(max_length=50, default='CC')
     created_at = models.DateTimeField(auto_now=True, null=False, blank=False)
