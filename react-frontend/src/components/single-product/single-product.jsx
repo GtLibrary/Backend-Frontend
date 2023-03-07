@@ -1,18 +1,19 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
-import withRouter from "../../withRouter";
-import Layout from "../shared/layout";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import "./single-product.styles.scss";
-import BMdetailModal from "../BMmodal";
-import printingpress_abi from "../../utils/contract/PrintingPress.json";
-import BT_abi from "../../utils/contract/BookTradable.json";
 import Web3 from "web3";
 import LoadingOverlay from "react-loading-overlay";
+import axios from "axios";
 import { toast } from "react-toastify";
 import { useSpeechSynthesis } from "react-speech-kit";
+import withRouter from "../../withRouter";
+import Layout from "../shared/layout";
+import BMdetailModal from "../BMmodal";
+import printingpress_abi from "../../utils/contract/PrintingPress.json";
+import cc_abi from "../../utils/contract/CultureCoin.json";
+import BT_abi from "../../utils/contract/BookTradable.json";
+import "./single-product.styles.scss";
 
 LoadingOverlay.propTypes = undefined;
 
@@ -25,6 +26,7 @@ const SingleProduct = ({ match }) => {
   const printpress_abi = printingpress_abi;
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
+  const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
 
   const navigate = useNavigate();
@@ -32,8 +34,6 @@ const SingleProduct = ({ match }) => {
   const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState("");
   const [pdfimage, setPdfimage] = useState("");
-  const [adcontent, setAdcontent] = useState("");
-  const [originadcontent, setOriginadcontent] = useState("");
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
@@ -84,10 +84,8 @@ const SingleProduct = ({ match }) => {
     title,
     author_name,
     book_price,
-    datamine,
     introduction,
     bt_contract_address,
-    hb_contract_address,
     book_type_id,
     is_ads
   } = product;
@@ -105,6 +103,11 @@ const SingleProduct = ({ match }) => {
         printpress_abi,
         printpress_address
       );
+      
+      const ccoin_contract = new web3.eth.Contract(
+        cc_abi,
+        cc_address
+      );
 
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
       const ccaaccount = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
@@ -118,10 +121,16 @@ const SingleProduct = ({ match }) => {
       };
       const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
       const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-      console.log(result)
+      
+      // console.log(result)
+      // await printpress_contract.methods
+      //   .buyBook(bt_contract_address)
+      //   .send({ from: account, value: web3.utils.toWei(String(book_price)) });
+      
+      await ccoin_contract.approve(account, web3.utils.toWei(String(book_price)));
       await printpress_contract.methods
-        .buyBook(bt_contract_address)
-        .send({ from: account, value: web3.utils.toWei(String(book_price)) });
+        .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
+        .send({ from: account });
       setLoading(false);
       toast.success("successfully buy book!", {
         position: "top-right",
@@ -163,7 +172,6 @@ const SingleProduct = ({ match }) => {
   };
 
   const onReadBook = async () => {
-    setAdcontent("")
     if (!account) {
       return;
     }
@@ -216,18 +224,6 @@ const SingleProduct = ({ match }) => {
     }
     speak({ text: pdftext });
   };
-
-  const onPreviewBook = async () => {
-    const config = {
-      method: "get",
-      url: process.env.REACT_APP_API + `bookadcontent/${id}`,
-    };
-    await axios(config).then((res) => {
-      setPdftext(res.data.content);
-      setAdcontent(res.data.content);
-      setOriginadcontent(res.data.origincontent);
-    });
-  }
 
   const onRefresh = () => {
     window.location.reload();
@@ -511,11 +507,6 @@ const SingleProduct = ({ match }) => {
               <button className="btn btn-action" onClick={() => onAudioBook()}>
                 <i className="fa fa-headphones"></i> Audio Book
               </button>
-              {is_ads ? (
-                <button className="btn btn-action" onClick={() => onPreviewBook()}>
-                  <i className="fa fa-book"></i> Preview Book
-                </button>
-              ): (<></>)}
             </div>
             <div className="pdf-maincontent">
               <div
@@ -523,21 +514,13 @@ const SingleProduct = ({ match }) => {
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
               />
               <div className="pdf-content">
-                {adcontent === "" ? (
-                  <>
-                  {pdfcontent.map((item, i) => {
-                    return (
-                      <span className="" key={i} onClick={() => showBMModal(i)}>
-                        {item}
-                      </span>
-                    );
-                  })}
-                  </>
-                ) : (
-                  <>
-                  <div dangerouslySetInnerHTML={{ __html: originadcontent }}></div>
-                  </>
-                )}
+                {pdfcontent.map((item, i) => {
+                  return (
+                    <span className="" key={i} onClick={() => showBMModal(i)}>
+                      {item}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           </div>
