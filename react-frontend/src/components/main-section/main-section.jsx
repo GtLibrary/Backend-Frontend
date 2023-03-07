@@ -1,11 +1,10 @@
 import React from 'react';
 import withRouter from '../../withRouter';
 import bigScore from '../../assets/img/template_1_dracula.png';
-import { useNavigate } from "react-router-dom";
 import './main-section.styles.scss';
 
 const MainSection = () => {
-  const navigate = useNavigate();
+  
   return (
     <div className='main-section-container container'>
 
