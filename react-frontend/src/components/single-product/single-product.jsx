@@ -11,6 +11,7 @@ import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
+import cc_abi from "../../utils/contract/CultureCoin.json";
 import BT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
 
@@ -25,6 +26,7 @@ const SingleProduct = ({ match }) => {
   const printpress_abi = printingpress_abi;
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
+  const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
 
   const navigate = useNavigate();
@@ -101,6 +103,11 @@ const SingleProduct = ({ match }) => {
         printpress_abi,
         printpress_address
       );
+      
+      const ccoin_contract = new web3.eth.Contract(
+        cc_abi,
+        cc_address
+      );
 
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
       const ccaaccount = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
@@ -114,10 +121,16 @@ const SingleProduct = ({ match }) => {
       };
       const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
       const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-      console.log(result)
+      
+      // console.log(result)
+      // await printpress_contract.methods
+      //   .buyBook(bt_contract_address)
+      //   .send({ from: account, value: web3.utils.toWei(String(book_price)) });
+      
+      await ccoin_contract.approve(account, web3.utils.toWei(String(book_price)));
       await printpress_contract.methods
-        .buyBook(bt_contract_address)
-        .send({ from: account, value: web3.utils.toWei(String(book_price)) });
+        .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
+        .send({ from: account });
       setLoading(false);
       toast.success("successfully buy book!", {
         position: "top-right",

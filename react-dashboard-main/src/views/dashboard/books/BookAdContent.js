@@ -25,25 +25,34 @@ const useStyles = makeStyles((theme) => ({
 
 const BookAdContent = (props) => {
     const { id } = useParams();
-    const [ bookcontent, setBookcontent ] = useState('');
     const [ title, setTitle ] = useState('Book Ad Content Edit');
     const [checked, setChecked] = useState(false);
+    const [adcontentdata, setAdcontentdata] = useState({})
+    const [client, setClient] = useState("");
+    const [slot, setSlot] = useState("");
+    const [format, setFormat] = useState("");
+    const [layout, setLayout] = useState("");
     const accountinfo = useSelector((state) => state.account);
-    const classes = useStyles();
 
     const getBookcontentById = async () => {
         const { data } = await axios
             .get( configData.API_SERVER + 'books/edit/' + id,
             {headers: { Authorization: `${accountinfo.token}` }})
-        setBookcontent(data.adcontent)
+        setAdcontentdata(data.adcontent)
         setChecked(data.is_ads)
     }
 
     const updateBookcontent = async () => {
+        const adcontent = {
+            client: client,
+            slot: slot,
+            format: format,
+            layput: layout
+        }
         await axios
             .put( configData.API_SERVER + 'books/edit/' + id, {
                 is_ads: checked,
-                adcontent: bookcontent
+                adcontent: JSON.stringify(adcontent)
             },
             {headers: { Authorization: `${accountinfo.token}` }})
             .then(res => {
@@ -74,7 +83,7 @@ const BookAdContent = (props) => {
         }
     }, [])
 
-    const saveBookcontent = () => {
+    const saveAdscontent = () => {
         updateBookcontent()
     }
     
@@ -105,27 +114,81 @@ const BookAdContent = (props) => {
                     <Grid container spacing={1}>
                         <Grid item xs={12}>
                             <TextField
-                                id="introduction"
+                                id="client"
                                 style={{ margin: 8 }}
-                                placeholder="Please input Ads manual script"
-                                helperText="Ads content"
-                                fullWidth  
-                                multiline
-                                rows={10}
-                                maxRows={20}
+                                placeholder="Please input google ads client id"
+                                helperText="Client"
+                                fullWidth 
                                 InputLabelProps={{
                                     shrink: true
                                 }}
                                 variant="filled"
-                                value={bookcontent}
+                                value={adcontentdata.client ? adcontentdata.client: ""}
                                 onChange={(e) => {
-                                    setBookcontent(e.target.value);
+                                    setClient(e.target.value);
+                                }}
+                        />
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12}>
+                            <TextField
+                                id="slot"
+                                style={{ margin: 8 }}
+                                placeholder="Please input Ads slot"
+                                helperText="Slot"
+                                fullWidth 
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                variant="filled"
+                                value={adcontentdata.slot ? adcontentdata.slot: ""}
+                                onChange={(e) => {
+                                    setSlot(e.target.value);
+                                }}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12}>
+                            <TextField
+                                id="format"
+                                style={{ margin: 8 }}
+                                placeholder="Please input Ads format"
+                                helperText="Format"
+                                fullWidth 
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                variant="filled"
+                                value={adcontentdata.format ? adcontentdata.format: ""}
+                                onChange={(e) => {
+                                    setFormat(e.target.value);
+                                }}
+                            />
+                        </Grid>
+                    </Grid>
+                    <Grid container spacing={1}>
+                        <Grid item xs={12}>
+                            <TextField
+                                id="layout"
+                                style={{ margin: 8 }}
+                                placeholder="Please input Ads layout"
+                                helperText="Layout"
+                                fullWidth 
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                variant="filled"
+                                value={adcontentdata.layout ? adcontentdata.layout: ""}
+                                onChange={(e) => {
+                                    setLayout(e.target.value);
                                 }}
                             />
                         </Grid>
                     </Grid>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
-                        <Button variant="contained" onClick={() => saveBookcontent()}>Save</Button>
+                        <Button variant="contained" onClick={() => saveAdscontent()}>Save</Button>
                     </Box>
                 </Grid>
             </Grid>
