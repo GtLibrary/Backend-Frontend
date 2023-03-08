@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 // material-ui
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow } from '@material-ui/core';
 import { Button, Box } from '@material-ui/core';
-import { IconNotes, IconEdit, IconTrash } from '@tabler/icons';
+import { IconNotes, IconEdit, IconTrash, IconPrinter, IconAd } from '@tabler/icons';
 
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
@@ -48,6 +48,10 @@ const Booklist = () => {
         history.push(`/dashboard/books/edit/${id}`)
     }
 
+    const BookAdSet = (id) => {
+        history.push(`/dashboard/books/adcontent/${id}`)
+    }
+
     const newBookadd = () => {
         history.push(`/dashboard/books/addbook`)
     }
@@ -56,10 +60,14 @@ const Booklist = () => {
         history.push(`/dashboard/books/contentedit/${id}`)
     }
 
+    const printBook = (id) => {
+        history.push(`/dashboard/books/printbook/${id}`)
+    }
+
     const deleteBooklist = (Booklist_id) => {
         axios.delete( configData.API_SERVER + 'books/delete/' + Booklist_id, { headers: { Authorization: `${accountinfo.token}` } })
             .then(function (response) {
-                if (response.status == '204') {
+                if (response.status === 204) {
                     getBooklists()
                 } else {
                     getBooklists()
@@ -93,6 +101,20 @@ const Booklist = () => {
                                     <TableRow hover role="checkbox" tabIndex={-1} key={row.id}>
                                         <TableCell>{row.title}</TableCell>
                                         <TableCell align={'right'}>
+                                            <Button
+                                                style={{ marginLeft: '10px' }}
+                                                variant="contained"
+                                                onClick={() => printBook(row.id)}
+                                            >
+                                                <IconPrinter />
+                                            </Button>
+                                            <Button
+                                                style={{ marginLeft: '10px' }}
+                                                variant="contained"
+                                                onClick={() => BookAdSet(row.id)}
+                                            >
+                                                <IconAd />
+                                            </Button>
                                             <Button
                                                 style={{ marginLeft: '10px' }}
                                                 variant="contained"

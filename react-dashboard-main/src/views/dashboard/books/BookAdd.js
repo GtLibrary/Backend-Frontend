@@ -8,13 +8,15 @@ import { ethers } from "ethers";
 import { useWeb3React } from "@web3-react/core";
 import { useSelector } from 'react-redux';
 // material-ui
-import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab } from '@material-ui/core';
+import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Grid } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
+import BookAddItem from './BookAddItem';
 import configData from '../../../config';
 import "./styles.css"
 
 import printingpress_abi from './../../../contract-json/PrintingPress.json';
+import booktradable_abi from './../../../contract-json/BookTradable.json';
 
 LoadingOverlay.propTypes = undefined;
 
@@ -24,13 +26,16 @@ const BookAdd = (props) => {
     const baseuri = process.env.REACT_APP_API + 'nft/';
     const burnable = true;
 
-    const { id } = useParams();
+    const { bookid } = useParams();
     const { account } = useWeb3React();
     const printpress_abi = printingpress_abi;
     const accountinfo = useSelector((state) => state.account);
 
     const [booktitle, setBooktitle] = useState('');
-    const [title, setTitle] = useState('Book Add');
+    const [bookcontractaddress, setBookcontractaddress] = useState('');
+    const [bookmarkcontractaddress, setBookmarkcontractaddress] = useState('');
+    const [hardboundcontractaddress, setHardboundcontractaddress] = useState('');
+    const [title, setTitle] = useState('Add New Book');
     const [brandimage, setBrandimage] = useState(null);
     const [authorwallet, setAuthorwallet] = useState(account);
     const [authorname, setAuthorname] = useState('');
@@ -39,25 +44,27 @@ const BookAdd = (props) => {
     const [introduction, setIntroduction] = useState('');
     const [maxbooksupply, setMaxbooksupply] = useState(0);
     const [maxbookmarksupply, setMaxbookmarksupply] = useState(0);
+    const [maxhardboundsupply, setMaxhardboundsupply] = useState(0);
     const [startpoint, setStartpoint] = useState(0);
+    const [hardboundstartpoint, setHardboundStartpoint] = useState(0);
+    const [bookmarkstartpoint, setBookmarkStartpoint] = useState(0);
     const [bookprice, setBookprice] = useState(0);
     const [bookmarkprice, setBookmarkprice] = useState(0);
-    const [hardbound, setHardbound] = useState('');
-    // const [hardboundfrom, setHardboundfrom] = useState('');
-    const [hardboundprice, setHardboundprice] = useState('');
+    const [hardboundprice, setHardboundprice] = useState(0);
     const [booktype, setBooktype] = useState('');
     const [origintype, setOrigintype] = useState('');
-    const [booktypes, setBooktypes] = useState('');
-    const [origintypes, setOrigintypes] = useState('');
+    const [booktypes, setBooktypes] = useState([]);
+    const [origintypes, setOrigintypes] = useState([]);
     const [previosImg, setPreviosImg] = useState('');
     const [loading, setLoading] = useState(false);
+    const [inputList, setInputList] = useState([{ tokenname: "", bookmarkprice: 0, maxbookmarksupply: 0, bookmarkstartpoint: 0, item_bmcontract_address: "" }]);
 
     const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
     const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
     const getBooksById = async () => {
-        const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + id, { headers: { Authorization: `${accountinfo.token}` } });
+        const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + bookid, { headers: { Authorization: `${accountinfo.token}` } });
 
         setBooktitle(data.title);
         setBooktype(data.book_type_id);
@@ -67,25 +74,28 @@ const BookAdd = (props) => {
         setAuthorwallet(data.author_wallet);
         setAuthorname(data.author_name);
         setIntroduction(data.introduction);
-        setMaxbooksupply(data.max_book_supply);
-        setMaxbookmarksupply(data.max_bookmark_supply);
-        setHardboundprice(data.hardbound_price)
-        setHardbound(data.hardbound)
-        setStartpoint(data.start_point);
         setBookprice(data.book_price);
         setBookmarkprice(data.bookmark_price);
+        setHardboundprice(data.hardbound_price)
+        setMaxbooksupply(data.max_book_supply);
+        setMaxbookmarksupply(data.max_bookmark_supply);
+        setMaxhardboundsupply(data.max_hardbound_supply)
+        setStartpoint(data.book_from);
+        setBookmarkStartpoint(data.bookmark_from);
+        setHardboundStartpoint(data.hardbound_from);
         setPreviosImg(data.image_url);
+        setBookcontractaddress(data.bt_contract_address);
+        setBookmarkcontractaddress(data.bm_contract_address);
+        setHardboundcontractaddress(data.hb_contract_address);
+        setInputList(data.bm_listdata);
     };
 
     useEffect(() => {
-        if (id) {
-            getBooktypes();
-            getOrigintypes();
+        getBooktypes();
+        getOrigintypes();
+        if (bookid) {
             getBooksById();
-            setTitle('Book Edit');
-        } else {
-            getBooktypes();
-            getOrigintypes();
+            setTitle('Edit Book');
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -140,52 +150,76 @@ const BookAdd = (props) => {
             }
         }
 
-
-        // const contract = new web3.eth.Contract(printpress_abi, printingpress_address);
-        // const account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;
-        // const transaction = await contract.methods.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, cCA);
-        
-        // let gas_Price = await web3.eth.getGasPrice();
-        // const options = {
-        //     to      : transaction._parent._address,
-        //     data    : transaction.encodeABI(),
-        //     gas     : await transaction.estimateGas({from: account}),
-        //     gasPrice: gas_Price
-        // };
-        // const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
-        // const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-        // const contractdata = await web3.eth.getTransactionReceipt(result.transactionHash);
-        // const contract_address = contractdata.logs[0].address;
-
-        // return contract_address;
     };
 
-    const saveBook = async () => {
-        setLoading(true);
-        let form_data = new FormData();
-        if (brandimage) {
-            form_data.append('image_url', brandimage, brandimage.name);
+    const updatedefaultprice = async (contract_address, _defaultprice) => {
+        
+        const { ethereum } = window;
+        
+        if(ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const contractPortal = new ethers.Contract(contract_address, booktradable_abi, signer);
+            try {
+                
+                let contract = await contractPortal.setDefaultPrice(_defaultprice);
+                await contract.wait();
+            } catch (error) {
+                console.log("error", error)
+            }
         }
+    }
 
-        form_data.append('title', booktitle);
-        form_data.append('author_wallet', authorwallet);
-        form_data.append('author_name', authorname);
-        form_data.append('curserial_number', curserialnumber);
-        form_data.append('datamine', datamine);
-        form_data.append('origin_type_id', origintype);
-        form_data.append('book_type_id', booktype);
-        form_data.append('book_price', bookprice);
-        form_data.append('bookmark_price', bookmarkprice);
-        form_data.append('hardbound', hardbound);
-        // form_data.append('hardbound_from', hardboundfrom);
-        form_data.append('hardbound_price', hardboundprice);
-        form_data.append('max_book_supply', maxbooksupply);
-        form_data.append('max_bookmark_supply', maxbookmarksupply);
-        form_data.append('start_point', startpoint);
-        form_data.append('introduction', introduction);
-        if (id) {
+    const updatedefaultsupply = async (contract_address, _defaultfrom) => {
+        
+        const { ethereum } = window;
+        
+        if(ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const contractPortal = new ethers.Contract(contract_address, booktradable_abi, signer);
+            try {
+                
+                let contract = await contractPortal.setDefaultFrom(_defaultfrom);
+                await contract.wait();
+            } catch (error) {
+                console.log("error", error)
+            }
+        }
+    }
+
+    const updatedefaultmaxsupply = async (contract_address, maxsupply) => {
+        
+        const { ethereum } = window;
+        
+        if(ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const contractPortal = new ethers.Contract(contract_address, booktradable_abi, signer);
+            try {
+                
+                let contract = await contractPortal.setMaxMint(maxsupply);
+                await contract.wait();
+            } catch (error) {
+                console.log("error", error)
+            }
+        }
+    }
+
+    const savePrice = async () => {
+        setLoading(true);
+        try {
+            await updatedefaultprice(bookcontractaddress, bookprice)
+            await updatedefaultprice(bookmarkcontractaddress, bookmarkprice)
+            await updatedefaultprice(hardboundcontractaddress, hardboundprice)
+
+            let form_data = new FormData();
+            form_data.append('book_price', bookprice);
+            form_data.append('bookmark_price', bookmarkprice);
+            form_data.append('hardbound_price', hardboundprice);
+    
             await axios
-                .put(configData.API_SERVER + 'books/edit/' + id, form_data, {
+                .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
                     headers: {
                         'content-type': 'multipart/form-data',
                         Authorization: `${accountinfo.token}`
@@ -209,13 +243,207 @@ const BookAdd = (props) => {
                         draggable: true,
                     });
                 });
+        } catch (error) {
+            console.log(error)
+        }
+        setLoading(false);
+    }
+
+    const saveDefaultWizard = async () => {
+        setLoading(true);
+        try {
+            await updatedefaultsupply(bookcontractaddress, ethers.utils.parseEther(startpoint))
+            await updatedefaultsupply(bookmarkcontractaddress, ethers.utils.parseEther(bookmarkstartpoint))
+            await updatedefaultsupply(hardboundcontractaddress, ethers.utils.parseEther(hardboundstartpoint))
+            let form_data = new FormData();
+            form_data.append('book_from', startpoint);
+            form_data.append('bookmark_from', bookmarkstartpoint);
+            form_data.append('hardbound_from', hardboundstartpoint);
+    
+            await axios
+                .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                    headers: {
+                        'content-type': 'multipart/form-data',
+                        Authorization: `${accountinfo.token}`
+                    },
+                })
+                .then(function (response) {
+                    toast.success("successfully save data", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                })
+                .catch(function (error) {
+                    toast.error("failed save book data", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                });
+        } catch (error) {
+            
+        }
+            setLoading(false);
+    }
+
+    const saveMaxmintWizard = async () => {
+        
+        setLoading(true);
+        try {
+            await updatedefaultmaxsupply(bookcontractaddress, ethers.utils.parseEther(maxbooksupply))
+            await updatedefaultmaxsupply(bookmarkcontractaddress, ethers.utils.parseEther(maxbookmarksupply))
+            await updatedefaultmaxsupply(hardboundcontractaddress, ethers.utils.parseEther(maxbooksupply))
+            let form_data = new FormData();
+            form_data.append('max_book_supply', maxbooksupply);
+            // form_data.append('max_bookmark_supply', maxbookmarksupply);
+            form_data.append('max_hardbound_supply', maxhardboundsupply);
+    
+            await axios
+                .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                    headers: {
+                        'content-type': 'multipart/form-data',
+                        Authorization: `${accountinfo.token}`
+                    },
+                })
+                .then(function (response) {
+                    toast.success("successfully save data", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                })
+                .catch(function (error) {
+                    toast.error("failed save book data", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                });
+        } catch (error) {
+            
+        }
+            setLoading(false);
+    }
+
+    const saveBook = async () => {
+        setLoading(true);
+        let form_data = new FormData();
+        if (brandimage) {
+            form_data.append('image_url', brandimage, brandimage.name);
+        }
+
+        form_data.append('title', booktitle);
+        form_data.append('author_wallet', authorwallet);
+        form_data.append('author_name', authorname);
+        form_data.append('introduction', introduction);
+        form_data.append('curserial_number', curserialnumber);
+        form_data.append('datamine', datamine);
+        form_data.append('origin_type_id', origintype);
+        form_data.append('book_type_id', booktype);
+        form_data.append('book_price', bookprice);
+        form_data.append('bookmark_price', bookmarkprice);
+        form_data.append('hardbound_price', hardboundprice);
+        form_data.append('max_book_supply', maxbooksupply);
+        form_data.append('max_bookmark_supply', maxbookmarksupply);
+        form_data.append('max_hardbound_supply', maxhardboundsupply);
+        form_data.append('book_from', startpoint);
+        // form_data.append('bookmark_from', bookmarkstartpoint);
+        form_data.append('hardbound_from', hardboundstartpoint);
+        if (bookid) {
+            
+            if(window.confirm("If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?")) {
+                
+                const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(maxbooksupply)), web3.utils.toWei(bookprice), ethers.utils.parseEther(String(startpoint)), account);
+                const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(maxhardboundsupply)), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(String(hardboundstartpoint)), account)
+                
+                for (let index = 0; index < inputList.length; index++) {
+                    let item = inputList[index];
+                    let tokenname = item["tokenname"];
+                    let itembookmarkprice = item['bookmarkprice']
+                    let itemmaxbookmarksupply = item['maxbookmarksupply']
+                    let itembookmarkstartpoint = item['bookmarkstartpoint']
+                    let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(itemmaxbookmarksupply)), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(String(itembookmarkstartpoint)), account)
+                    inputList[index]["item_bmcontract_address"] = BMcontract;
+                }
+                form_data.append('bm_listdata', JSON.stringify(inputList));
+                
+                form_data.append('bt_contract_address', BTcontract);
+                form_data.append('hb_contract_address', HBcontract);
+                await axios
+                    .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                        headers: {
+                            'content-type': 'multipart/form-data',
+                            Authorization: `${accountinfo.token}`
+                        }
+                    })
+                    .then(function (response) {
+                        if (response.status === 201) {
+                            setBooktitle('');
+                            setBooktype('');
+                            setPreviosImg('');
+                            setOrigintype('');
+                            setDatamine('');
+                            setCurserialnumber('');
+                            setAuthorwallet('');
+                            setAuthorname('');
+                            setBrandimage('');
+                            setIntroduction('');
+                            setBookmarkprice('');
+                            setBookprice('');
+                            setHardboundprice('');
+                            setMaxbooksupply('');
+                            setMaxbookmarksupply('');
+                            setMaxhardboundsupply('');
+                            setStartpoint('');
+                            setBookmarkStartpoint('');
+                            setHardboundStartpoint('');
+                        }
+                        toast.success("successfully saved", {
+                            position: "top-right",
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                        });
+                    })
+                    .catch(function (error) {
+                        toast.error("failed save data", {
+                            position: "top-right",
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                        });
+                    });
+            } else {
+                setLoading(false);
+                return false;
+            }
         } else {
             const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbooksupply), web3.utils.toWei(bookprice), ethers.utils.parseEther(startpoint), account);
-            const BMcontract = await getnewBookcontractdata("BM" + datamine, "BM" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxbookmarksupply), web3.utils.toWei(bookmarkprice), ethers.utils.parseEther(startpoint), account)
-            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(hardbound), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(startpoint), account)
+            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(maxhardboundsupply), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(hardboundstartpoint), account)
+            
+            for (let index = 0; index < inputList.length; index++) {
+                let item = inputList[index];
+                let tokenname = item["tokenname"];
+                let itembookmarkprice = item['bookmarkprice']
+                let itemmaxbookmarksupply = item['maxbookmarksupply']
+                let itembookmarkstartpoint = item['bookmarkstartpoint']
+                let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(itemmaxbookmarksupply), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(itembookmarkstartpoint), account)
+                inputList[index]["item_bmcontract_address"] = BMcontract;
+            }
+            form_data.append('bm_listdata', JSON.stringify(inputList));
 
             form_data.append('bt_contract_address', BTcontract);
-            form_data.append('bm_contract_address', BMcontract);
             form_data.append('hb_contract_address', HBcontract);
             await axios
                 .post(configData.API_SERVER + 'books/save', form_data, {
@@ -228,6 +456,7 @@ const BookAdd = (props) => {
                     if (response.status === 201) {
                         setBooktitle('');
                         setBooktype('');
+                        setPreviosImg('');
                         setOrigintype('');
                         setDatamine('');
                         setCurserialnumber('');
@@ -235,14 +464,15 @@ const BookAdd = (props) => {
                         setAuthorname('');
                         setBrandimage('');
                         setIntroduction('');
-                        setMaxbookmarksupply('');
-                        setMaxbooksupply('');
                         setBookmarkprice('');
                         setBookprice('');
-                        setStartpoint('');
-                        setHardbound('');
-                        // setHardboundfrom('');
                         setHardboundprice('');
+                        setMaxbooksupply('');
+                        setMaxbookmarksupply('');
+                        setMaxhardboundsupply('');
+                        setStartpoint('');
+                        setBookmarkStartpoint('');
+                        setHardboundStartpoint('');
                     }
                     toast.success("successfully saved", {
                         position: "top-right",
@@ -270,39 +500,39 @@ const BookAdd = (props) => {
             {loading && (
             <div
                 style={{
-                background: "#00000055",
-                width: "100%",
-                height: "100%",
-                zIndex: "1000",
-                position: "fixed",
-                top: 0,
-                left: 0
+                    background: "#00000055",
+                    width: "100%",
+                    height: "100%",
+                    zIndex: "1000",
+                    position: "fixed",
+                    top: 0,
+                    left: 0
                 }}
             >
                 <LoadingOverlay
-                active={true}
-                spinner={true}
-                text="Loading ..."
-                styles={{
-                    overlay: (base) => ({
-                    ...base,
-                    background: "rgba(255, 255, 255)",
-                    position: "absolute",
-                    marginTop: "300px",
-                    zIndex: "1111"
-                    }),
-                }}
-                fadeSpeed={9000}
+                    active={true}
+                    spinner={true}
+                    text="Loading ..."
+                    styles={{
+                        overlay: (base) => ({
+                        ...base,
+                        background: "rgba(255, 255, 255)",
+                        position: "absolute",
+                        marginTop: "300px",
+                        zIndex: "1111"
+                        }),
+                    }}
+                    fadeSpeed={9000}
                 ></LoadingOverlay>
             </div>
             )}
             <Link to="/dashboard/booklist">
-                <Button variant="filled">Back To List</Button>
+                <Button variant="outlined">Back To List</Button>
             </Link>
             <Box
                 component="form"
                 sx={{
-                    '& .MuiTextField-root': { m: 1, width: '50ch' }
+                    '& .MuiTextField-root.input-item': { m: 1, width: '35ch' }
                 }}
                 noValidate
                 autoComplete="off"
@@ -310,12 +540,11 @@ const BookAdd = (props) => {
                 <div>
                     <TextField
                         id="book-title"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the book title"
                         helperText="Book Title"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -344,12 +573,11 @@ const BookAdd = (props) => {
                 <div>
                     <TextField
                         id="authorwallet"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the author wallet address"
                         helperText="Author Wallet"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -361,12 +589,11 @@ const BookAdd = (props) => {
                     />
                     <TextField
                         id="author_name"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the author name"
                         helperText="Author Name"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -377,131 +604,52 @@ const BookAdd = (props) => {
                         }}
                     />
                 </div>
+                <Grid container spacing={1}>
+                    <Grid item xs={12}>
+                        <TextField
+                            id="introduction"
+                            style={{ margin: 8 }}
+                            placeholder="Please input the introduction of book"
+                            helperText="Introduction"
+                            fullWidth  
+                            multiline
+                            rows={10}
+                            maxRows={20}
+                            InputLabelProps={{
+                                shrink: true
+                            }}
+                            variant="filled"
+                            value={introduction}
+                            onChange={(e) => {
+                                setIntroduction(e.target.value);
+                            }}
+                        />
+                    </Grid>
+                </Grid>
                 <div>
                     <TextField
-                        id="introduction"
-                        // label="Book  Name"
+                        id="datamine"
                         style={{ margin: 8 }}
-                        placeholder="Please input the introduction of book"
-                        helperText="Introduction"
-                        fullWidth  
-                        multiline
-                        rows={10}
-                        maxRows={20}
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={introduction}
-                        onChange={(e) => {
-                            setIntroduction(e.target.value);
-                        }}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        id="maxbooksupply"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the max amount of book"
-                        helperText="Max Books Supply"
+                        placeholder="Please input the datamine"
+                        helperText="DataMine"
                         fullWidth
-                        type="number"
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
-                        value={maxbooksupply}
+                        value={datamine}
                         onChange={(e) => {
-                            setMaxbooksupply(e.target.value);
-                        }}
-                    />
-                    <TextField
-                        id="maxbookmarksupply"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the max amount of bookmark"
-                        helperText="Max bookmarks supply"
-                        fullWidth
-                        type="number"
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={maxbookmarksupply}
-                        onChange={(e) => {
-                            setMaxbookmarksupply(e.target.value);
-                        }}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        id="startpoint"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the start point"
-                        helperText="Start Point"
-                        fullWidth
-                        type="number"
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={startpoint}
-                        onChange={(e) => {
-                            setStartpoint(e.target.value);
-                        }}
-                    />
-                    <TextField
-                        id="bookprice"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the book price"
-                        helperText="Book Price"
-                        fullWidth
-                        type="number"
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={bookprice}
-                        onChange={(e) => {
-                            setBookprice(e.target.value);
-                        }}
-                    />
-                </div>
-                <div>
-                    <TextField
-                        id="Bookmarkprice"
-                        // label="Book  Name"
-                        style={{ margin: 8 }}
-                        placeholder="Please input the bookmark price"
-                        helperText="Bookmark Price"
-                        fullWidth
-                        type="number"
-                        // margin="normal"
-                        InputLabelProps={{
-                            shrink: true
-                        }}
-                        variant="filled"
-                        value={bookmarkprice}
-                        onChange={(e) => {
-                            setBookmarkprice(e.target.value);
+                            setDatamine(e.target.value);
                         }}
                     />
                     <TextField
                         id="curserialnumber"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the curserial number"
                         helperText="Curserial Number"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -512,33 +660,70 @@ const BookAdd = (props) => {
                         }}
                     />
                 </div>
+                <Divider>Book detail</Divider>
                 <div>
                     <TextField
-                        id="hardbound"
-                        // label="Book  Name"
+                        id="bookprice"
                         style={{ margin: 8 }}
-                        placeholder="Please input the hardbound amount"
-                        helperText="Hardbound"
+                        placeholder="Please input the book price"
+                        helperText="Book Price"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
+                        type="number"
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
-                        value={hardbound}
+                        value={bookprice}
                         onChange={(e) => {
-                            setHardbound(e.target.value);
+                            setBookprice(e.target.value);
                         }}
                     />
                     <TextField
+                        id="maxbooksupply"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the max amount of book"
+                        helperText="Max Books Supply"
+                        fullWidth
+                        className='input-item'
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={maxbooksupply}
+                        onChange={(e) => {
+                            setMaxbooksupply(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="startpoint"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the start point"
+                        helperText="Start Point"
+                        fullWidth
+                        className='input-item'
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={startpoint}
+                        onChange={(e) => {
+                            setStartpoint(e.target.value);
+                        }}
+                    />
+                </div>
+                <Divider>Hardbound detail</Divider>
+                <div>
+                    <TextField
                         id="hardboundprice"
-                        // label="Book  Name"
                         style={{ margin: 8 }}
                         placeholder="Please input the hardbound price"
                         helperText="Hardbound Price"
                         fullWidth
+                        className='input-item'
                         type="number"
-                        // margin="normal"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -548,71 +733,108 @@ const BookAdd = (props) => {
                             setHardboundprice(e.target.value);
                         }}
                     />
-                </div>
-                <div>
                     <TextField
-                        id="datamine"
-                        // label="Book  Name"
+                        id="hardbound"
+                        type="number"
                         style={{ margin: 8 }}
-                        placeholder="Please input the datamine"
-                        helperText="DataMine"
+                        placeholder="Please input the hardbound amount"
+                        helperText="Max Hardbound supply"
                         fullWidth
-                        // margin="normal"
+                        className='input-item'
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
-                        value={datamine}
+                        value={maxhardboundsupply}
                         onChange={(e) => {
-                            setDatamine(e.target.value);
+                            setMaxhardboundsupply(e.target.value);
+                        }}
+                    />
+                    <TextField
+                        id="hardboundstartpoint"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the Hardbound start point"
+                        helperText="Hardbound Start Point"
+                        fullWidth
+                        className='input-item'
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={hardboundstartpoint}
+                        onChange={(e) => {
+                            setHardboundStartpoint(e.target.value);
                         }}
                     />
                 </div>
+                {<BookAddItem inputList={inputList} setInputList={setInputList} />}
+                <Grid container spacing={1}>
+                    <Grid item xs={6}>
+                        <FormControl className="mui-formcontrol" fullWidth>
+                            <InputLabel id="booktype">Book Type</InputLabel>
+                            <Select
+                                labelId="booktype"
+                                id="booktype-select"
+                                value={booktype}
+                                label="Book Type"
+                                onChange={(e) => setBooktype(e.target.value)}
+                            >
+                                {booktypes &&
+                                    booktypes.map((item, i) => {
+                                        return (
+                                            <MenuItem key={i} value={item.id}>
+                                                {item.booktype}
+                                            </MenuItem>
+                                        );
+                                    })}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={6}>
+                        <FormControl className="mui-formcontrol" fullWidth>
+                            <InputLabel id="origintype">Origin Type</InputLabel>
+                            <Select
+                                labelId="origintype"
+                                id="origintype-select"
+                                value={origintype}
+                                label="Origin Type"
+                                onChange={(e) => setOrigintype(e.target.value)}
+                            >
+                                {origintypes &&
+                                    origintypes.map((item, i) => {
+                                        return (
+                                            <MenuItem key={i} value={item.id}>
+                                                {item.origintype}
+                                            </MenuItem>
+                                        );
+                                    })}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+                { bookid > 0 ? (
+                    <div>
+                        <Button variant="contained" onClick={() => saveBook()}>
+                            Mint Book
+                        </Button>&nbsp;
+                        <Button variant="contained" onClick={() => savePrice()}>
+                            Update Price Wizard
+                        </Button>&nbsp;
+                        <Button variant="contained" onClick={() => saveDefaultWizard()}>
+                            Update Defaults Wizard
+                        </Button>&nbsp;
+                        <Button variant="contained" onClick={() => saveMaxmintWizard()}>
+                            Update Maxmint Wizard
+                        </Button>&nbsp;
+                    </div>
+                ) : (
                 <div>
-                    <FormControl className="mui-formcontrol" fullWidth>
-                        <InputLabel id="booktype">Book Type</InputLabel>
-                        <Select
-                            labelId="booktype"
-                            id="booktype-select"
-                            value={booktype}
-                            label="Book Type"
-                            onChange={(e) => setBooktype(e.target.value)}
-                        >
-                            {booktypes &&
-                                booktypes.map((item, i) => {
-                                    return (
-                                        <MenuItem key={i} value={item.id}>
-                                            {item.booktype}
-                                        </MenuItem>
-                                    );
-                                })}
-                        </Select>
-                    </FormControl>
-                </div>
-                <div>
-                    <FormControl className="mui-formcontrol" fullWidth>
-                        <InputLabel id="origintype">Origin Type</InputLabel>
-                        <Select
-                            labelId="origintype"
-                            id="origintype-select"
-                            value={origintype}
-                            label="Origin Type"
-                            onChange={(e) => setOrigintype(e.target.value)}
-                        >
-                            {origintypes &&
-                                origintypes.map((item, i) => {
-                                    return (
-                                        <MenuItem key={i} value={item.id}>
-                                            {item.origintype}
-                                        </MenuItem>
-                                    );
-                                })}
-                        </Select>
-                    </FormControl>
-                </div>
-                <Button variant="contained" onClick={() => saveBook()}>
-                    Save & Mint Book
-                </Button>
+                    <Button variant="contained" onClick={() => saveBook()}>
+                        Mint Book
+                    </Button>&nbsp;
+                </div>)}
             </Box>
         </MainCard>
     );

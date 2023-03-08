@@ -4,7 +4,7 @@ from django.conf import settings
 # Create your models here.
 class Authorinfo(models.Model):
     author_imageurl = models.ImageField(upload_to='author_profile_images', blank=True, null=True)
-    author = models.OneToOneField(
+    author = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name='author', null=True, on_delete=models.CASCADE)
     author_bio = models.TextField()
 
