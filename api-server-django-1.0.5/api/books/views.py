@@ -54,6 +54,12 @@ def getbookdatabyId(request, pk):
     data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 
+@api_view(['GET'])
+def getadslist(request):
+    fields = ('id', 'adcontent')
+    books = Books.objects.filter(is_ads=True).only('id', 'adcontent')
+    data = BooksSerializer(books, context={"request": request}, many=True, fields = fields).data
+    return Response(data)
 
 @api_view(['GET'])
 def getBookContentbyId(request, pk):
