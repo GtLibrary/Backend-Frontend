@@ -3,6 +3,7 @@ import re
 import json
 import requests
 import base64
+import time
 from django.shortcuts import render
 from api.books.serializers import BooksSerializer
 from api.books.models import Books
@@ -169,6 +170,7 @@ def myopenai(request):
     content = body['message']
     apikey = body["apikey"]
     aiprice = AIpricemodel.objects.last()
+    cwd = os.getcwd()
     if(aiprice):
         transferval = aiprice.aiprice
     else:
@@ -188,6 +190,11 @@ def myopenai(request):
                 source = wallet,
                 destination = wallet,
             )
+            filename = user_id + time.time()
+            inpath = (cwd + '/static/benji/input_' + filename + '.pickle')
+            inputf = open(inpath)
+            inputf.write(content)
+            inputf.close()
             response = openai.Completion.create(
                 model="text-davinci-003",
                 prompt="Rewrite the following to highlight any grammar, spelling, or clarity issues with the narrative:" + content,
@@ -197,6 +204,10 @@ def myopenai(request):
                 frequency_penalty=0,
                 presence_penalty=0
             )
+            outpath = (cwd + '/static/benji/output_' + filename + '.pickle')
+            outf = open(outpath)
+            outf.write(response["choices"][0]["text"].lstrip())
+            outf.close()
             return JsonResponse({"content":response["choices"][0]["text"].lstrip(), "type":"message"}, safe=False)
         else:
             return JsonResponse({"content":"current balance", "type": "error"}, safe=False)
