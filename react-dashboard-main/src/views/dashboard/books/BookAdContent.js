@@ -6,8 +6,6 @@ import { toast } from "react-toastify";
 
 // material-ui
 import { Grid, Button, Box, Stack, FormControlLabel, Checkbox, TextField } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
-// toast message
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import { gridSpacing } from '../../../store/constant';
@@ -15,13 +13,6 @@ import configData from '../../../config';
 import "./styles.css";
 
 //==============================|| book content ||==============================//
-
-const useStyles = makeStyles((theme) => ({
-    maincontent: {
-        height: 'calc(100vh - 210px)',
-        overflowY: 'scroll',
-    }
-}));
 
 const BookAdContent = (props) => {
     const { id } = useParams();
