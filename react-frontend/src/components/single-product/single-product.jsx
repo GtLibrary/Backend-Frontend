@@ -87,7 +87,7 @@ const SingleProduct = ({ match }) => {
     introduction,
     bt_contract_address,
     book_type_id,
-    is_ads
+    bm_listdata
   } = product;
 
   const onBuyBook = async () => {
@@ -159,13 +159,23 @@ const SingleProduct = ({ match }) => {
     await axios(config).then((res) => {
       setPdfimage(res.data.book_image);
       setPdftext(res.data.content);
+      let bmcount = 0;
+      if (bm_listdata.length > 0) {
+        
+        bm_listdata.map((item) => {
+          bmcount += item.maxbookmarksupply;
+          return bmcount;
+        })
+      } else {
+        bmcount = 1;
+      }
       var chunks = [];
       for (
         let i = 0, charsLength = res.data.content?.length;
         i < charsLength;
-        i += charsLength / 2000
+        i += charsLength / bmcount
       ) {
-        chunks.push(res.data.content.substring(i, i + charsLength / 2000));
+        chunks.push(res.data.content.substring(i, i + charsLength / bmcount));
       }
       setPdfcontent(chunks);
     });
