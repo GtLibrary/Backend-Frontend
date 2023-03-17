@@ -117,11 +117,17 @@ function BMdetailModal(props) {
       printpress_address
     );
 
-    await printpress_contract.methods.buyBook(contract_address, tokenprice).send({
+    await printpress_contract.methods.buyBook(contract_address).send({
       from: user_wallet,
       value: web3.utils.toWei(String(tokenprice)),
       gas: await web3.eth.getGasPrice(),
     });
+    
+    // await printpress_contract.methods.buyBook(contract_address, web3.utils.toWei(String(tokenprice))).send({
+    //   from: user_wallet,
+    //   value: web3.utils.toWei(String(tokenprice)),
+    //   gas: await web3.eth.getGasPrice(),
+    // });
   };
 
   const sellBookMark = async () => {

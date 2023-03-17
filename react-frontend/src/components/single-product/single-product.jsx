@@ -122,7 +122,7 @@ const SingleProduct = ({ match }) => {
         gas     : await transaction.estimateGas({from: ccaaccount}),
         gasPrice: await web3.eth.getGasPrice()
       };
-      console.log("options", options)
+      
       const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
       const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
       
