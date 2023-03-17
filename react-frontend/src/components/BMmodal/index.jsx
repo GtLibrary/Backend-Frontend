@@ -74,14 +74,12 @@ function BMdetailModal(props) {
                     bt_abi,
                     signer
                 );
+                const contract_owner = await bookTradable.owner();
+                setContractowner(contract_owner)
                 try {
-                    //const ownerFunc = await bookTradable.ownerOf({tokenId: new BigNumber(Number(_tokenId)).toFixed()});
                     const owner = await bookTradable.ownerOf(token_id);
                     setNFTOwner(owner);
-                    const contract_owner = await bookTradable.owner();
-                    setContractowner(contract_owner[0]['address'])
                 } catch (myerror) {
-                    console.log(myerror);
                     setNFTOwner("");
                 }
             } catch (myerror) {
@@ -276,7 +274,7 @@ function BMdetailModal(props) {
           </Tab>
           <Tab eventKey="heroes" title="Heroes">
             <>
-              <button onClick={() => (minthero(_token_id, _class, _price))}>Mint Hero</button>
+              <button type="button" className="btn btn-primary btn-sm" onClick={() => (minthero(_token_id, _class, _price))}>Mint Hero</button>
             </>
           </Tab>
           <Tab eventKey="items" title="Items">
