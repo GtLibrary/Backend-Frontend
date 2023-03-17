@@ -267,7 +267,6 @@ const SingleProduct = ({ match }) => {
       return;
     }
     setCurserialnum(index);
-    console.log("bmcontent", bmcontent[index])
     setBookmarkinfo(bmcontent[index])
     setModalShow(true);
   };
