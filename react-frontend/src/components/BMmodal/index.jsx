@@ -5,6 +5,8 @@ import { useWeb3React } from "@web3-react/core";
 import Web3 from "web3";
 import axios from "axios";
 import { ethers } from "ethers";
+import Tab from 'react-bootstrap/Tab';
+import Tabs from 'react-bootstrap/Tabs';
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
 import NBT_abi from "../../utils/contract/BookTradable.json";
 import Marketplace_abi from "../../utils/contract/MarketPlace.json";
@@ -17,6 +19,7 @@ function BMdetailModal(props) {
 
   const web3 = new Web3(window.ethereum);
   const { id, curserial_num, bookmarkinfo } = props;
+  let _token_id, _class, _price
 
   let token_id;
   let tokenname;
@@ -49,6 +52,8 @@ function BMdetailModal(props) {
 
   const [stakerate, setStakerate] = useState(0);
   const [NFTOwner, setNFTOwner] = useState('');
+  const [contractowner, setContractowner] = useState('');
+  const [tosendaddress, setTosendaddress] = useState('');
   // const [tosendaddress, setTosendaddress] = useState('');
   // const [sellerprice, setSellerprice] = useState(0);
   // const [bookmarks, setBookmarks] = useState([]);
@@ -73,6 +78,8 @@ function BMdetailModal(props) {
                     //const ownerFunc = await bookTradable.ownerOf({tokenId: new BigNumber(Number(_tokenId)).toFixed()});
                     const owner = await bookTradable.ownerOf(token_id);
                     setNFTOwner(owner);
+                    const contract_owner = await bookTradable.owner();
+                    setContractowner(contract_owner[0]['address'])
                 } catch (myerror) {
                     console.log(myerror);
                     setNFTOwner("");
@@ -159,13 +166,13 @@ function BMdetailModal(props) {
   };
 
   const sendthisbookmark = async () => {
-    // const NBTcontract = new web3.eth.Contract(NBT_abi, bm_contract_address);
-    // var  tokenOwner = await NBTcontract.methods.ownerOf(tokenid).call();
-    // console.log("tokenOwner:", tokenOwner);
-    // if(user_wallet.toLowerCase() !== tokenOwner.toLowerCase()) {
-    //     // alert("You are not the owner of this token. You cannot give it away... Trying anyway. Failure likely...");
-    // }
-    // await NBTcontract.methods.transferFrom(user_wallet, tosendaddress, tokenid).send({from: user_wallet});
+    const NBTcontract = new web3.eth.Contract(NBT_abi, contract_address);
+    const tokenOwner = await NBTcontract.methods.ownerOf(token_id).call();
+    console.log("tokenOwner:", tokenOwner);
+    if(user_wallet.toLowerCase() !== tokenOwner.toLowerCase()) {
+        alert("You are not the owner of this token. You cannot give it away... Trying anyway. Failure likely...");
+    }
+    await NBTcontract.methods.transferFrom(user_wallet, tosendaddress, token_id).send({from: user_wallet});
   };
 
   const sleep = (ms) => {
@@ -218,36 +225,64 @@ function BMdetailModal(props) {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div>
-            <p>Bookmark Token ID: {token_id}</p>
-            <p>Token Contract Address: {contract_address}</p>
-            <p>Current Owner: {NFTOwner}</p>
-            <p>Current Price: {tokenprice}</p>
-            <p>Your Account: {account}</p>
-            {account === NFTOwner ? (
-                <button
-                    type="button"
-                    className="btn btn-primary btn-sm"
-                    onClick={() => sellBookMark()}
-                >
-                    Sell {tokenname} Bookmark
-                </button>
-            ) : (
+        
+        <Tabs
+          defaultActiveKey="bookmark"
+          id="uncontrolled-tab-example"
+          className="mb-3"
+        >
+          <Tab eventKey="bookmark" title="Bookmark">
+            <div>
+                <p>Bookmark Token ID: {tokenname} #{token_id}</p>
+                <p>Token Contract Address: {contract_address}</p>
+                <p>Current Owner: { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
+                <p>Current Price: {tokenprice} CCoin</p>
+                <p>Your Account: {account}</p>
                 <button
                     type="button"
                     className="btn btn-primary btn-sm"
                     onClick={() => buyBookMark()}
                 >
-                    Buy {tokenname} Bookmark
+                    Buy {tokenname} Bookmark Now
                 </button>
-            )}
-            {/* <hr/>
-                    <h5>For owner <span id="ownerspan">{bmContractowner}</span></h5>
-                    <button type="button" className="btn btn-primary btn-sm" id="btn-sell-bmrk" onClick={() => sellthisbookmark()}>Sell bookmark</button>
-                    for: <input type="text" id="sellerprice" name="fname" value={sellerprice} onChange={(e)=> setSellerprice(e.target.value)} /><br/>
+                { account === NFTOwner ? (
+                    <>
+                      <hr/>
+                      <button
+                          type="button"
+                          className="btn btn-danger btn-sm"
+                          onClick={() => sellBookMark()}
+                          >
+                          Sell {tokenname} Bookmark Now
+                      </button>
+                    </>
+                ) : (
+                  <></>
+                )}
+                {contractowner === account ? (
+                  <>
+                    <hr/>
+                    to: <input type="text" id="toaddress" name="fname" size="42" value={tosendaddress} onChange={(e) => setTosendaddress(e.target.value)}/><br/>
                     <button type="button" className="btn btn-primary btn-sm" id="btn-send-bmrk" onClick={() => sendthisbookmark()}>Send bookmark</button>
-                    to: <input type="text" id="toaddress" name="fname" size="42" value={tosendaddress} onChange={(e) => setTosendaddress(e.target.value)}/><br/> */}
-        </div>
+                  </>
+                ) : (
+                  <></>
+                )}
+                  {/* <button type="button" className="btn btn-primary btn-sm" id="btn-sell-bmrk" onClick={() => sellthisbookmark()}>Sell bookmark</button>
+                  for: <input type="text" id="sellerprice" name="fname" value={sellerprice} onChange={(e)=> setSellerprice(e.target.value)} /><br/>
+                  <button type="button" className="btn btn-primary btn-sm" id="btn-send-bmrk" onClick={() => sendthisbookmark()}>Send bookmark</button>
+                  to: <input type="text" id="toaddress" name="fname" size="42" value={tosendaddress} onChange={(e) => setTosendaddress(e.target.value)}/><br/> */}
+            </div>
+          </Tab>
+          <Tab eventKey="heroes" title="Heroes">
+            <>
+              <button onClick={() => (minthero(_token_id, _class, _price))}>Mint Hero</button>
+            </>
+          </Tab>
+          <Tab eventKey="items" title="Items">
+            <></>
+          </Tab>
+        </Tabs>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
