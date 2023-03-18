@@ -74,14 +74,12 @@ function BMdetailModal(props) {
                     bt_abi,
                     signer
                 );
+                const contract_owner = await bookTradable.owner();
+                setContractowner(contract_owner)
                 try {
-                    //const ownerFunc = await bookTradable.ownerOf({tokenId: new BigNumber(Number(_tokenId)).toFixed()});
                     const owner = await bookTradable.ownerOf(token_id);
                     setNFTOwner(owner);
-                    const contract_owner = await bookTradable.owner();
-                    setContractowner(contract_owner[0]['address'])
                 } catch (myerror) {
-                    console.log(myerror);
                     setNFTOwner("");
                 }
             } catch (myerror) {
@@ -119,11 +117,17 @@ function BMdetailModal(props) {
       printpress_address
     );
 
-    await printpress_contract.methods.buyBook(contract_address, tokenprice).send({
+    await printpress_contract.methods.buyBook(contract_address).send({
       from: user_wallet,
       value: web3.utils.toWei(String(tokenprice)),
       gas: await web3.eth.getGasPrice(),
     });
+    
+    // await printpress_contract.methods.buyBook(contract_address, web3.utils.toWei(String(tokenprice))).send({
+    //   from: user_wallet,
+    //   value: web3.utils.toWei(String(tokenprice)),
+    //   gas: await web3.eth.getGasPrice(),
+    // });
   };
 
   const sellBookMark = async () => {
@@ -276,7 +280,7 @@ function BMdetailModal(props) {
           </Tab>
           <Tab eventKey="heroes" title="Heroes">
             <>
-              <button onClick={() => (minthero(_token_id, _class, _price))}>Mint Hero</button>
+              <button type="button" className="btn btn-primary btn-sm" onClick={() => (minthero(_token_id, _class, _price))}>Mint Hero</button>
             </>
           </Tab>
           <Tab eventKey="items" title="Items">
