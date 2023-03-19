@@ -14,6 +14,9 @@
 .nav-link, .nav-link:hover {
   color: white !important;
 }
+.modal-body .nav-link, .nav-link:hover {
+  color: black !important;
+}
 .nav-list {
   margin: 0 auto;
   text-transform: uppercase;

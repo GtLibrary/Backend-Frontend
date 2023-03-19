@@ -11,11 +11,11 @@ function getLibrary(provider) {
 }
 
 render(
-  <React.StrictMode>
+  <React.Fragment>
     <Web3ReactProvider getLibrary={getLibrary}>
       <App />
     </Web3ReactProvider>
-  </React.StrictMode>,
+  </React.Fragment>,
   document.getElementById("root")
 );
 

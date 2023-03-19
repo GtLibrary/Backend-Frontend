@@ -31,6 +31,8 @@ const SingleProduct = ({ match }) => {
 
   const navigate = useNavigate();
   const [pdfcontent, setPdfcontent] = useState([]);
+  const [bmcontent, setBmcontent] = useState([]);
+  const [bookmarkinfo, setBookmarkinfo] = useState(null);
   const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState("");
   const [pdfimage, setPdfimage] = useState("");
@@ -87,7 +89,7 @@ const SingleProduct = ({ match }) => {
     introduction,
     bt_contract_address,
     book_type_id,
-    is_ads
+    bm_listdata
   } = product;
 
   const onBuyBook = async () => {
@@ -108,6 +110,7 @@ const SingleProduct = ({ match }) => {
         cc_abi,
         cc_address
       );
+      console.log("ccoin_contract", ccoin_contract)
 
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
       const ccaaccount = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
@@ -119,18 +122,18 @@ const SingleProduct = ({ match }) => {
         gas     : await transaction.estimateGas({from: ccaaccount}),
         gasPrice: await web3.eth.getGasPrice()
       };
+      
       const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
       const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
       
-      // console.log(result)
-      // await printpress_contract.methods
-      //   .buyBook(bt_contract_address)
-      //   .send({ from: account, value: web3.utils.toWei(String(book_price)) });
-      
-      await ccoin_contract.approve(account, web3.utils.toWei(String(book_price)));
       await printpress_contract.methods
-        .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
-        .send({ from: account });
+        .buyBook(bt_contract_address)
+        .send({ from: account, value: web3.utils.toWei(String(book_price)) });
+      
+      // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
+      // await printpress_contract.methods
+      //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
+      //   .send({ from: account });
       setLoading(false);
       toast.success("successfully buy book!", {
         position: "top-right",
@@ -141,6 +144,7 @@ const SingleProduct = ({ match }) => {
       });
     } catch (error) {
       setLoading(false);
+      console.log("error => ", error)
       toast.error("failed buy book!", {
         position: "top-right",
         autoClose: 3000,
@@ -159,15 +163,44 @@ const SingleProduct = ({ match }) => {
     await axios(config).then((res) => {
       setPdfimage(res.data.book_image);
       setPdftext(res.data.content);
-      var chunks = [];
+      let bmcount = 0;
+      if (bm_listdata.length > 0) {
+        
+        bm_listdata.map((item) => {
+          bmcount += item.maxbookmarksupply;
+          return bmcount;
+        })
+      } else {
+        bmcount = 1;
+      }
+      var bookcontent = [];
+      var bookmarks = [];
+      
+      if (bm_listdata.length > 0) {
+        bm_listdata.map((item, index) => {
+          for (let i = 0; i < item.maxbookmarksupply; i++) {
+            bookmarks.push({
+              tokenname: item.tokenname,
+              tokenprice: item.bookmarkprice,
+              contract_address: item.item_bmcontract_address,
+              token_id: i
+            })
+          }
+          // return bookmarks;
+        });
+        setBmcontent(bookmarks)
+      } else {
+        
+      }
+
       for (
         let i = 0, charsLength = res.data.content?.length;
         i < charsLength;
-        i += charsLength / 2000
+        i += charsLength / bmcount
       ) {
-        chunks.push(res.data.content.substring(i, i + charsLength / 2000));
+        bookcontent.push(res.data.content.substring(i, i + charsLength / bmcount));
       }
-      setPdfcontent(chunks);
+      setPdfcontent(bookcontent);
     });
   };
 
@@ -234,6 +267,7 @@ const SingleProduct = ({ match }) => {
       return;
     }
     setCurserialnum(index);
+    setBookmarkinfo(bmcontent[index])
     setModalShow(true);
   };
 
@@ -529,7 +563,7 @@ const SingleProduct = ({ match }) => {
       <BMdetailModal
         show={modalShow}
         onHide={() => setModalShow(false)}
-        // product={product}
+        bookmarkinfo={bookmarkinfo}
         id={id}
         curserial_num={curserialnum}
       />
