@@ -129,14 +129,14 @@ const RestLogin = (props, { ...others }) => {
                             })
                             .catch(function (error) {
                                 setStatus({ success: false });
-                                setErrors({ submit: error.response.data.msg });
+                                setErrors({ submit: error?.response?.data.msg });
                                 setSubmitting(false);
                             });
                     } catch (err) {
                         console.error(err);
                         if (scriptedRef.current) {
                             setStatus({ success: false });
-                            setErrors({ submit: err.message });
+                            setErrors({ submit: err?.message });
                             setSubmitting(false);
                         }
                     }
