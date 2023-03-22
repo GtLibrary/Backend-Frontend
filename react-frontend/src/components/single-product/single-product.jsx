@@ -364,8 +364,8 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Book</h4>
                   <p className="item-description">
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem{" "}
+                    By buying these this book you gain ad-free access to the e-book and special features within the game.
+                    {" "}
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">0.0</span>
@@ -388,8 +388,8 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Hardbound</h4>
                   <p className="item-description">
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem{" "}
+                    Buy the nft that gives a single use dropship for hardbound version of the book.
+                    Limited Edition Run {" "}
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">0.0</span>
@@ -407,8 +407,8 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem{" "}
+                    Buy a piece of the virtual property and allow others to mint heroes on your bookmark.
+                    You own the bookmark, you reap the benefits across the board.{" "}
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">0.0</span>
@@ -442,9 +442,6 @@ const SingleProduct = ({ match }) => {
           <div className="col-md-2"></div>
           <div className="col-md-8">
             <p className="include-content">
-              Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
-              ipsum Lorem ipsum Lorem Lorem ipsum Lorem ipsum Lorem ipsum Lorem
-              ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem{" "}
             </p>
           </div>
           <div className="col-md-2"></div>
@@ -462,8 +459,6 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Free Audio Book Code</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
                 </div>
               </div>
             </div>
@@ -480,8 +475,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Ticket for the Movie</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+	  Detail content
                 </div>
               </div>
             </div>
@@ -496,10 +490,9 @@ const SingleProduct = ({ match }) => {
                 ></img>
               </div>
               <div className="content-area">
-                <div className="detail-title">BEN, the AI cat</div>
+                <div className="detail-title">BENJI, the AI cat</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+	  Chat about the book with Benji, the AI cat!
                 </div>
               </div>
             </div>
@@ -516,8 +509,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Author's Brain-In-A-Jar</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+	  		Propose changes to the author even if they are dead!
                 </div>
               </div>
             </div>
