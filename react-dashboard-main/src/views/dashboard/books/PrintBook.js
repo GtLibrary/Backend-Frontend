@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
 import { ethers } from "ethers";
 import { useSelector } from 'react-redux';
+import { useWeb3React } from "@web3-react/core";
 // material-ui
 import { Grid, Button, Box, TextField } from '@material-ui/core';
 // toast message
@@ -20,6 +21,7 @@ const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
 const PrintBook = (props) => {
     
     const { bookid } = useParams();
+    const { account } = useWeb3React();
     const [ booktitle, setBooktitle] = useState('');
     const [ toaddress, setToaddress ] = useState('');
     const [ bookcontractaddress, setBookcontractaddress ] = useState('');
@@ -49,9 +51,12 @@ const PrintBook = (props) => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(printingpress_address, printingpress_abi, signer);
+            const balance = await contractPortal.getBalance(account)
+
+            console.log("balance => ", ethers.utils.formatEther( balance ))
             console.log(maxbooksupply, amount, gasrewards)
             try {
-                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, maxbooksupply, amount, gasrewards);
+                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, maxbooksupply, ethers.utils.parseEther(amount), ethers.utils.parseEther(gasrewards));
                 await contract.wait();
                 toast.success("successfully Mint Book", {
                     position: "top-right",
