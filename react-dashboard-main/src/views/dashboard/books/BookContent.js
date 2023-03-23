@@ -197,7 +197,6 @@ const BookContent = (props) => {
             });
 
             var content = '';
-            console.log("epubobj", epubObj)
             content += (await epubObj).sections.map((item) => {
                 // console.log(item.htmlString)
                 let doc = parser.parseFromString(item.htmlString, 'application/xml')
