@@ -475,7 +475,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Ticket for the Movie</div>
                 <div className="detail-content">
-	  Detail content
+	  Each book is also a one time movie ticket.
                 </div>
               </div>
             </div>
