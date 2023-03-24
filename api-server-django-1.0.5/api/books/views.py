@@ -24,7 +24,7 @@ from django.db.models import Q
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
 
-CLEANR = re.compile('<.*?>')
+CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
 load_dotenv()
 
@@ -76,7 +76,7 @@ def getBookAdContentbyId(request, pk):
     content = adcontent.adcontent
     if(content.find("<figure") > 0):
         figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
-        temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
+        temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '\n')
     else:
         figure_content = ''
         temp_content = content.replace('<p>', '').replace('</p>', '')
@@ -157,9 +157,11 @@ def art(request, pk):
         content = bookcontent.content
         if(content.find("<figure") > 0):
             figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
+            content = content.replace('</p>', '\n')
             temp_content = re.sub(CLEANR, '', content)
         else:
             figure_content = ''
+            content = content.replace('</p>', '\n')
             temp_content = re.sub(CLEANR, '', content)
         return Response({"content": temp_content, "book_image": figure_content, "curserial_num": curserial_num})
     else:

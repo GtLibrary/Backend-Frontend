@@ -322,7 +322,11 @@ const SingleProduct = ({ match }) => {
             <div className="product-detailinfo">
               <h4 className="book-title">{title}</h4>
               <h6 className="book-authorname">By {author_name}</h6>
-              <span className="book-category">{booktypes[book_type_id]}</span>
+              {book_type_id ? (
+                <span className="book-category">{booktypes[book_type_id]}</span>
+              ): (
+                <></>
+              )}
               <div className="book-introduction">{introduction}</div>
               <div className="buybook-area">
                 <span className="bookprice-tag">{book_price}</span>
@@ -440,9 +444,7 @@ const SingleProduct = ({ match }) => {
           <div className="col-md-2"></div>
           <div className="col-md-8">
             <p className="include-content">
-              Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
-              ipsum Lorem ipsum Lorem Lorem ipsum Lorem ipsum Lorem ipsum Lorem
-              ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem{" "}
+              {introduction}
             </p>
           </div>
           <div className="col-md-2"></div>
