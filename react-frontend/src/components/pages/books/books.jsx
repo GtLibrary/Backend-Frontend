@@ -10,7 +10,7 @@ const Books = () => {
 
   const getBooklists = async () => {
     const { data } = await axios
-        .get('http://localhost:5000/api/getbooklist')
+        .get(process.env.REACT_APP_API + 'getbooklist')
     setProducts(data)
   }
 
