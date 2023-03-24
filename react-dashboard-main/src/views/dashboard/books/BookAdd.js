@@ -51,8 +51,8 @@ const BookAdd = (props) => {
     const [bookprice, setBookprice] = useState(0);
     const [bookmarkprice, setBookmarkprice] = useState(0);
     const [hardboundprice, setHardboundprice] = useState(0);
-    const [booktype, setBooktype] = useState('');
-    const [origintype, setOrigintype] = useState('');
+    const [booktype, setBooktype] = useState(0);
+    const [origintype, setOrigintype] = useState(0);
     const [booktypes, setBooktypes] = useState([]);
     const [origintypes, setOrigintypes] = useState([]);
     const [previosImg, setPreviosImg] = useState('');

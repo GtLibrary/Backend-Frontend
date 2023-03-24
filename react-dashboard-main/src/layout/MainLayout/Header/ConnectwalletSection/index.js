@@ -4,6 +4,7 @@ import { injected } from "./connector";
 import { Flex } from "./CommonComponents";
 
 import { Button } from '@material-ui/core';
+import { IconLogout } from '@tabler/icons';
 import './walletconnect.styles.scss';
 
 
@@ -84,7 +85,9 @@ const WalletConnect = () => {
                   navigator.clipboard.writeText(account)
                   copyToClipBoard()
               }}>{account.slice(0, 5)}...{account.slice(-5)}</Button>
-              <Button variant="contained" className="animateButton" onClick={handleLogout}>disconnect</Button>
+              <Button variant="contained" className="animateButton w-logout" onClick={handleLogout}>
+                <IconLogout></IconLogout>
+              </Button>
               <span id="snackbar">Copied Wallet Address!</span>
           </Flex>
       )}
