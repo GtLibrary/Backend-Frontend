@@ -26,7 +26,7 @@ const ProfileSetting = () => {
                 { headers: { Authorization: `${accountinfo.token}` } }
             )
             .then((response) => {
-                setPreviosImg('http://localhost:5000' + response.data.author_imageurl)
+                setPreviosImg(configData.API_URL + response.data.author_imageurl)
                 setBio(response.data.author_bio)
             });
     };

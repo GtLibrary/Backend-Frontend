@@ -1,5 +1,6 @@
 .cart-container {
   margin-left: auto;
+  margin-right: 12px;
   cursor: pointer;
   img {
     width: 30px;
@@ -16,8 +17,6 @@
 
 #snackbar {
   visibility: hidden;
-  width: 80px;
-  margin-left: -100px;
   background-color: #fff0f0;
   box-shadow: 0 4px 10px 0 rgba(0, 0, 0, 0.1), 0 6px 20px 0 rgba(0, 0, 0, 0.1);
   text-align: center;
@@ -88,4 +87,9 @@
 }
 
 /* snackbar end */
+}
+.w-logout {
+  padding: 6px !important;
+  max-width: 36px !important;
+  margin-left: 2px;
 }

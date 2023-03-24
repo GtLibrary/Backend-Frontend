@@ -86,6 +86,7 @@ const SingleProduct = ({ match }) => {
     title,
     author_name,
     book_price,
+    hardbound_price,
     introduction,
     bt_contract_address,
     book_type_id,
@@ -364,11 +365,10 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Book</h4>
                   <p className="item-description">
-                    By buying these this book you gain ad-free access to the e-book and special features within the game.
-                    {" "}
+                    {introduction}
                   </p>
                   <div className="buyaction-area">
-                    <span className="price-area">0.0</span>
+                    <span className="price-area">{book_price}</span>
                     <button
                       className="btn btn-item"
                       onClick={() => onBuyBook()}
@@ -388,11 +388,10 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Hardbound</h4>
                   <p className="item-description">
-                    Buy the nft that gives a single use dropship for hardbound version of the book.
-                    Limited Edition Run {" "}
+                    {introduction}
                   </p>
                   <div className="buyaction-area">
-                    <span className="price-area">0.0</span>
+                    <span className="price-area">{hardbound_price}</span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
                 </div>
@@ -407,8 +406,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">
-                    Buy a piece of the virtual property and allow others to mint heroes on your bookmark.
-                    You own the bookmark, you reap the benefits across the board.{" "}
+                    {introduction}
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">0.0</span>
