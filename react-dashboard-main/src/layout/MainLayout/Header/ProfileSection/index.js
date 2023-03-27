@@ -166,7 +166,7 @@ const ProfileSection = () => {
             });
     };
     const gosetting = () => {
-        history.push("/basic/profilesetting")
+        history.push("/profile/setting")
     }
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
