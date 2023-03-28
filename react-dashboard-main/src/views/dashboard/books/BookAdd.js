@@ -42,6 +42,8 @@ const BookAdd = (props) => {
     const [curserialnumber, setCurserialnumber] = useState('');
     const [datamine, setDatamine] = useState('');
     const [introduction, setIntroduction] = useState('');
+    const [bookdescription, setBookdescription] = useState('');
+    const [hardbounddescription, setHardbounddescription] = useState('');
     const [maxbooksupply, setMaxbooksupply] = useState(0);
     const [maxbookmarksupply, setMaxbookmarksupply] = useState(0);
     const [maxhardboundsupply, setMaxhardboundsupply] = useState(0);
@@ -334,6 +336,60 @@ const BookAdd = (props) => {
             setLoading(false);
     }
 
+    const saveBookInfo = async () => {
+        setLoading(true);
+        let form_data = new FormData();
+        if (brandimage) {
+            form_data.append('image_url', brandimage, brandimage.name);
+        }
+        form_data.append('title', booktitle);
+        form_data.append('author_wallet', authorwallet);
+        form_data.append('author_name', authorname);
+        form_data.append('introduction', introduction);
+        form_data.append('origin_type_id', origintype);
+        form_data.append('book_type_id', booktype);
+        form_data.append('book_description', bookdescription);
+        form_data.append('hardbound_description', hardbounddescription);
+        await axios
+        .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+            headers: {
+                'content-type': 'multipart/form-data',
+                Authorization: `${accountinfo.token}`
+            }
+        })
+        .then(function (response) {
+            if (response.status === 201) {
+                setBooktitle('');
+                setBooktype('');
+                setPreviosImg('');
+                setOrigintype('');
+                setDatamine('');
+                setAuthorwallet('');
+                setAuthorname('');
+                setBrandimage('');
+                setIntroduction('');
+            }
+            toast.success("successfully saved", {
+                position: "top-right",
+                autoClose: 3000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+        })
+        .catch(function (error) {
+            toast.error("failed save data", {
+                position: "top-right",
+                autoClose: 3000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+            });
+        });
+        
+        setLoading(false);
+    }
+
     const saveBook = async () => {
         setLoading(true);
         let form_data = new FormData();
@@ -350,6 +406,8 @@ const BookAdd = (props) => {
         form_data.append('origin_type_id', origintype);
         form_data.append('book_type_id', booktype);
         form_data.append('book_price', bookprice);
+        form_data.append('book_description', bookdescription);
+        form_data.append('hardbound_description', hardbounddescription);
         form_data.append('bookmark_price', bookmarkprice);
         form_data.append('hardbound_price', hardboundprice);
         form_data.append('max_book_supply', maxbooksupply);
@@ -397,6 +455,8 @@ const BookAdd = (props) => {
                             setAuthorname('');
                             setBrandimage('');
                             setIntroduction('');
+                            setBookdescription('');
+                            setHardbounddescription('');
                             setBookmarkprice('');
                             setBookprice('');
                             setHardboundprice('');
@@ -464,6 +524,8 @@ const BookAdd = (props) => {
                         setAuthorname('');
                         setBrandimage('');
                         setIntroduction('');
+                        setBookdescription('');
+                        setHardbounddescription('');
                         setBookmarkprice('');
                         setBookprice('');
                         setHardboundprice('');
@@ -713,6 +775,23 @@ const BookAdd = (props) => {
                             setStartpoint(e.target.value);
                         }}
                     />
+                    <TextField
+                        id="description"
+                        style={{ margin: 8 }}
+                        placeholder="Please input book description"
+                        helperText="Book Description"
+                        fullWidth
+                        className='input-item'
+                        type="text"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={bookdescription}
+                        onChange={(e) => {
+                            setBookdescription(e.target.value);
+                        }}
+                    />
                 </div>
                 <Divider>Hardbound detail</Divider>
                 <div>
@@ -768,6 +847,23 @@ const BookAdd = (props) => {
                             setHardboundStartpoint(e.target.value);
                         }}
                     />
+                    <TextField
+                        id="description"
+                        style={{ margin: 8 }}
+                        placeholder="Please input hardbound description"
+                        helperText="Hardbound Description"
+                        fullWidth
+                        className='input-item'
+                        type="text"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={hardbounddescription}
+                        onChange={(e) => {
+                            setHardbounddescription(e.target.value);
+                        }}
+                    />
                 </div>
                 {<BookAddItem inputList={inputList} setInputList={setInputList} />}
                 <Grid container spacing={1}>
@@ -818,6 +914,9 @@ const BookAdd = (props) => {
                     <div>
                         <Button variant="contained" onClick={() => saveBook()}>
                             Mint Book
+                        </Button>&nbsp;
+                        <Button variant="contained" onClick={() => saveBookInfo()}>
+                            Save Book detail Information
                         </Button>&nbsp;
                         <Button variant="contained" onClick={() => savePrice()}>
                             Update Price Wizard

@@ -53,8 +53,8 @@ def getbooklist(request):
 
 @api_view(['GET'])
 def getbookdatabyId(request, pk):
-    fields = ('id', 'title','image_url', 'author_name', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads', 'hardbound_price')
-    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads', 'hardbound_price')
+    fields = ('id', 'title','image_url', 'author_name', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads', 'hardbound_price', 'book_description', 'hardbound_description')
+    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads', 'hardbound_price', 'book_description', 'hardbound_description')
     data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 
