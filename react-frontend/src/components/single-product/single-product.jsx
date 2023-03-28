@@ -90,7 +90,9 @@ const SingleProduct = ({ match }) => {
     introduction,
     bt_contract_address,
     book_type_id,
-    bm_listdata
+    bm_listdata,
+    book_description,
+    hardbound_description
   } = product;
 
   const onBuyBook = async () => {
@@ -369,7 +371,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Book</h4>
                   <p className="item-description">
-                    {introduction}
+                    {book_description}
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">{book_price}</span>
@@ -392,7 +394,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Hardbound</h4>
                   <p className="item-description">
-                    {introduction}
+                    {hardbound_description}
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">{hardbound_price}</span>
@@ -410,7 +412,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">
-                    {introduction}
+                    {}
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">0.0</span>

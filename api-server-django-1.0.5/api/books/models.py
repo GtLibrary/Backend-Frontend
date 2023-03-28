@@ -25,6 +25,8 @@ class Books(models.Model):
     book_price = models.DecimalField(max_digits = 10,decimal_places=3, default=0.0)
     hardbound_price = models.DecimalField(max_digits = 10,decimal_places=3, default=0.0)
     book_from = models.BigIntegerField(default=1)
+    book_description = models.TextField(default = '')
+    hardbound_description = models.TextField(default = '')
     hardbound_from = models.BigIntegerField(default=1)
     bt_contract_address = models.CharField(max_length=200, default='')
     hb_contract_address = models.CharField(max_length=200, default='')
