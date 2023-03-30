@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import Web3 from 'web3';
-import LoadingOverlay from "react-loading-overlay";
-import { toast } from "react-toastify";
-import { ethers } from "ethers";
-import { useWeb3React } from "@web3-react/core";
+import LoadingOverlay from 'react-loading-overlay';
+import { toast } from 'react-toastify';
+import { ethers } from 'ethers';
+import { useWeb3React } from '@web3-react/core';
 import { useSelector } from 'react-redux';
 // material-ui
 import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Grid } from '@material-ui/core';
@@ -13,7 +13,7 @@ import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab,
 import MainCard from '../../../ui-component/cards/MainCard';
 import BookAddItem from './BookAddItem';
 import configData from '../../../config';
-import "./styles.css"
+import './styles.css';
 
 import printingpress_abi from './../../../contract-json/PrintingPress.json';
 import booktradable_abi from './../../../contract-json/BookTradable.json';
@@ -21,6 +21,8 @@ import booktradable_abi from './../../../contract-json/BookTradable.json';
 LoadingOverlay.propTypes = undefined;
 
 const BookAdd = (props) => {
+    const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/
+    const onlyinteger = /^\d+(,\d{0,3})?$/
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
     const baseuri = process.env.REACT_APP_API + 'nft/';
@@ -59,14 +61,18 @@ const BookAdd = (props) => {
     const [origintypes, setOrigintypes] = useState([]);
     const [previosImg, setPreviosImg] = useState('');
     const [loading, setLoading] = useState(false);
-    const [inputList, setInputList] = useState([{ tokenname: "", bookmarkprice: 0, maxbookmarksupply: 0, bookmarkstartpoint: 0, item_bmcontract_address: "" }]);
+    const [inputList, setInputList] = useState([
+        { tokenname: '', bookmarkprice: 0, maxbookmarksupply: 0, bookmarkstartpoint: 0, item_bmcontract_address: '' }
+    ]);
 
     const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
     const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
     const getBooksById = async () => {
-        const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + bookid, { headers: { Authorization: `${accountinfo.token}` } });
+        const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + bookid, {
+            headers: { Authorization: `${accountinfo.token}` }
+        });
 
         setBooktitle(data.title);
         setBooktype(data.book_type_id);
@@ -78,10 +84,10 @@ const BookAdd = (props) => {
         setIntroduction(data.introduction);
         setBookprice(data.book_price);
         setBookmarkprice(data.bookmark_price);
-        setHardboundprice(data.hardbound_price)
+        setHardboundprice(data.hardbound_price);
         setMaxbooksupply(data.max_book_supply);
         setMaxbookmarksupply(data.max_bookmark_supply);
-        setMaxhardboundsupply(data.max_hardbound_supply)
+        setMaxhardboundsupply(data.max_hardbound_supply);
         setStartpoint(data.book_from);
         setBookmarkStartpoint(data.bookmark_from);
         setHardboundStartpoint(data.hardbound_from);
@@ -103,17 +109,19 @@ const BookAdd = (props) => {
     }, []);
 
     const getBooktypes = async () => {
-        await axios.get(configData.API_SERVER + 'booktype/list', { headers: { Authorization: `${accountinfo.token}` } })
-                    .then((response) => {
-                        setBooktypes(response.data);
-                    });
+        await axios
+            .get(configData.API_SERVER + 'booktype/list', { headers: { Authorization: `${accountinfo.token}` } })
+            .then((response) => {
+                setBooktypes(response.data);
+            });
     };
 
     const getOrigintypes = async () => {
-        await axios.get(configData.API_SERVER + 'origintype/list', { headers: { Authorization: `${accountinfo.token}` } })
-        .then((response) => {
-            setOrigintypes(response.data);
-        });
+        await axios
+            .get(configData.API_SERVER + 'origintype/list', { headers: { Authorization: `${accountinfo.token}` } })
+            .then((response) => {
+                setOrigintypes(response.data);
+            });
     };
 
     const handleFileUpload = (event) => {
@@ -132,209 +140,205 @@ const BookAdd = (props) => {
         _defaultfrom,
         _mintTo
     ) => {
-        
         const { ethereum } = window;
-        
-        if(ethereum) {
+
+        if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const printpress = new ethers.Contract(printingpress_address, printpress_abi, signer);
             try {
-                
-                let contract = await printpress.newBookContract(_name, _symbol, _marketPlaceAddress, _baseuri, _burnable, _maxmint, _defaultprice, _defaultfrom, account);
-                
+                let contract = await printpress.newBookContract(
+                    _name,
+                    _symbol,
+                    _marketPlaceAddress,
+                    _baseuri,
+                    _burnable,
+                    _maxmint,
+                    _defaultprice,
+                    _defaultfrom,
+                    account
+                );
+
                 const contractdata = await contract.wait();
                 const contract_address = contractdata.logs[0].address;
-    
+
                 return contract_address;
             } catch (error) {
-                console.log("error", error)
+                console.log('error', error);
             }
         }
-
     };
 
     const updatedefaultprice = async (contract_address, _defaultprice) => {
-        
         const { ethereum } = window;
-        
-        if(ethereum) {
+
+        if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(contract_address, booktradable_abi, signer);
             try {
-                
                 let contract = await contractPortal.setDefaultPrice(_defaultprice);
                 await contract.wait();
             } catch (error) {
-                console.log("error", error)
+                console.log('error', error);
             }
         }
-    }
+    };
 
     const updatedefaultsupply = async (contract_address, _defaultfrom) => {
-        
         const { ethereum } = window;
-        
-        if(ethereum) {
+
+        if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(contract_address, booktradable_abi, signer);
             try {
-                
                 let contract = await contractPortal.setDefaultFrom(_defaultfrom);
                 await contract.wait();
             } catch (error) {
-                console.log("error", error)
+                console.log('error', error);
             }
         }
-    }
+    };
 
     const updatedefaultmaxsupply = async (contract_address, maxsupply) => {
-        
         const { ethereum } = window;
-        
-        if(ethereum) {
+
+        if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(contract_address, booktradable_abi, signer);
             try {
-                
                 let contract = await contractPortal.setMaxMint(maxsupply);
                 await contract.wait();
             } catch (error) {
-                console.log("error", error)
+                console.log('error', error);
             }
         }
-    }
+    };
 
     const savePrice = async () => {
         setLoading(true);
         try {
-            await updatedefaultprice(bookcontractaddress, bookprice)
-            await updatedefaultprice(bookmarkcontractaddress, bookmarkprice)
-            await updatedefaultprice(hardboundcontractaddress, hardboundprice)
+            await updatedefaultprice(bookcontractaddress, bookprice);
+            await updatedefaultprice(bookmarkcontractaddress, bookmarkprice);
+            await updatedefaultprice(hardboundcontractaddress, hardboundprice);
 
             let form_data = new FormData();
             form_data.append('book_price', bookprice);
             form_data.append('bookmark_price', bookmarkprice);
             form_data.append('hardbound_price', hardboundprice);
-    
+
             await axios
                 .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
                     headers: {
                         'content-type': 'multipart/form-data',
                         Authorization: `${accountinfo.token}`
-                    },
+                    }
                 })
                 .then(function (response) {
-                    toast.success("successfully save data", {
-                        position: "top-right",
+                    toast.success('successfully save data', {
+                        position: 'top-right',
                         autoClose: 3000,
                         closeOnClick: true,
                         pauseOnHover: true,
-                        draggable: true,
+                        draggable: true
                     });
                 })
                 .catch(function (error) {
-                    toast.error("failed save book data", {
-                        position: "top-right",
+                    toast.error('failed save book data', {
+                        position: 'top-right',
                         autoClose: 3000,
                         closeOnClick: true,
                         pauseOnHover: true,
-                        draggable: true,
+                        draggable: true
                     });
                 });
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
         setLoading(false);
-    }
+    };
 
     const saveDefaultWizard = async () => {
         setLoading(true);
         try {
-            await updatedefaultsupply(bookcontractaddress, ethers.utils.parseEther(String(startpoint)))
-            await updatedefaultsupply(bookmarkcontractaddress, ethers.utils.parseEther(String(bookmarkstartpoint)))
-            await updatedefaultsupply(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundstartpoint)))
+            await updatedefaultsupply(bookcontractaddress, ethers.utils.parseEther(String(startpoint)));
+            await updatedefaultsupply(bookmarkcontractaddress, ethers.utils.parseEther(String(bookmarkstartpoint)));
+            await updatedefaultsupply(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundstartpoint)));
             let form_data = new FormData();
             form_data.append('book_from', startpoint);
             form_data.append('bookmark_from', bookmarkstartpoint);
             form_data.append('hardbound_from', hardboundstartpoint);
-    
+
             await axios
                 .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
                     headers: {
                         'content-type': 'multipart/form-data',
                         Authorization: `${accountinfo.token}`
-                    },
+                    }
                 })
                 .then(function (response) {
-                    toast.success("successfully save data", {
-                        position: "top-right",
+                    toast.success('successfully save data', {
+                        position: 'top-right',
                         autoClose: 3000,
                         closeOnClick: true,
                         pauseOnHover: true,
-                        draggable: true,
+                        draggable: true
                     });
                 })
                 .catch(function (error) {
-                    toast.error("failed save book data", {
-                        position: "top-right",
+                    toast.error('failed save book data', {
+                        position: 'top-right',
                         autoClose: 3000,
                         closeOnClick: true,
                         pauseOnHover: true,
-                        draggable: true,
+                        draggable: true
                     });
                 });
-        } catch (error) {
-            
-        }
-            setLoading(false);
-    }
+        } catch (error) {}
+        setLoading(false);
+    };
 
     const saveMaxmintWizard = async () => {
-        
         setLoading(true);
         try {
-            await updatedefaultmaxsupply(bookcontractaddress, ethers.utils.parseEther(String(maxbooksupply)))
-            await updatedefaultmaxsupply(bookmarkcontractaddress, ethers.utils.parseEther(String(maxbookmarksupply)))
-            await updatedefaultmaxsupply(hardboundcontractaddress, ethers.utils.parseEther(String(maxbooksupply)))
+            await updatedefaultmaxsupply(bookcontractaddress, ethers.utils.parseEther(String(maxbooksupply)));
+            await updatedefaultmaxsupply(bookmarkcontractaddress, ethers.utils.parseEther(String(maxbookmarksupply)));
+            await updatedefaultmaxsupply(hardboundcontractaddress, ethers.utils.parseEther(String(maxbooksupply)));
             let form_data = new FormData();
             form_data.append('max_book_supply', maxbooksupply);
             // form_data.append('max_bookmark_supply', maxbookmarksupply);
             form_data.append('max_hardbound_supply', maxhardboundsupply);
-    
+
             await axios
                 .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
                     headers: {
                         'content-type': 'multipart/form-data',
                         Authorization: `${accountinfo.token}`
-                    },
+                    }
                 })
                 .then(function (response) {
-                    toast.success("successfully save data", {
-                        position: "top-right",
+                    toast.success('successfully save data', {
+                        position: 'top-right',
                         autoClose: 3000,
                         closeOnClick: true,
                         pauseOnHover: true,
-                        draggable: true,
+                        draggable: true
                     });
                 })
                 .catch(function (error) {
-                    toast.error("failed save book data", {
-                        position: "top-right",
+                    toast.error('failed save book data', {
+                        position: 'top-right',
                         autoClose: 3000,
                         closeOnClick: true,
                         pauseOnHover: true,
-                        draggable: true,
+                        draggable: true
                     });
                 });
-        } catch (error) {
-            
-        }
-            setLoading(false);
-    }
+        } catch (error) {}
+        setLoading(false);
+    };
 
     const saveBookInfo = async () => {
         setLoading(true);
@@ -351,44 +355,44 @@ const BookAdd = (props) => {
         form_data.append('book_description', bookdescription);
         form_data.append('hardbound_description', hardbounddescription);
         await axios
-        .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
-            headers: {
-                'content-type': 'multipart/form-data',
-                Authorization: `${accountinfo.token}`
-            }
-        })
-        .then(function (response) {
-            if (response.status === 201) {
-                setBooktitle('');
-                setBooktype('');
-                setPreviosImg('');
-                setOrigintype('');
-                setDatamine('');
-                setAuthorwallet('');
-                setAuthorname('');
-                setBrandimage('');
-                setIntroduction('');
-            }
-            toast.success("successfully saved", {
-                position: "top-right",
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
+            .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                headers: {
+                    'content-type': 'multipart/form-data',
+                    Authorization: `${accountinfo.token}`
+                }
+            })
+            .then(function (response) {
+                if (response.status === 201) {
+                    setBooktitle('');
+                    setBooktype('');
+                    setPreviosImg('');
+                    setOrigintype('');
+                    setDatamine('');
+                    setAuthorwallet('');
+                    setAuthorname('');
+                    setBrandimage('');
+                    setIntroduction('');
+                }
+                toast.success('successfully saved', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                });
+            })
+            .catch(function (error) {
+                toast.error('failed save data', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                });
             });
-        })
-        .catch(function (error) {
-            toast.error("failed save data", {
-                position: "top-right",
-                autoClose: 3000,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-            });
-        });
-        
+
         setLoading(false);
-    }
+    };
 
     const saveBook = async () => {
         setLoading(true);
@@ -417,23 +421,55 @@ const BookAdd = (props) => {
         // form_data.append('bookmark_from', bookmarkstartpoint);
         form_data.append('hardbound_from', hardboundstartpoint);
         if (bookid) {
-            
-            if(window.confirm("If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?")) {
-                
-                const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(maxbooksupply)), web3.utils.toWei(bookprice), ethers.utils.parseEther(String(startpoint)), account);
-                const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(maxhardboundsupply)), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(String(hardboundstartpoint)), account)
-                
+            if (
+                window.confirm(
+                    'If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?'
+                )
+            ) {
+                const BTcontract = await getnewBookcontractdata(
+                    'BT' + datamine,
+                    'BT' + datamine,
+                    marketPlaceAddress,
+                    baseuri,
+                    burnable,
+                    ethers.utils.parseEther(String(maxbooksupply)),
+                    web3.utils.toWei(bookprice),
+                    ethers.utils.parseEther(String(startpoint)),
+                    account
+                );
+                const HBcontract = await getnewBookcontractdata(
+                    'HB' + datamine,
+                    'HB' + datamine,
+                    marketPlaceAddress,
+                    baseuri,
+                    burnable,
+                    ethers.utils.parseEther(String(maxhardboundsupply)),
+                    web3.utils.toWei(hardboundprice),
+                    ethers.utils.parseEther(String(hardboundstartpoint)),
+                    account
+                );
+
                 for (let index = 0; index < inputList.length; index++) {
                     let item = inputList[index];
-                    let tokenname = item["tokenname"];
-                    let itembookmarkprice = item['bookmarkprice']
-                    let itemmaxbookmarksupply = item['maxbookmarksupply']
-                    let itembookmarkstartpoint = item['bookmarkstartpoint']
-                    let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(itemmaxbookmarksupply)), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(String(itembookmarkstartpoint)), account)
-                    inputList[index]["item_bmcontract_address"] = BMcontract;
+                    let tokenname = item['tokenname'];
+                    let itembookmarkprice = item['bookmarkprice'];
+                    let itemmaxbookmarksupply = item['maxbookmarksupply'];
+                    let itembookmarkstartpoint = item['bookmarkstartpoint'];
+                    let BMcontract = await getnewBookcontractdata(
+                        'BM' + tokenname,
+                        'BM' + tokenname,
+                        marketPlaceAddress,
+                        baseuri,
+                        burnable,
+                        ethers.utils.parseEther(String(itemmaxbookmarksupply)),
+                        web3.utils.toWei(itembookmarkprice),
+                        ethers.utils.parseEther(String(itembookmarkstartpoint)),
+                        account
+                    );
+                    inputList[index]['item_bmcontract_address'] = BMcontract;
                 }
                 form_data.append('bm_listdata', JSON.stringify(inputList));
-                
+
                 form_data.append('bt_contract_address', BTcontract);
                 form_data.append('hb_contract_address', HBcontract);
                 await axios
@@ -467,21 +503,21 @@ const BookAdd = (props) => {
                             setBookmarkStartpoint('');
                             setHardboundStartpoint('');
                         }
-                        toast.success("successfully saved", {
-                            position: "top-right",
+                        toast.success('successfully saved', {
+                            position: 'top-right',
                             autoClose: 3000,
                             closeOnClick: true,
                             pauseOnHover: true,
-                            draggable: true,
+                            draggable: true
                         });
                     })
                     .catch(function (error) {
-                        toast.error("failed save data", {
-                            position: "top-right",
+                        toast.error('failed save data', {
+                            position: 'top-right',
                             autoClose: 3000,
                             closeOnClick: true,
                             pauseOnHover: true,
-                            draggable: true,
+                            draggable: true
                         });
                     });
             } else {
@@ -489,17 +525,47 @@ const BookAdd = (props) => {
                 return false;
             }
         } else {
-            const BTcontract = await getnewBookcontractdata('BT' + datamine, 'BT' + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(maxbooksupply)), web3.utils.toWei(bookprice), ethers.utils.parseEther(String(startpoint)), account);
-            const HBcontract = await getnewBookcontractdata("HB" + datamine, "HB" + datamine, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(maxhardboundsupply)), web3.utils.toWei(hardboundprice), ethers.utils.parseEther(String(hardboundstartpoint)), account)
-            
+            const BTcontract = await getnewBookcontractdata(
+                'BT' + datamine,
+                'BT' + datamine,
+                marketPlaceAddress,
+                baseuri,
+                burnable,
+                ethers.utils.parseEther(String(maxbooksupply)),
+                web3.utils.toWei(bookprice),
+                ethers.utils.parseEther(String(startpoint)),
+                account
+            );
+            const HBcontract = await getnewBookcontractdata(
+                'HB' + datamine,
+                'HB' + datamine,
+                marketPlaceAddress,
+                baseuri,
+                burnable,
+                ethers.utils.parseEther(String(maxhardboundsupply)),
+                web3.utils.toWei(hardboundprice),
+                ethers.utils.parseEther(String(hardboundstartpoint)),
+                account
+            );
+
             for (let index = 0; index < inputList.length; index++) {
                 let item = inputList[index];
-                let tokenname = item["tokenname"];
-                let itembookmarkprice = item['bookmarkprice']
-                let itemmaxbookmarksupply = item['maxbookmarksupply']
-                let itembookmarkstartpoint = item['bookmarkstartpoint']
-                let BMcontract = await getnewBookcontractdata("BM" + tokenname, "BM" + tokenname, marketPlaceAddress, baseuri, burnable, ethers.utils.parseEther(String(itemmaxbookmarksupply)), web3.utils.toWei(itembookmarkprice), ethers.utils.parseEther(String(itembookmarkstartpoint)), account)
-                inputList[index]["item_bmcontract_address"] = BMcontract;
+                let tokenname = item['tokenname'];
+                let itembookmarkprice = item['bookmarkprice'];
+                let itemmaxbookmarksupply = item['maxbookmarksupply'];
+                let itembookmarkstartpoint = item['bookmarkstartpoint'];
+                let BMcontract = await getnewBookcontractdata(
+                    'BM' + tokenname,
+                    'BM' + tokenname,
+                    marketPlaceAddress,
+                    baseuri,
+                    burnable,
+                    ethers.utils.parseEther(String(itemmaxbookmarksupply)),
+                    web3.utils.toWei(itembookmarkprice),
+                    ethers.utils.parseEther(String(itembookmarkstartpoint)),
+                    account
+                );
+                inputList[index]['item_bmcontract_address'] = BMcontract;
             }
             form_data.append('bm_listdata', JSON.stringify(inputList));
 
@@ -536,21 +602,21 @@ const BookAdd = (props) => {
                         setBookmarkStartpoint('');
                         setHardboundStartpoint('');
                     }
-                    toast.success("successfully saved", {
-                        position: "top-right",
+                    toast.success('successfully saved', {
+                        position: 'top-right',
                         autoClose: 3000,
                         closeOnClick: true,
                         pauseOnHover: true,
-                        draggable: true,
+                        draggable: true
                     });
                 })
                 .catch(function (error) {
-                    toast.error("failed save data", {
-                        position: "top-right",
+                    toast.error('failed save data', {
+                        position: 'top-right',
                         autoClose: 3000,
                         closeOnClick: true,
                         pauseOnHover: true,
-                        draggable: true,
+                        draggable: true
                     });
                 });
         }
@@ -560,33 +626,33 @@ const BookAdd = (props) => {
     return (
         <MainCard title={title}>
             {loading && (
-            <div
-                style={{
-                    background: "#00000055",
-                    width: "100%",
-                    height: "100%",
-                    zIndex: "1000",
-                    position: "fixed",
-                    top: 0,
-                    left: 0
-                }}
-            >
-                <LoadingOverlay
-                    active={true}
-                    spinner={true}
-                    text="Loading ..."
-                    styles={{
-                        overlay: (base) => ({
-                        ...base,
-                        background: "rgba(255, 255, 255)",
-                        position: "absolute",
-                        marginTop: "300px",
-                        zIndex: "1111"
-                        }),
+                <div
+                    style={{
+                        background: '#00000055',
+                        width: '100%',
+                        height: '100%',
+                        zIndex: '1000',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0
                     }}
-                    fadeSpeed={9000}
-                ></LoadingOverlay>
-            </div>
+                >
+                    <LoadingOverlay
+                        active={true}
+                        spinner={true}
+                        text="Loading ..."
+                        styles={{
+                            overlay: (base) => ({
+                                ...base,
+                                background: 'rgba(255, 255, 255)',
+                                position: 'absolute',
+                                marginTop: '300px',
+                                zIndex: '1111'
+                            })
+                        }}
+                        fadeSpeed={9000}
+                    ></LoadingOverlay>
+                </div>
             )}
             <Link to="/dashboard/booklist">
                 <Button variant="outlined">Back To List</Button>
@@ -606,7 +672,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the book title"
                         helperText="Book Title"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -620,14 +686,15 @@ const BookAdd = (props) => {
                 <div className="bookimg-select">
                     <img src={previosImg} width="400" alt="" />
                     <label htmlFor="image">
-                    <input type="file" style={{ display: 'none' }} id="image" accept="image/png, image/jpeg" onChange={handleFileUpload} required />
-                        <Fab
-                            color="secondary"
-                            size="small"
-                            component="span"
-                            aria-label="add"
-                            variant="extended"
-                        >
+                        <input
+                            type="file"
+                            style={{ display: 'none' }}
+                            id="image"
+                            accept="image/png, image/jpeg"
+                            onChange={handleFileUpload}
+                            required
+                        />
+                        <Fab color="secondary" size="small" component="span" aria-label="add" variant="extended">
                             Upload photo
                         </Fab>
                     </label>
@@ -639,7 +706,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the author wallet address"
                         helperText="Author Wallet"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -655,7 +722,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the author name"
                         helperText="Author Name"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -673,10 +740,9 @@ const BookAdd = (props) => {
                             style={{ margin: 8 }}
                             placeholder="Please input the introduction of book"
                             helperText="Introduction"
-                            fullWidth  
+                            fullWidth
                             multiline
                             rows={10}
-                            maxRows={20}
                             InputLabelProps={{
                                 shrink: true
                             }}
@@ -695,7 +761,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the datamine"
                         helperText="DataMine"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -711,7 +777,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the curserial number"
                         helperText="Curserial Number"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         InputLabelProps={{
                             shrink: true
                         }}
@@ -730,7 +796,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the book price"
                         helperText="Book Price"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         type="number"
                         InputLabelProps={{
                             shrink: true
@@ -738,7 +804,13 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={bookprice}
                         onChange={(e) => {
-                            setBookprice(e.target.value);
+                            if(onlythreedecimal.test(e.target.value)) {
+                                // if (e.target.value >= 0) {
+                                    setBookprice(e.target.value);
+                                // } else {
+                                //     setBookprice(0);
+                                // }
+                            }
                         }}
                     />
                     <TextField
@@ -747,7 +819,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the max amount of book"
                         helperText="Max Books Supply"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         type="number"
                         InputLabelProps={{
                             shrink: true
@@ -755,7 +827,13 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={maxbooksupply}
                         onChange={(e) => {
-                            setMaxbooksupply(e.target.value);
+                            if(onlyinteger.test(e.target.value)){
+                                if (e.target.value >= 0) {
+                                    setMaxbooksupply(e.target.value);
+                                } else {
+                                    setMaxbooksupply(0);
+                                }
+                            }
                         }}
                     />
                     <TextField
@@ -764,7 +842,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the start point"
                         helperText="Start Point"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         type="number"
                         InputLabelProps={{
                             shrink: true
@@ -772,7 +850,13 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={startpoint}
                         onChange={(e) => {
-                            setStartpoint(e.target.value);
+                            if(onlyinteger.test(e.target.value)){
+                                if (e.target.value >= 0) {
+                                    setStartpoint(e.target.value);
+                                } else {
+                                    setStartpoint(0);
+                                }
+                            }
                         }}
                     />
                     <TextField
@@ -781,7 +865,7 @@ const BookAdd = (props) => {
                         placeholder="Please input book description"
                         helperText="Book Description"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         type="text"
                         InputLabelProps={{
                             shrink: true
@@ -801,7 +885,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the hardbound price"
                         helperText="Hardbound Price"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         type="number"
                         InputLabelProps={{
                             shrink: true
@@ -809,7 +893,13 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={hardboundprice}
                         onChange={(e) => {
-                            setHardboundprice(e.target.value);
+                            if(onlythreedecimal.test(e.target.value)){
+                                if (e.target.value >= 0) {
+                                    setHardboundprice(e.target.value);
+                                } else {
+                                    setHardboundprice(0);
+                                }
+                            }
                         }}
                     />
                     <TextField
@@ -819,14 +909,20 @@ const BookAdd = (props) => {
                         placeholder="Please input the hardbound amount"
                         helperText="Max Hardbound supply"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
                         value={maxhardboundsupply}
                         onChange={(e) => {
-                            setMaxhardboundsupply(e.target.value);
+                            if(onlyinteger.test(e.target.value)){
+                                if (e.target.value >= 0) {
+                                    setMaxhardboundsupply(e.target.value);
+                                } else {
+                                    setMaxhardboundsupply(0);
+                                }
+                            }
                         }}
                     />
                     <TextField
@@ -836,7 +932,7 @@ const BookAdd = (props) => {
                         placeholder="Please input the Hardbound start point"
                         helperText="Hardbound Start Point"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         type="number"
                         InputLabelProps={{
                             shrink: true
@@ -844,7 +940,13 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={hardboundstartpoint}
                         onChange={(e) => {
-                            setHardboundStartpoint(e.target.value);
+                            if(onlyinteger.test(e.target.value)){
+                                if (e.target.value >= 0) {
+                                    setHardboundStartpoint(e.target.value);
+                                } else {
+                                    setHardboundStartpoint(0);
+                                }
+                            }
                         }}
                     />
                     <TextField
@@ -853,7 +955,7 @@ const BookAdd = (props) => {
                         placeholder="Please input hardbound description"
                         helperText="Hardbound Description"
                         fullWidth
-                        className='input-item'
+                        className="input-item"
                         type="text"
                         InputLabelProps={{
                             shrink: true
@@ -910,30 +1012,37 @@ const BookAdd = (props) => {
                         </FormControl>
                     </Grid>
                 </Grid>
-                { bookid > 0 ? (
+                {bookid > 0 ? (
                     <div>
                         <Button variant="contained" onClick={() => saveBook()}>
                             Mint Book
-                        </Button>&nbsp;
+                        </Button>
+                        &nbsp;
                         <Button variant="contained" onClick={() => saveBookInfo()}>
                             Save Book detail Information
-                        </Button>&nbsp;
+                        </Button>
+                        &nbsp;
                         <Button variant="contained" onClick={() => savePrice()}>
                             Update Price Wizard
-                        </Button>&nbsp;
+                        </Button>
+                        &nbsp;
                         <Button variant="contained" onClick={() => saveDefaultWizard()}>
                             Update Defaults Wizard
-                        </Button>&nbsp;
+                        </Button>
+                        &nbsp;
                         <Button variant="contained" onClick={() => saveMaxmintWizard()}>
                             Update Maxmint Wizard
-                        </Button>&nbsp;
+                        </Button>
+                        &nbsp;
                     </div>
                 ) : (
-                <div>
-                    <Button variant="contained" onClick={() => saveBook()}>
-                        Mint Book
-                    </Button>&nbsp;
-                </div>)}
+                    <div>
+                        <Button variant="contained" onClick={() => saveBook()}>
+                            Mint Book
+                        </Button>
+                        &nbsp;
+                    </div>
+                )}
             </Box>
         </MainCard>
     );
