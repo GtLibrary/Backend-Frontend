@@ -4,6 +4,8 @@ import { IconTrash, IconPlus } from '@tabler/icons';
 import { Button, TextField, Divider } from '@material-ui/core';
  
 function BookAddItem({ inputList, setInputList }) {
+    const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/
+    const onlyinteger = /^\d+(,\d{0,3})?$/
     // handle input change
     const handleInputChange = (e, index) => {
         const { name, value } = e.target;
@@ -62,7 +64,15 @@ function BookAddItem({ inputList, setInputList }) {
                                         }}
                                         variant="filled"
                                         value={item.bookmarkprice}
-                                        onChange={e => handleInputChange(e, i)}
+                                        onChange={e => {
+                                            if(onlythreedecimal.test(e.target.value)) {
+                                                if(e.target.value > 0) {
+                                                    handleInputChange(e, i)
+                                                } else {
+                                                    return;
+                                                }
+                                            }
+                                        }}
                                     />
                                     <TextField
                                         id="maxbookmarksupply"
@@ -78,7 +88,15 @@ function BookAddItem({ inputList, setInputList }) {
                                         }}
                                         variant="filled"
                                         value={item.maxbookmarksupply}
-                                        onChange={e => handleInputChange(e, i)}
+                                        onChange={e => {
+                                            if(onlyinteger.test(e.target.value)) {
+                                                if(e.target.value > 0) {
+                                                    handleInputChange(e, i)
+                                                } else {
+                                                    return;
+                                                }
+                                            }
+                                        }}
                                     />
                                     <TextField
                                         id="bookmarkstartpoint"
@@ -94,7 +112,15 @@ function BookAddItem({ inputList, setInputList }) {
                                         }}
                                         variant="filled"
                                         value={item.bookmarkstartpoint}
-                                        onChange={e => handleInputChange(e, i)}
+                                        onChange={e => {
+                                            if(onlyinteger.test(e.target.value)) {
+                                                if(e.target.value > 0) {
+                                                    handleInputChange(e, i)
+                                                } else {
+                                                    return;
+                                                }
+                                            }
+                                        }}
                                     />
                                     { inputList.length !== 1 && 
                                         <Button
