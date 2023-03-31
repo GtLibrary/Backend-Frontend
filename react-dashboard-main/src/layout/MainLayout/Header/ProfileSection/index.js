@@ -138,7 +138,9 @@ const ProfileSection = () => {
     };
 
     useEffect(() => {
-        getauthorinfo();
+        if(account.isLoggedIn) {
+            getauthorinfo();
+        }
     }, []);
 
     // const [sdm, setSdm] = React.useState(true);
