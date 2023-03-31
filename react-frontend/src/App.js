@@ -2,6 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "./components/home-page";
 import NotFound from "./components/not-found";
 import Books from "./components/pages/books/books";
+import Swap from "./components/pages/swap/swap";
 import SingleProduct from "./components/single-product/single-product";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -15,6 +16,7 @@ function App() {
         <Routes>
           <Route exact path="/" element={<HomePage />} />
           <Route path="/books" element={<Books />} />
+          <Route path="/swap" element={<Swap />} />
           <Route path="/product/:id" element={<SingleProduct />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

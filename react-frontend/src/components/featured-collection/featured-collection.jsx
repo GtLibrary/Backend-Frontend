@@ -18,7 +18,7 @@ const FeaturedCollection = (props) => {
       </div>
       <div className="row">
         <div className="col-md-12 viewmore-area">
-          <button className="btn btn-viewmore">View More</button>
+          <button className="btn btn-viewmore" onClick={e => {}}>View More</button>
         </div>
       </div>
     </div>
