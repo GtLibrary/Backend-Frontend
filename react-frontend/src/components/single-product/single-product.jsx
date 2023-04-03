@@ -164,6 +164,15 @@ const SingleProduct = ({ match }) => {
       url: testurl,
     };
     await axios(config).then((res) => {
+      if(res.data.content === "You are not token owner!!") {
+        toast.error(res.data.content, {
+          position: "top-right",
+          autoClose: 3000,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      }
       setPdfimage(res.data.book_image);
       setPdftext(res.data.content);
       let bmcount = 0;
@@ -209,6 +218,13 @@ const SingleProduct = ({ match }) => {
 
   const onReadBook = async () => {
     if (!account) {
+      toast.error("Please Connect Wallet!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
     if(!bt_contract_address) {
@@ -374,7 +390,7 @@ const SingleProduct = ({ match }) => {
                     {book_description}
                   </p>
                   <div className="buyaction-area">
-                    <span className="price-area">{book_price}</span>
+                    <span className="price-area">{Number(book_price)}</span>
                     <button
                       className="btn btn-item"
                       onClick={() => onBuyBook()}
@@ -397,7 +413,7 @@ const SingleProduct = ({ match }) => {
                     {hardbound_description}
                   </p>
                   <div className="buyaction-area">
-                    <span className="price-area">{hardbound_price}</span>
+                    <span className="price-area">{Number(hardbound_price)}</span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
                 </div>
@@ -412,10 +428,10 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">
-                    {}
+                    {"Creating an effective description for a bookmark is important for SEO and usability."}
                   </p>
                   <div className="buyaction-area">
-                    <span className="price-area">0.0</span>
+                    <span className="price-area">{bm_listdata[0]['bookmarkprice']}</span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
                 </div>

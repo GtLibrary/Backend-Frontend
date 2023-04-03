@@ -25,7 +25,8 @@ const PrintBook = (props) => {
     const [ booktitle, setBooktitle] = useState('');
     const [ toaddress, setToaddress ] = useState('');
     const [ bookcontractaddress, setBookcontractaddress ] = useState('');
-    const [ maxbooksupply, setMaxbooksupply ] = useState(0);
+    // const [ maxbooksupply, setMaxbooksupply ] = useState(0);
+    const [ bookprice, setBookprice ] = useState(0);
     const [ amount, setAmount ] = useState(0);
     const [ gasrewards, setGasrewards] = useState(0);
 
@@ -36,7 +37,8 @@ const PrintBook = (props) => {
         
         setBooktitle('"'+ data.title + '" Book Mint By Author');
         setBookcontractaddress(data.bt_contract_address);
-        setMaxbooksupply(data.max_book_supply);
+        setBookprice(data.book_price);
+        // setMaxbooksupply(data.max_book_supply);
     }
 
     useEffect(() => {
@@ -54,9 +56,9 @@ const PrintBook = (props) => {
             const balance = await contractPortal.getBalance(account)
 
             console.log("balance => ", ethers.utils.formatEther( balance ))
-            console.log(maxbooksupply, amount, gasrewards)
+            console.log("book price => ", amount, ethers.utils.parseEther(String(bookprice)))
             try {
-                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, maxbooksupply, ethers.utils.parseEther(amount), ethers.utils.parseEther(gasrewards));
+                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, amount, ethers.utils.parseEther(String(bookprice)), ethers.utils.parseEther(String(gasrewards)));
                 await contract.wait();
                 toast.success("successfully Mint Book", {
                     position: "top-right",
@@ -66,7 +68,7 @@ const PrintBook = (props) => {
                     draggable: true,
                 });
             } catch (error) {
-                console.log("error", error)
+                // console.log("error", error)
                 toast.error("failed mint book", {
                     position: "top-right",
                     autoClose: 3000,

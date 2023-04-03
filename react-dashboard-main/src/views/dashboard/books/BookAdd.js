@@ -220,13 +220,34 @@ const BookAdd = (props) => {
     const savePrice = async () => {
         setLoading(true);
         try {
-            await updatedefaultprice(bookcontractaddress, bookprice);
-            await updatedefaultprice(bookmarkcontractaddress, bookmarkprice);
-            await updatedefaultprice(hardboundcontractaddress, hardboundprice);
-
+            await updatedefaultprice(bookcontractaddress, ethers.utils.parseEther(String(bookprice)));
+            await updatedefaultprice(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundprice)));
+            // await updatedefaultprice(bookmarkcontractaddress, bookmarkprice);
+            
+            for (let index = 0; index < inputList.length; index++) {
+                let item = inputList[index];
+                let tokenname = item['tokenname'];
+                let itembookmarkprice = item['bookmarkprice'];
+                let itemmaxbookmarksupply = item['maxbookmarksupply'];
+                let itembookmarkstartpoint = item['bookmarkstartpoint'];
+                let BMcontract = await getnewBookcontractdata(
+                    'BM' + tokenname,
+                    'BM' + tokenname,
+                    marketPlaceAddress,
+                    baseuri,
+                    burnable,
+                    ethers.utils.parseEther(String(itemmaxbookmarksupply)),
+                    ethers.utils.parseEther(String(itembookmarkprice)),
+                    ethers.utils.parseEther(String(itembookmarkstartpoint)),
+                    account
+                );
+                inputList[index]['item_bmcontract_address'] = BMcontract;
+            }
+            
             let form_data = new FormData();
             form_data.append('book_price', bookprice);
-            form_data.append('bookmark_price', bookmarkprice);
+            form_data.append('bm_listdata', JSON.stringify(inputList));
+            // form_data.append('bookmark_price', bookmarkprice);
             form_data.append('hardbound_price', hardboundprice);
 
             await axios
