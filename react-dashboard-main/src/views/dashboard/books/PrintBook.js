@@ -25,7 +25,8 @@ const PrintBook = (props) => {
     const [ booktitle, setBooktitle] = useState('');
     const [ toaddress, setToaddress ] = useState('');
     const [ bookcontractaddress, setBookcontractaddress ] = useState('');
-    const [ maxbooksupply, setMaxbooksupply ] = useState(0);
+    // const [ maxbooksupply, setMaxbooksupply ] = useState(0);
+    const [ bookprice, setBookprice ] = useState(0);
     const [ amount, setAmount ] = useState(0);
     const [ gasrewards, setGasrewards] = useState(0);
 
@@ -36,7 +37,8 @@ const PrintBook = (props) => {
         
         setBooktitle('"'+ data.title + '" Book Mint By Author');
         setBookcontractaddress(data.bt_contract_address);
-        setMaxbooksupply(data.max_book_supply);
+        setBookprice(data.book_price);
+        // setMaxbooksupply(data.max_book_supply);
     }
 
     useEffect(() => {
@@ -51,12 +53,10 @@ const PrintBook = (props) => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(printingpress_address, printingpress_abi, signer);
-            const balance = await contractPortal.getBalance(account)
+            // const balance = yaawait contractPortal.getBalance(account)
 
-            console.log("balance => ", ethers.utils.formatEther( balance ))
-            console.log(maxbooksupply, amount, gasrewards)
             try {
-                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, maxbooksupply, ethers.utils.parseEther(amount), ethers.utils.parseEther(gasrewards));
+                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, amount, ethers.utils.parseEther(String(bookprice)), ethers.utils.parseEther(String(gasrewards)));
                 await contract.wait();
                 toast.success("successfully Mint Book", {
                     position: "top-right",
