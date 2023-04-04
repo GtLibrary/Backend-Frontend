@@ -53,10 +53,8 @@ const PrintBook = (props) => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(printingpress_address, printingpress_abi, signer);
-            const balance = await contractPortal.getBalance(account)
+            // const balance = yaawait contractPortal.getBalance(account)
 
-            console.log("balance => ", ethers.utils.formatEther( balance ))
-            console.log("book price => ", amount, ethers.utils.parseEther(String(bookprice)))
             try {
                 let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, amount, ethers.utils.parseEther(String(bookprice)), ethers.utils.parseEther(String(gasrewards)));
                 await contract.wait();
@@ -68,7 +66,7 @@ const PrintBook = (props) => {
                     draggable: true,
                 });
             } catch (error) {
-                // console.log("error", error)
+                console.log("error", error)
                 toast.error("failed mint book", {
                     position: "top-right",
                     autoClose: 3000,
