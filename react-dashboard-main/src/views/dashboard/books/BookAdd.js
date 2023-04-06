@@ -219,145 +219,207 @@ const BookAdd = (props) => {
 
     const savePrice = async () => {
         setLoading(true);
-        try {
-            await updatedefaultprice(bookcontractaddress, ethers.utils.parseEther(String(bookprice)));
-            await updatedefaultprice(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundprice)));
-            // await updatedefaultprice(bookmarkcontractaddress, bookmarkprice);
-            
-            for (let index = 0; index < inputList.length; index++) {
-                let item = inputList[index];
-                let tokenname = item['tokenname'];
-                let itembookmarkprice = item['bookmarkprice'];
-                let itemmaxbookmarksupply = item['maxbookmarksupply'];
-                let itembookmarkstartpoint = item['bookmarkstartpoint'];
-                let BMcontract = await getnewBookcontractdata(
-                    'BM' + tokenname,
-                    'BM' + tokenname,
-                    marketPlaceAddress,
-                    baseuri,
-                    burnable,
-                    ethers.utils.parseEther(String(itemmaxbookmarksupply)),
-                    ethers.utils.parseEther(String(itembookmarkprice)),
-                    ethers.utils.parseEther(String(itembookmarkstartpoint)),
-                    account
-                );
-                inputList[index]['item_bmcontract_address'] = BMcontract;
-            }
-            
-            let form_data = new FormData();
-            form_data.append('book_price', bookprice);
-            form_data.append('bm_listdata', JSON.stringify(inputList));
-            // form_data.append('bookmark_price', bookmarkprice);
-            form_data.append('hardbound_price', hardboundprice);
+        const { ethereum } = window;
+        
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            try {
+                await updatedefaultprice(bookcontractaddress, ethers.utils.parseEther(String(bookprice)));
+                await updatedefaultprice(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundprice)));
+                
+                for (let index = 0; index < inputList.length; index++) {
+                    let item = inputList[index];
+                    let tokenname = item['tokenname'];
+                    let itembookmarkprice = item['bookmarkprice'];
+                    let itemmaxbookmarksupply = item['maxbookmarksupply'];
+                    let itembookmarkstartpoint = item['bookmarkstartpoint'];
+                    let BMcontract = await getnewBookcontractdata(
+                        'BM' + tokenname,
+                        'BM' + tokenname,
+                        marketPlaceAddress,
+                        baseuri,
+                        burnable,
+                        ethers.utils.parseEther(String(itemmaxbookmarksupply)),
+                        ethers.utils.parseEther(String(itembookmarkprice)),
+                        ethers.utils.parseEther(String(itembookmarkstartpoint)),
+                        account
+                    );
+                    const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                    await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                    inputList[index]['item_bmcontract_address'] = BMcontract;
+                }
+                
+                let form_data = new FormData();
+                form_data.append('book_price', bookprice);
+                form_data.append('bm_listdata', JSON.stringify(inputList));
+                form_data.append('hardbound_price', hardboundprice);
 
-            await axios
-                .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
-                    headers: {
-                        'content-type': 'multipart/form-data',
-                        Authorization: `${accountinfo.token}`
-                    }
-                })
-                .then(function (response) {
-                    toast.success('successfully save data', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true
+                await axios
+                    .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                        headers: {
+                            'content-type': 'multipart/form-data',
+                            Authorization: `${accountinfo.token}`
+                        }
+                    })
+                    .then(function (response) {
+                        toast.success('successfully save data', {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
+                    })
+                    .catch(function (error) {
+                        toast.error('failed save book data', {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
                     });
-                })
-                .catch(function (error) {
-                    toast.error('failed save book data', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true
-                    });
-                });
-        } catch (error) {
-            console.log(error);
+            } catch (error) {
+                console.log(error);
+            }
         }
         setLoading(false);
     };
 
     const saveDefaultWizard = async () => {
         setLoading(true);
-        try {
-            await updatedefaultsupply(bookcontractaddress, ethers.utils.parseEther(String(startpoint)));
-            await updatedefaultsupply(bookmarkcontractaddress, ethers.utils.parseEther(String(bookmarkstartpoint)));
-            await updatedefaultsupply(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundstartpoint)));
-            let form_data = new FormData();
-            form_data.append('book_from', startpoint);
-            form_data.append('bookmark_from', bookmarkstartpoint);
-            form_data.append('hardbound_from', hardboundstartpoint);
+        const { ethereum } = window;
+        
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            try {
+                await updatedefaultsupply(bookcontractaddress, ethers.utils.parseEther(String(startpoint)));
+                await updatedefaultsupply(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundstartpoint)));
+                let form_data = new FormData();
+                form_data.append('book_from', startpoint);
 
-            await axios
-                .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
-                    headers: {
-                        'content-type': 'multipart/form-data',
-                        Authorization: `${accountinfo.token}`
-                    }
-                })
-                .then(function (response) {
-                    toast.success('successfully save data', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true
+                for (let index = 0; index < inputList.length; index++) {
+                    let item = inputList[index];
+                    let tokenname = item['tokenname'];
+                    let itembookmarkprice = item['bookmarkprice'];
+                    let itemmaxbookmarksupply = item['maxbookmarksupply'];
+                    let itembookmarkstartpoint = item['bookmarkstartpoint'];
+                    let BMcontract = await getnewBookcontractdata(
+                        'BM' + tokenname,
+                        'BM' + tokenname,
+                        marketPlaceAddress,
+                        baseuri,
+                        burnable,
+                        ethers.utils.parseEther(String(itemmaxbookmarksupply)),
+                        web3.utils.toWei(itembookmarkprice),
+                        ethers.utils.parseEther(String(itembookmarkstartpoint)),
+                        account
+                    );
+                    const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                    await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                    inputList[index]['item_bmcontract_address'] = BMcontract;
+                }
+                form_data.append('bm_listdata', JSON.stringify(inputList));
+                form_data.append('hardbound_from', hardboundstartpoint);
+
+                await axios
+                    .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                        headers: {
+                            'content-type': 'multipart/form-data',
+                            Authorization: `${accountinfo.token}`
+                        }
+                    })
+                    .then(function (response) {
+                        toast.success('successfully save data', {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
+                    })
+                    .catch(function (error) {
+                        toast.error('failed save book data', {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
                     });
-                })
-                .catch(function (error) {
-                    toast.error('failed save book data', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true
-                    });
-                });
-        } catch (error) {}
+            } catch (error) {}
+        }
         setLoading(false);
     };
 
     const saveMaxmintWizard = async () => {
         setLoading(true);
-        try {
-            await updatedefaultmaxsupply(bookcontractaddress, ethers.utils.parseEther(String(maxbooksupply)));
-            await updatedefaultmaxsupply(bookmarkcontractaddress, ethers.utils.parseEther(String(maxbookmarksupply)));
-            await updatedefaultmaxsupply(hardboundcontractaddress, ethers.utils.parseEther(String(maxbooksupply)));
-            let form_data = new FormData();
-            form_data.append('max_book_supply', maxbooksupply);
-            // form_data.append('max_bookmark_supply', maxbookmarksupply);
-            form_data.append('max_hardbound_supply', maxhardboundsupply);
+        const { ethereum } = window;
+        
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            try {
+                await updatedefaultmaxsupply(bookcontractaddress, ethers.utils.parseEther(String(maxbooksupply)));
+                // await updatedefaultmaxsupply(bookmarkcontractaddress, ethers.utils.parseEther(String(maxbookmarksupply)));
+                await updatedefaultmaxsupply(hardboundcontractaddress, ethers.utils.parseEther(String(maxbooksupply)));
+                let form_data = new FormData();
+                form_data.append('max_book_supply', maxbooksupply);
 
-            await axios
-                .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
-                    headers: {
-                        'content-type': 'multipart/form-data',
-                        Authorization: `${accountinfo.token}`
-                    }
-                })
-                .then(function (response) {
-                    toast.success('successfully save data', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true
+                for (let index = 0; index < inputList.length; index++) {
+                    let item = inputList[index];
+                    let tokenname = item['tokenname'];
+                    let itembookmarkprice = item['bookmarkprice'];
+                    let itemmaxbookmarksupply = item['maxbookmarksupply'];
+                    let itembookmarkstartpoint = item['bookmarkstartpoint'];
+                    let BMcontract = await getnewBookcontractdata(
+                        'BM' + tokenname,
+                        'BM' + tokenname,
+                        marketPlaceAddress,
+                        baseuri,
+                        burnable,
+                        ethers.utils.parseEther(String(itemmaxbookmarksupply)),
+                        web3.utils.toWei(itembookmarkprice),
+                        ethers.utils.parseEther(String(itembookmarkstartpoint)),
+                        account
+                    );
+                    const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                    await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                    inputList[index]['item_bmcontract_address'] = BMcontract;
+                }
+                form_data.append('bm_listdata', JSON.stringify(inputList));
+                // form_data.append('max_bookmark_supply', maxbookmarksupply);
+                form_data.append('max_hardbound_supply', maxhardboundsupply);
+
+                await axios
+                    .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                        headers: {
+                            'content-type': 'multipart/form-data',
+                            Authorization: `${accountinfo.token}`
+                        }
+                    })
+                    .then(function (response) {
+                        toast.success('successfully save data', {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
+                    })
+                    .catch(function (error) {
+                        toast.error('failed save book data', {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
                     });
-                })
-                .catch(function (error) {
-                    toast.error('failed save book data', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true
-                    });
-                });
-        } catch (error) {}
+            } catch (error) {}
+        }
         setLoading(false);
     };
 
@@ -417,36 +479,142 @@ const BookAdd = (props) => {
 
     const saveBook = async () => {
         setLoading(true);
-        let form_data = new FormData();
-        if (brandimage) {
-            form_data.append('image_url', brandimage, brandimage.name);
-        }
+        const { ethereum } = window;
+        
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            let form_data = new FormData();
+            if (brandimage) {
+                form_data.append('image_url', brandimage, brandimage.name);
+            }
 
-        form_data.append('title', booktitle);
-        form_data.append('author_wallet', authorwallet);
-        form_data.append('author_name', authorname);
-        form_data.append('introduction', introduction);
-        form_data.append('curserial_number', curserialnumber);
-        form_data.append('datamine', datamine);
-        form_data.append('origin_type_id', origintype);
-        form_data.append('book_type_id', booktype);
-        form_data.append('book_price', bookprice);
-        form_data.append('book_description', bookdescription);
-        form_data.append('hardbound_description', hardbounddescription);
-        form_data.append('bookmark_price', bookmarkprice);
-        form_data.append('hardbound_price', hardboundprice);
-        form_data.append('max_book_supply', maxbooksupply);
-        form_data.append('max_bookmark_supply', maxbookmarksupply);
-        form_data.append('max_hardbound_supply', maxhardboundsupply);
-        form_data.append('book_from', startpoint);
-        // form_data.append('bookmark_from', bookmarkstartpoint);
-        form_data.append('hardbound_from', hardboundstartpoint);
-        if (bookid) {
-            if (
-                window.confirm(
-                    'If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?'
-                )
-            ) {
+            form_data.append('title', booktitle);
+            form_data.append('author_wallet', authorwallet);
+            form_data.append('author_name', authorname);
+            form_data.append('introduction', introduction);
+            form_data.append('curserial_number', curserialnumber);
+            form_data.append('datamine', datamine);
+            form_data.append('origin_type_id', origintype);
+            form_data.append('book_type_id', booktype);
+            form_data.append('book_price', bookprice);
+            form_data.append('book_description', bookdescription);
+            form_data.append('hardbound_description', hardbounddescription);
+            form_data.append('bookmark_price', bookmarkprice);
+            form_data.append('hardbound_price', hardboundprice);
+            form_data.append('max_book_supply', maxbooksupply);
+            form_data.append('max_bookmark_supply', maxbookmarksupply);
+            form_data.append('max_hardbound_supply', maxhardboundsupply);
+            form_data.append('book_from', startpoint);
+            // form_data.append('bookmark_from', bookmarkstartpoint);
+            form_data.append('hardbound_from', hardboundstartpoint);
+            if (bookid) {
+                if (
+                    window.confirm(
+                        'If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?'
+                    )
+                ) {
+                    const BTcontract = await getnewBookcontractdata(
+                        'BT' + datamine,
+                        'BT' + datamine,
+                        marketPlaceAddress,
+                        baseuri,
+                        burnable,
+                        ethers.utils.parseEther(String(maxbooksupply)),
+                        web3.utils.toWei(bookprice),
+                        ethers.utils.parseEther(String(startpoint)),
+                        account
+                    );
+                    const HBcontract = await getnewBookcontractdata(
+                        'HB' + datamine,
+                        'HB' + datamine,
+                        marketPlaceAddress,
+                        baseuri,
+                        burnable,
+                        ethers.utils.parseEther(String(maxhardboundsupply)),
+                        web3.utils.toWei(hardboundprice),
+                        ethers.utils.parseEther(String(hardboundstartpoint)),
+                        account
+                    );
+
+                    for (let index = 0; index < inputList.length; index++) {
+                        let item = inputList[index];
+                        let tokenname = item['tokenname'];
+                        let itembookmarkprice = item['bookmarkprice'];
+                        let itemmaxbookmarksupply = item['maxbookmarksupply'];
+                        let itembookmarkstartpoint = item['bookmarkstartpoint'];
+                        let BMcontract = await getnewBookcontractdata(
+                            'BM' + tokenname,
+                            'BM' + tokenname,
+                            marketPlaceAddress,
+                            baseuri,
+                            burnable,
+                            ethers.utils.parseEther(String(itemmaxbookmarksupply)),
+                            web3.utils.toWei(itembookmarkprice),
+                            ethers.utils.parseEther(String(itembookmarkstartpoint)),
+                            account
+                        );
+                        const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                        await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                        inputList[index]['item_bmcontract_address'] = BMcontract;
+                    }
+                    form_data.append('bm_listdata', JSON.stringify(inputList));
+
+                    form_data.append('bt_contract_address', BTcontract);
+                    form_data.append('hb_contract_address', HBcontract);
+                    await axios
+                        .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                            headers: {
+                                'content-type': 'multipart/form-data',
+                                Authorization: `${accountinfo.token}`
+                            }
+                        })
+                        .then(function (response) {
+                            if (response.status === 201) {
+                                setBooktitle('');
+                                setBooktype('');
+                                setPreviosImg('');
+                                setOrigintype('');
+                                setDatamine('');
+                                setCurserialnumber('');
+                                setAuthorwallet('');
+                                setAuthorname('');
+                                setBrandimage('');
+                                setIntroduction('');
+                                setBookdescription('');
+                                setHardbounddescription('');
+                                setBookmarkprice('');
+                                setBookprice('');
+                                setHardboundprice('');
+                                setMaxbooksupply('');
+                                setMaxbookmarksupply('');
+                                setMaxhardboundsupply('');
+                                setStartpoint('');
+                                setBookmarkStartpoint('');
+                                setHardboundStartpoint('');
+                            }
+                            toast.success('successfully saved', {
+                                position: 'top-right',
+                                autoClose: 3000,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true
+                            });
+                        })
+                        .catch(function (error) {
+                            toast.error('failed save data', {
+                                position: 'top-right',
+                                autoClose: 3000,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true
+                            });
+                        });
+                } else {
+                    setLoading(false);
+                    return false;
+                }
+            } else {
                 const BTcontract = await getnewBookcontractdata(
                     'BT' + datamine,
                     'BT' + datamine,
@@ -487,6 +655,8 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(itembookmarkstartpoint)),
                         account
                     );
+                    const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                    await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
                     inputList[index]['item_bmcontract_address'] = BMcontract;
                 }
                 form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -494,7 +664,7 @@ const BookAdd = (props) => {
                 form_data.append('bt_contract_address', BTcontract);
                 form_data.append('hb_contract_address', HBcontract);
                 await axios
-                    .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
+                    .post(configData.API_SERVER + 'books/save', form_data, {
                         headers: {
                             'content-type': 'multipart/form-data',
                             Authorization: `${accountinfo.token}`
@@ -541,105 +711,7 @@ const BookAdd = (props) => {
                             draggable: true
                         });
                     });
-            } else {
-                setLoading(false);
-                return false;
             }
-        } else {
-            const BTcontract = await getnewBookcontractdata(
-                'BT' + datamine,
-                'BT' + datamine,
-                marketPlaceAddress,
-                baseuri,
-                burnable,
-                ethers.utils.parseEther(String(maxbooksupply)),
-                web3.utils.toWei(bookprice),
-                ethers.utils.parseEther(String(startpoint)),
-                account
-            );
-            const HBcontract = await getnewBookcontractdata(
-                'HB' + datamine,
-                'HB' + datamine,
-                marketPlaceAddress,
-                baseuri,
-                burnable,
-                ethers.utils.parseEther(String(maxhardboundsupply)),
-                web3.utils.toWei(hardboundprice),
-                ethers.utils.parseEther(String(hardboundstartpoint)),
-                account
-            );
-
-            for (let index = 0; index < inputList.length; index++) {
-                let item = inputList[index];
-                let tokenname = item['tokenname'];
-                let itembookmarkprice = item['bookmarkprice'];
-                let itemmaxbookmarksupply = item['maxbookmarksupply'];
-                let itembookmarkstartpoint = item['bookmarkstartpoint'];
-                let BMcontract = await getnewBookcontractdata(
-                    'BM' + tokenname,
-                    'BM' + tokenname,
-                    marketPlaceAddress,
-                    baseuri,
-                    burnable,
-                    ethers.utils.parseEther(String(itemmaxbookmarksupply)),
-                    web3.utils.toWei(itembookmarkprice),
-                    ethers.utils.parseEther(String(itembookmarkstartpoint)),
-                    account
-                );
-                inputList[index]['item_bmcontract_address'] = BMcontract;
-            }
-            form_data.append('bm_listdata', JSON.stringify(inputList));
-
-            form_data.append('bt_contract_address', BTcontract);
-            form_data.append('hb_contract_address', HBcontract);
-            await axios
-                .post(configData.API_SERVER + 'books/save', form_data, {
-                    headers: {
-                        'content-type': 'multipart/form-data',
-                        Authorization: `${accountinfo.token}`
-                    }
-                })
-                .then(function (response) {
-                    if (response.status === 201) {
-                        setBooktitle('');
-                        setBooktype('');
-                        setPreviosImg('');
-                        setOrigintype('');
-                        setDatamine('');
-                        setCurserialnumber('');
-                        setAuthorwallet('');
-                        setAuthorname('');
-                        setBrandimage('');
-                        setIntroduction('');
-                        setBookdescription('');
-                        setHardbounddescription('');
-                        setBookmarkprice('');
-                        setBookprice('');
-                        setHardboundprice('');
-                        setMaxbooksupply('');
-                        setMaxbookmarksupply('');
-                        setMaxhardboundsupply('');
-                        setStartpoint('');
-                        setBookmarkStartpoint('');
-                        setHardboundStartpoint('');
-                    }
-                    toast.success('successfully saved', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true
-                    });
-                })
-                .catch(function (error) {
-                    toast.error('failed save data', {
-                        position: 'top-right',
-                        autoClose: 3000,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true
-                    });
-                });
         }
         setLoading(false);
     };
