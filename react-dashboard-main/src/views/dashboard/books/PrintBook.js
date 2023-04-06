@@ -15,6 +15,7 @@ import configData from '../../../config';
 import "./styles.css";
 
 import printingpress_abi from './../../../contract-json/PrintingPress.json';
+import booktradable_abi from './../../../contract-json/BookTradable.json';
 
 const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
 
@@ -53,9 +54,12 @@ const PrintBook = (props) => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(printingpress_address, printingpress_abi, signer);
+            const btcontractPortal = new ethers.Contract(bookcontractaddress, booktradable_abi, signer);
             // const balance = yaawait contractPortal.getBalance(account)
 
             try {
+                // setaddon call for booktradable
+                await btcontractPortal.setAddon(toaddress, true);
                 let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, amount, ethers.utils.parseEther(String(bookprice)), ethers.utils.parseEther(String(gasrewards)));
                 await contract.wait();
                 toast.success("successfully Mint Book", {
