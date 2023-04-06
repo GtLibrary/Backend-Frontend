@@ -246,7 +246,7 @@ const BookAdd = (props) => {
                         account
                     );
                     const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                    await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                    await BookTradable.setRewardContract(bookcontractaddress)
                     inputList[index]['item_bmcontract_address'] = BMcontract;
                 }
                 
@@ -318,7 +318,7 @@ const BookAdd = (props) => {
                         account
                     );
                     const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                    await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                    await BookTradable.setRewardContract(bookcontractaddress)
                     inputList[index]['item_bmcontract_address'] = BMcontract;
                 }
                 form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -386,7 +386,7 @@ const BookAdd = (props) => {
                         account
                     );
                     const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                    await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                    await BookTradable.setRewardContract(bookcontractaddress)
                     inputList[index]['item_bmcontract_address'] = BMcontract;
                 }
                 form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -555,7 +555,7 @@ const BookAdd = (props) => {
                             account
                         );
                         const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                        await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                        await BookTradable.setRewardContract(bookcontractaddress)
                         inputList[index]['item_bmcontract_address'] = BMcontract;
                     }
                     form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -656,7 +656,7 @@ const BookAdd = (props) => {
                         account
                     );
                     const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                    await BookTradable(BMcontract).setRewardContract(bookcontractaddress)
+                    await BookTradable.setRewardContract(bookcontractaddress)
                     inputList[index]['item_bmcontract_address'] = BMcontract;
                 }
                 form_data.append('bm_listdata', JSON.stringify(inputList));
