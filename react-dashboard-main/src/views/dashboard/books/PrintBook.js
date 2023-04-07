@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 import { useSelector } from 'react-redux';
 import { useWeb3React } from "@web3-react/core";
 // material-ui
-import { Grid, Button, Box, TextField } from '@material-ui/core';
+import { Grid, Button, Box, TextField, Divider } from '@material-ui/core';
 // toast message
 import { toast } from "react-toastify";
 // project imports
@@ -25,6 +25,7 @@ const PrintBook = (props) => {
     const { account } = useWeb3React();
     const [ booktitle, setBooktitle] = useState('');
     const [ toaddress, setToaddress ] = useState('');
+    const [ toaddressone, setToaddressone ] = useState('');
     const [ bookcontractaddress, setBookcontractaddress ] = useState('');
     // const [ maxbooksupply, setMaxbooksupply ] = useState(0);
     const [ bookprice, setBookprice ] = useState(0);
@@ -59,8 +60,52 @@ const PrintBook = (props) => {
 
             try {
                 // setaddon call for booktradable
-                await btcontractPortal.setAddon(toaddress, true);
+                const isAddon = await btcontractPortal.getAddon(toaddress);
+                if (isAddon) {
+                    await btcontractPortal.setAddon(toaddress, true);
+                }
                 let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, amount, ethers.utils.parseEther(String(bookprice)), ethers.utils.parseEther(String(gasrewards)));
+                await contract.wait();
+                toast.success("successfully Mint Book", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            } catch (error) {
+                console.log("error", error)
+                toast.error("failed mint book", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            }
+        }
+    }
+
+    
+    const MintOneBook = async () => {
+        const { ethereum } = window;
+        
+        if(ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const btcontractPortal = new ethers.Contract(bookcontractaddress, booktradable_abi, signer);
+            if (toaddressone === '') {
+                toast.error("Please input address", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+                return;
+            }
+            try {
+                let contract = await btcontractPortal.mintTo(toaddressone);
                 await contract.wait();
                 toast.success("successfully Mint Book", {
                     position: "top-right",
@@ -92,6 +137,7 @@ const PrintBook = (props) => {
                             <Button variant="outlined">Back To List</Button>
                         </Link>
                     </Box>
+                    <Divider>Multiple Book Mint</Divider>
                     <Box
                         component="form"
                         sx={{
@@ -157,9 +203,37 @@ const PrintBook = (props) => {
                                 }}
                             />
                         </div>
-                    </Box>
-                    <Box display="flex" flexDirection="row" p={1} m={1} bgcolor="background.paper">
                         <Button variant="contained" onClick={() => MintBook()}>Mint</Button>
+                    </Box>
+                    <Divider>One Book Mint</Divider>
+                    <Box
+                        component="form"
+                        sx={{
+                            '& .MuiTextField-root': { m: 1, width: '50ch' }
+                        }}
+                        noValidate
+                        autoComplete="off"
+                    >
+                        <div>
+                            <TextField
+                                id="to_address"
+                                // label="Book  Name"
+                                style={{ margin: 8 }}
+                                placeholder="Please input the to address"
+                                helperText="To address"
+                                fullWidth
+                                // margin="normal"
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                variant="filled"
+                                value={toaddressone}
+                                onChange={(e) => {
+                                    setToaddressone(e.target.value);
+                                }}
+                            />
+                        </div>
+                        <Button variant="contained" onClick={() => MintOneBook()}>Mint</Button>
                     </Box>
                 </Grid>
             </Grid>
