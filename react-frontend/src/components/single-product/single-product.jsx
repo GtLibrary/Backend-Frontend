@@ -480,8 +480,6 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Free Audio Book Code</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
                 </div>
               </div>
             </div>
@@ -498,8 +496,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Ticket for the Movie</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+	  Each book is also a one time movie ticket.
                 </div>
               </div>
             </div>
@@ -514,10 +511,9 @@ const SingleProduct = ({ match }) => {
                 ></img>
               </div>
               <div className="content-area">
-                <div className="detail-title">BEN, the AI cat</div>
+                <div className="detail-title">BENJI, the AI cat</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+	  Chat about the book with Benji, the AI cat!
                 </div>
               </div>
             </div>
@@ -534,8 +530,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Author's Brain-In-A-Jar</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+	  		Propose changes to the author even if they are dead!
                 </div>
               </div>
             </div>
