@@ -560,14 +560,14 @@ const SingleProduct = ({ match }) => {
                 className="pdf-image"
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
               />
-              <div className="pdf-content">
-                {pdfcontent.map((item, i) => {
+              <div className="pdf-content" dangerouslySetInnerHTML={{__html: pdftext}}>
+                {/* {pdfcontent.map((item, i) => {
                   return (
                     <span className="" key={i} onClick={() => showBMModal(i)}>
                       {item}
                     </span>
                   );
-                })}
+                })} */}
               </div>
             </div>
           </div>
