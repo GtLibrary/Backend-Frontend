@@ -113,22 +113,25 @@ const SingleProduct = ({ match }) => {
         cc_abi,
         cc_address
       );
-      console.log("ccoin_contract", ccoin_contract)
 
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-      const ccaaccount = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
-      const transaction = await bt_contract.methods.setAddon(printpress_address, true);
-      const options = {
-        from    : ccaaccount,
-        to      : transaction._parent._address,
-        data    : transaction.encodeABI(),
-        gas     : await transaction.estimateGas({from: ccaaccount}),
-        gasPrice: await web3.eth.getGasPrice()
-      };
       
-      const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
-      const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-      
+      const ccaaccount = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address; 
+      const is_addon = await bt_contract.methods.getAddon(printpress_address).call();
+      if (!is_addon) {
+        const transaction = await bt_contract.methods.setAddon(printpress_address, true).send({ from: account });
+        const options = {
+          from    : ccaaccount,
+          to      : transaction._parent._address,
+          data    : transaction.encodeABI(),
+          gas     : await transaction.estimateGas({from: ccaaccount}),
+          gasPrice: await web3.eth.getGasPrice()
+        };
+        
+        const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
+        const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+      }
+      console.log(bt_contract_address)
       await printpress_contract.methods
         .buyBook(bt_contract_address)
         .send({ from: account, value: web3.utils.toWei(String(book_price)) });
@@ -137,6 +140,7 @@ const SingleProduct = ({ match }) => {
       // await printpress_contract.methods
       //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
       //   .send({ from: account });
+
       setLoading(false);
       toast.success("successfully buy book!", {
         position: "top-right",
