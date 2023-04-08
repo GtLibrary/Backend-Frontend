@@ -163,7 +163,7 @@ def art(request, pk):
             figure_content = ''
             content = content.replace('</p>', '\n')
             temp_content = re.sub(CLEANR, '', content)
-        return Response({"content": temp_content, "book_image": figure_content, "curserial_num": curserial_num})
+        return Response({"content": content, "book_image": figure_content, "curserial_num": curserial_num})
     else:
         return Response({"content":"You are not token owner!!"})
 

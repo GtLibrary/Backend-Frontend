@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
@@ -37,6 +37,7 @@ const BookContent = (props) => {
     const [bookcontent, setBookcontent] = useState('<p>Hello from CKEditor 5!</p>');
     const [title, setTitle] = useState('Book Content Edit');
     const accountinfo = useSelector((state) => state.account);
+    const contentEditable = useRef();
     const classes = useStyles();
 
     const getBookcontentById = async () => {
@@ -109,11 +110,11 @@ const BookContent = (props) => {
             }
         };
     }
-    function uploadPlugin(editor) {
-        editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-            return uploadAdapter(loader);
-        };
-    }
+    // function uploadPlugin(editor) {
+    //     editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+    //         return uploadAdapter(loader);
+    //     };
+    // }
 
     function getPageText(pageNum, PDFDocumentInstance) {
         // Return a Promise that is solved once the text of the page is retrieven
@@ -188,6 +189,7 @@ const BookContent = (props) => {
             }
         });
     }
+
     const uploadcontent = async (event) => {
         const pdfinfo = await readFileAsync(event);
         const parser = new DOMParser();
@@ -231,6 +233,15 @@ const BookContent = (props) => {
             );
         }
     };
+
+    const handlePaste = (event) => {
+        const copytext = event.clipboardData.getData('text/html');
+        event.preventDefault();
+        console.log('Pasted text:', copytext);
+        // document.execCommand('insertHTML', false, copytext);
+        setBookcontent(copytext);
+    }
+
     return (
         <MainCard title={title}>
             <Grid container spacing={gridSpacing}>
@@ -253,29 +264,7 @@ const BookContent = (props) => {
                         <span>select the pdf file</span>
                     </Box>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
-                        <CKEditor
-                            className={classes.maincontent}
-                            config={{
-                                extraPlugins: [uploadPlugin]
-                            }}
-                            editor={ClassicEditor}
-                            // data="<p>Hello from CKEditor 5!</p>"
-                            data={bookcontent}
-                            onReady={(editor) => {
-                                // You can store the "editor" and use when it is needed.
-                                // console.log( 'Editor is ready to use!', editor );
-                            }}
-                            onChange={(event, editor) => {
-                                const data = editor.getData();
-                                setBookcontent(data);
-                            }}
-                            onBlur={(event, editor) => {
-                                // console.log( 'Blur.', editor );
-                            }}
-                            onFocus={(event, editor) => {
-                                // console.log( 'Focus.', editor );
-                            }}
-                        />
+                        <div className='contenteditable-area' onPaste={handlePaste} ref={contentEditable} contentEditable={true} dangerouslySetInnerHTML={{ __html: bookcontent }} ></div>
                     </Box>
                     <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
                         <Button variant="contained" onClick={() => saveBookcontent()}>
