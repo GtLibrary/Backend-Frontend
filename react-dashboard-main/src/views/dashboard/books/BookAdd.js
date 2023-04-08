@@ -286,8 +286,8 @@ const BookAdd = (props) => {
     const saveDefaultWizard = async () => {
         setLoading(true);
         try {
-            await updatedefaultsupply(bookcontractaddress, ethers.utils.parseEther(String(startpoint)));
-            await updatedefaultsupply(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundstartpoint)));
+            await updatedefaultsupply(bookcontractaddress, startpoint);
+            await updatedefaultsupply(hardboundcontractaddress, hardboundstartpoint);
             let form_data = new FormData();
             form_data.append('book_from', startpoint);
 
@@ -305,7 +305,7 @@ const BookAdd = (props) => {
                     burnable,
                     ethers.utils.parseEther(String(itemmaxbookmarksupply)),
                     web3.utils.toWei(itembookmarkprice),
-                    ethers.utils.parseEther(String(itembookmarkstartpoint)),
+                    itembookmarkstartpoint,
                     account
                 );
                 inputList[index]['item_bmcontract_address'] = BMcontract;
