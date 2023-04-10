@@ -24,6 +24,10 @@ const SetAIPrice = Loadable(lazy(() => import('../views/basic/SetAIPrice')));
 // profile setting
 const ProfileSetting = Loadable(lazy(() => import('../views/profile/setting')));
 const ChangePass = Loadable(lazy(() => import('../views/profile/changepassword')));
+// advanced setting
+const SetAddon = Loadable(lazy(() => import('../views/advanced/SetAddon')));
+const SetDexPrice = Loadable(lazy(() => import('../views/advanced/SetDexprice')));
+
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('../views/utilities/Color')));
@@ -58,6 +62,8 @@ const MainRoutes = () => {
                 '/basic/setaiprice',
                 // 'books/edit/:id',
                 // 'books/add',
+                '/advanced/setaddon',
+                '/advanced/setdexprice',
 
                 '/profile/setting',
                 '/profile/changepassword',
@@ -127,6 +133,9 @@ const MainRoutes = () => {
                         )
                         }  />
                         <Route path="/basic/setaiprice" component={SetAIPrice} />
+                        
+                        <Route path="/advanced/setaddon" component={SetAddon} />
+                        <Route path="/advanced/setdexprice" component={SetDexPrice} />
 
                         <Route path="/profile/setting" component={ProfileSetting} />
                         <Route path="/profile/changepassword" component={ChangePass} />
