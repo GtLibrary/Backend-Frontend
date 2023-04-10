@@ -111,8 +111,6 @@ const Balance = () => {
             const Printpressportal = new ethers.Contract(Printpress_address, Printpress_abi, signer);
             
             try {
-                // await Printpressportal.approve(account, ethers.utils.parseEther(String(depositppval)));
-console.log(depositppval)
                 let deposit = await Printpressportal.addBalance(account, {value: ethers.utils.parseEther(String(depositppval))});
                 await deposit.wait();
                 getPPbalance();

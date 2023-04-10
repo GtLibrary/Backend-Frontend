@@ -24,6 +24,7 @@ const BookAdd = (props) => {
     const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/
     const onlyinteger = /^\d+(,\d{0,3})?$/
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
+    const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
     const baseuri = process.env.REACT_APP_API + 'nft/';
     const burnable = true;
@@ -608,7 +609,23 @@ const BookAdd = (props) => {
                     account
                 );
                 const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
-                await BookTradable.setRewardContract(BTcontract)
+                
+                const contract = new web3.eth.Contract(booktradable_abi, BTcontract);
+                const cca_account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;
+                const transaction = await contract.methods.setAddon(printingpress_address, true);
+                
+                let gas_Price = await web3.eth.getGasPrice();
+                const options = {
+                    to      : transaction._parent._address,
+                    data    : transaction.encodeABI(),
+                    gas     : await transaction.estimateGas({from: cca_account}),
+                    gasPrice: gas_Price
+                };
+                const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
+                const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
+                await web3.eth.getTransactionReceipt(result.transactionHash);
+
+                await BookTradable.setRewardContract(BTcontract);
 
                 const HBcontract = await getnewBookcontractdata(
                     'HB' + datamine,
