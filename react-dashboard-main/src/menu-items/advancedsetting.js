@@ -29,5 +29,21 @@ export const advancedsetting = {
             icon: icons['IconSettings'],
             breadcrumbs: false
         },
+        {
+            id: 'advanced-setxout',
+            title: 'Set Max out',
+            type: 'item',
+            url: '/advanced/setoutamount',
+            icon: icons['IconSettings'],
+            breadcrumbs: false
+        },
+        {
+            id: 'advanced-setreward',
+            title: 'Set Reward per hour',
+            type: 'item',
+            url: '/advanced/setreward',
+            icon: icons['IconSettings'],
+            breadcrumbs: false
+        },
     ]
 };
