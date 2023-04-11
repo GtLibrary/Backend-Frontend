@@ -27,6 +27,8 @@ const ChangePass = Loadable(lazy(() => import('../views/profile/changepassword')
 // advanced setting
 const SetAddon = Loadable(lazy(() => import('../views/advanced/SetAddon')));
 const SetDexPrice = Loadable(lazy(() => import('../views/advanced/SetDexprice')));
+const SetOutamount = Loadable(lazy(() => import('../views/advanced/SetOutamount')));
+const SetReward = Loadable(lazy(() => import('../views/advanced/SetReward')));
 
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography')));
@@ -64,6 +66,8 @@ const MainRoutes = () => {
                 // 'books/add',
                 '/advanced/setaddon',
                 '/advanced/setdexprice',
+                '/advanced/setoutamount',
+                '/advanced/setreward',
 
                 '/profile/setting',
                 '/profile/changepassword',
@@ -136,6 +140,8 @@ const MainRoutes = () => {
                         
                         <Route path="/advanced/setaddon" component={SetAddon} />
                         <Route path="/advanced/setdexprice" component={SetDexPrice} />
+                        <Route path="/advanced/setoutamount" component={SetOutamount} />
+                        <Route path="/advanced/setreward" component={SetReward} />
 
                         <Route path="/profile/setting" component={ProfileSetting} />
                         <Route path="/profile/changepassword" component={ChangePass} />

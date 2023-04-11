@@ -7,10 +7,7 @@ import { Grid, Button, Box, TextField } from '@material-ui/core';
 // project imports
 import MainCard from '../../ui-component/cards/MainCard';
 import { gridSpacing } from '../../store/constant';
-import configData from '../../config';
 import CC_abi from './../../contract-json/CultureCoin.json';
-
-//==============================|| AI Price ||==============================//
 
 const SetDexprice = (props) => {
     const [ dexPrice, setDexPrice ] = useState('');
@@ -66,7 +63,7 @@ const SetDexprice = (props) => {
     }
 
     return (
-        <MainCard title="Set OpenAI Price">
+        <MainCard title="Set Dex Price">
             <Grid container spacing={gridSpacing}>
                 <Grid item xs={12} sm={12}>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">

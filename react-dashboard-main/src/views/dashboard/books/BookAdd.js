@@ -24,7 +24,7 @@ const BookAdd = (props) => {
     const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/
     const onlyinteger = /^\d+(,\d{0,3})?$/
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
-    const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
+    const minimart_address = process.env.REACT_APP_MINIMARTADDRESS;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
     const baseuri = process.env.REACT_APP_API + 'nft/';
     const burnable = true;
@@ -609,21 +609,6 @@ const BookAdd = (props) => {
                     account
                 );
                 const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
-                
-                const contract = new web3.eth.Contract(booktradable_abi, BTcontract);
-                const cca_account = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;
-                const transaction = await contract.methods.setAddon(printingpress_address, true);
-                
-                let gas_Price = await web3.eth.getGasPrice();
-                const options = {
-                    to      : transaction._parent._address,
-                    data    : transaction.encodeABI(),
-                    gas     : await transaction.estimateGas({from: cca_account}),
-                    gasPrice: gas_Price
-                };
-                const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
-                const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-                await web3.eth.getTransactionReceipt(result.transactionHash);
 
                 await BookTradable.setRewardContract(BTcontract);
 
@@ -715,6 +700,31 @@ const BookAdd = (props) => {
         }
         setLoading(false);
     };
+
+    const setaddon = async () => {
+        setLoading(true);
+        const { ethereum } = window;
+        
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const BookTradable = new ethers.Contract(bookcontractaddress, booktradable_abi, signer);
+            const HardBound = new ethers.Contract(hardboundcontractaddress, booktradable_abi, signer);
+
+            await BookTradable.setAddon(printingpress_address, true);
+            await BookTradable.setAddon(minimart_address, true);
+            await HardBound.setAddon(printingpress_address, true);
+            await HardBound.setAddon(minimart_address, true);
+
+            for (let index = 0; index < inputList.length; index++) {
+                let bmcontractaddress = inputList[index]['item_bmcontract_address']
+                const Bookmark = new ethers.Contract(bmcontractaddress, booktradable_abi, signer);
+                await Bookmark.setAddon(printingpress_address)
+                await Bookmark.setAddon(minimart_address, true);
+            }
+        }
+        setLoading(false);
+    }
 
     return (
         <MainCard title={title}>
@@ -1125,6 +1135,10 @@ const BookAdd = (props) => {
                         &nbsp;
                         <Button variant="contained" onClick={() => saveMaxmintWizard()}>
                             Update Maxmint Wizard
+                        </Button>
+                        &nbsp;
+                        <Button variant="contained" onClick={() => setaddon()}>
+                            Set Addon
                         </Button>
                         &nbsp;
                     </div>
