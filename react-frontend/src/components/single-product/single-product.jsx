@@ -27,7 +27,6 @@ const SingleProduct = ({ match }) => {
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
-  const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
 
   const navigate = useNavigate();
   const [pdfcontent, setPdfcontent] = useState([]);
@@ -115,23 +114,7 @@ const SingleProduct = ({ match }) => {
       );
 
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-      
-      const ccaaccount = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address; 
-      const is_addon = await bt_contract.methods.getAddon(printpress_address).call();
-      if (!is_addon) {
-        const transaction = await bt_contract.methods.setAddon(printpress_address, true).send({ from: account });
-        const options = {
-          from    : ccaaccount,
-          to      : transaction._parent._address,
-          data    : transaction.encodeABI(),
-          gas     : await transaction.estimateGas({from: ccaaccount}),
-          gasPrice: await web3.eth.getGasPrice()
-        };
-        
-        const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
-        const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-      }
-      console.log(bt_contract_address)
+
       await printpress_contract.methods
         .buyBook(bt_contract_address)
         .send({ from: account, value: web3.utils.toWei(String(book_price)) });
