@@ -38,12 +38,12 @@ const SetDexprice = (props) => {
         getCCprice();
     }, [])
 
-    const calculateCCRate = (ccrate) => {
-        setCcrate(ccrate)
+    const calculateCCRate = (_ccrate) => {
+        setCcrate(_ccrate)
         setAxrate(0)
-        let ccprice = (Number(ccrate * 0.99))
+        let ccprice = (Number(_ccrate * 0.99))
         setDexPrice(ccprice)
-        let xprice = (Number(1 / ccrate).toFixed(4))
+        let xprice = (Number(1 / _ccrate).toFixed(4))
         setDexAvaxPrice(xprice)
     }
 
