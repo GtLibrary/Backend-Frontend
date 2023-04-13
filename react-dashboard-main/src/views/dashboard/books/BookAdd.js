@@ -615,9 +615,8 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(startpoint)),
                         account
                     );
-                    const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
-
-                    await BookTradable.setRewardContract(BTcontract);
+                    //const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
+                    //await BookTradable.setRewardContract(BTcontract);
 
                     const HBcontract = await getnewBookcontractdata(
                         'HB' + datamine,
@@ -647,7 +646,11 @@ const BookAdd = (props) => {
                             web3.utils.toWei(itembookmarkprice),
                             ethers.utils.parseEther(String(itembookmarkstartpoint)),
                             account
-                        );
+			);
+
+			const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
+			await BookTradable.setRewardContract(BTcontract);
+
                         // const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
                         // await BookTradable.setRewardContract(bookcontractaddress)
                         inputList[index]['item_bmcontract_address'] = BMcontract;
