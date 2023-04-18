@@ -161,7 +161,7 @@ const SingleProduct = ({ match }) => {
         });
       }
       setPdfimage(res.data.book_image);
-      setPdftext(res.data.content);
+
       let bmcount = 0;
       if (bm_listdata.length > 0) {
         
@@ -172,7 +172,7 @@ const SingleProduct = ({ match }) => {
       } else {
         bmcount = 1;
       }
-      var bookcontent = [];
+      var bookcontent = '';
       var bookmarks = [];
       
       if (bm_listdata.length > 0) {
@@ -192,16 +192,29 @@ const SingleProduct = ({ match }) => {
         
       }
 
-      for (
-        let i = 0, charsLength = res.data.content?.length;
-        i < charsLength;
-        i += charsLength / bmcount
-      ) {
-        bookcontent.push(res.data.content.substring(i, i + charsLength / bmcount));
+      const parser = new DOMParser();
+      const htmlDoc = parser.parseFromString(res.data.content, 'text/html');
+      const html = htmlDoc.body;
+      if (html === 'You are not token owner!!') {
+        setPdftext(html);
+        setPdfcontent(html);
+      } else {
+        var paragraphs = html.getElementsByTagName('p');
+  
+        for (var i = 0; i < paragraphs.length; i++) {
+            // paragraphs[i].setAttribute('onClick', () => showBMModal(1));
+            paragraphs[i].setAttribute('onClick', test);
+        }
+        document.getElementById('reader-body').innerHTML = html.innerHTML
+        // setPdftext(html.innerHTML);
+        // setPdfcontent(html.innerHTML);
       }
-      setPdfcontent(bookcontent);
     });
   };
+
+  const test = () => {
+    console.log("3333333333333333333333333333333333333333")
+  }
 
   const onReadBook = async () => {
     if (!account) {
@@ -269,12 +282,13 @@ const SingleProduct = ({ match }) => {
   };
 
   const showBMModal = (index) => {
-    if (!account) {
-      return;
-    }
-    setCurserialnum(index);
-    setBookmarkinfo(bmcontent[index])
-    setModalShow(true);
+    console.log("asdfasdfasdfasdfasdfas")
+    // if (!account) {
+    //   return;
+    // }
+    // setCurserialnum(index);
+    // setBookmarkinfo(bmcontent[index])
+    // setModalShow(true);
   };
 
   return (
@@ -547,8 +561,8 @@ const SingleProduct = ({ match }) => {
                 className="pdf-image"
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
               />
-              <div className="pdf-content" dangerouslySetInnerHTML={{__html: pdftext}}>
-                {/* {pdfcontent.map((item, i) => {
+              <div className="pdf-content" id="reader-body">
+                {/* {pdfcontent.map((item, i) => { dangerouslySetInnerHTML={{__html: pdftext}}
                   return (
                     <span className="" key={i} onClick={() => showBMModal(i)}>
                       {item}
