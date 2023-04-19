@@ -19,6 +19,7 @@ const Header = () => {
               <Nav.Link href="https://books.greatlibrary.io">Books</Nav.Link>
               <Nav.Link href="https://author.greatlibrary.io">Authors</Nav.Link>
               <Nav.Link href="/swap">Swap</Nav.Link>
+              <Nav.Link href="/terms">Terms & Services</Nav.Link>
               <Nav.Link href="mailto:johnrraymond@greatlibrary.io">Contact Us</Nav.Link>
             </Nav>
             <WalletConnect />
