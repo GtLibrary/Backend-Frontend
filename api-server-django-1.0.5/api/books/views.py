@@ -155,14 +155,14 @@ def art(request, pk):
     if (token_cnt > 0) & (sender != ''):
         # cur_num = bmsupply - 1
         content = bookcontent.content
-        if(content.find("<figure") > 0):
-            figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
-            content = content.replace('</p>', '\n')
-            temp_content = re.sub(CLEANR, '', content)
-        else:
-            figure_content = ''
-            content = content.replace('</p>', '\n')
-            temp_content = re.sub(CLEANR, '', content)
+        figure_content = ''
+        # if(content.find("<figure") > 0):
+        #     figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
+        #     content = content.replace('</p>', '\n')
+        #     # temp_content = re.sub(CLEANR, '', content)
+        # else:
+        #     content = content.replace('</p>', '\n')
+        #     # temp_content = re.sub(CLEANR, '', content)
         return Response({"content": content, "book_image": figure_content, "curserial_num": curserial_num})
     else:
         return Response({"content":"You are not token owner!!"})
