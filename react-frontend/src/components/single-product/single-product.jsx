@@ -29,12 +29,12 @@ const SingleProduct = ({ match }) => {
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
 
   const navigate = useNavigate();
-  const [pdfcontent, setPdfcontent] = useState([]);
   const [bmcontent, setBmcontent] = useState([]);
   const [bookmarkinfo, setBookmarkinfo] = useState(null);
   const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState("");
-  const [pdfimage, setPdfimage] = useState("");
+  const [paragraph, setParagraph] = useState([]);
+  // const [pdfimage, setPdfimage] = useState("");
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
@@ -70,8 +70,8 @@ const SingleProduct = ({ match }) => {
           }
         })
         .catch((error) => console.log(error));
-    }
-    
+    };
+
     getBook();
   }, [id, navigate]);
 
@@ -79,7 +79,7 @@ const SingleProduct = ({ match }) => {
   if (!product) {
     return false;
   }
-  
+
   const {
     image_url,
     title,
@@ -91,7 +91,7 @@ const SingleProduct = ({ match }) => {
     book_type_id,
     bm_listdata,
     book_description,
-    hardbound_description
+    hardbound_description,
   } = product;
 
   const onBuyBook = async () => {
@@ -99,7 +99,7 @@ const SingleProduct = ({ match }) => {
       return;
     }
     setLoading(true);
-    if(!bt_contract_address) {
+    if (!bt_contract_address) {
       return;
     }
     try {
@@ -107,18 +107,15 @@ const SingleProduct = ({ match }) => {
         printpress_abi,
         printpress_address
       );
-      
-      const ccoin_contract = new web3.eth.Contract(
-        cc_abi,
-        cc_address
-      );
+
+      const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
 
       const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
 
       await printpress_contract.methods
         .buyBook(bt_contract_address)
         .send({ from: account, value: web3.utils.toWei(String(book_price)) });
-      
+
       // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
       // await printpress_contract.methods
       //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
@@ -134,7 +131,7 @@ const SingleProduct = ({ match }) => {
       });
     } catch (error) {
       setLoading(false);
-      console.log("error => ", error)
+      console.log("error => ", error);
       toast.error("failed buy book!", {
         position: "top-right",
         autoClose: 3000,
@@ -151,7 +148,7 @@ const SingleProduct = ({ match }) => {
       url: testurl,
     };
     await axios(config).then((res) => {
-      if(res.data.content === "You are not token owner!!") {
+      if (res.data.content === "You are not token owner!!") {
         toast.error(res.data.content, {
           position: "top-right",
           autoClose: 3000,
@@ -160,21 +157,20 @@ const SingleProduct = ({ match }) => {
           draggable: true,
         });
       }
-      setPdfimage(res.data.book_image);
+      // setPdfimage(res.data.book_image);
 
       let bmcount = 0;
       if (bm_listdata.length > 0) {
-        
         bm_listdata.map((item) => {
           bmcount += item.maxbookmarksupply;
           return bmcount;
-        })
+        });
       } else {
         bmcount = 1;
       }
-      var bookcontent = '';
+
       var bookmarks = [];
-      
+
       if (bm_listdata.length > 0) {
         bm_listdata.map((item, index) => {
           for (let i = 0; i < item.maxbookmarksupply; i++) {
@@ -182,39 +178,33 @@ const SingleProduct = ({ match }) => {
               tokenname: item.tokenname,
               tokenprice: item.bookmarkprice,
               contract_address: item.item_bmcontract_address,
-              token_id: i
-            })
+              token_id: i,
+            });
           }
           // return bookmarks;
         });
-        setBmcontent(bookmarks)
+        setBmcontent(bookmarks);
       } else {
-        
       }
 
       const parser = new DOMParser();
-      const htmlDoc = parser.parseFromString(res.data.content, 'text/html');
+      const htmlDoc = parser.parseFromString(res.data.content, "text/html");
       const html = htmlDoc.body;
-      if (html === 'You are not token owner!!') {
+      if (html === "You are not token owner!!") {
         setPdftext(html);
-        setPdfcontent(html);
       } else {
-        var paragraphs = html.getElementsByTagName('p');
-  
+        var paragraphs = html.getElementsByTagName("p");
+        let paragraphsArray = []
+
         for (var i = 0; i < paragraphs.length; i++) {
-            // paragraphs[i].setAttribute('onClick', () => showBMModal(1));
-            paragraphs[i].setAttribute('onClick', test);
+          const element = <div dangerouslySetInnerHTML={{ __html: paragraphs[i].outerHTML }} onClick={showBMModal(i)} />
+          paragraphsArray.push(element)
         }
-        document.getElementById('reader-body').innerHTML = html.innerHTML
-        // setPdftext(html.innerHTML);
-        // setPdfcontent(html.innerHTML);
+        setPdftext(html.innerText);
+        setParagraph(paragraphsArray);
       }
     });
   };
-
-  const test = () => {
-    console.log("3333333333333333333333333333333333333333")
-  }
 
   const onReadBook = async () => {
     if (!account) {
@@ -227,7 +217,7 @@ const SingleProduct = ({ match }) => {
       });
       return;
     }
-    if(!bt_contract_address) {
+    if (!bt_contract_address) {
       return;
     }
     setLoading(true);
@@ -282,13 +272,12 @@ const SingleProduct = ({ match }) => {
   };
 
   const showBMModal = (index) => {
-    console.log("asdfasdfasdfasdfasdfas")
-    // if (!account) {
-    //   return;
-    // }
-    // setCurserialnum(index);
-    // setBookmarkinfo(bmcontent[index])
-    // setModalShow(true);
+    if (!account) {
+      return;
+    }
+    setCurserialnum(index);
+    setBookmarkinfo(bmcontent[index]);
+    setModalShow(true);
   };
 
   return (
@@ -343,7 +332,7 @@ const SingleProduct = ({ match }) => {
               <h6 className="book-authorname">By {author_name}</h6>
               {book_type_id ? (
                 <span className="book-category">{booktypes[book_type_id]}</span>
-              ): (
+              ) : (
                 <></>
               )}
               <div className="book-introduction">{introduction}</div>
@@ -387,9 +376,7 @@ const SingleProduct = ({ match }) => {
                     ></img>
                   </div>
                   <h4 className="item-title">Book</h4>
-                  <p className="item-description">
-                    {book_description}
-                  </p>
+                  <p className="item-description">{book_description}</p>
                   <div className="buyaction-area">
                     <span className="price-area">{Number(book_price)}</span>
                     <button
@@ -410,11 +397,11 @@ const SingleProduct = ({ match }) => {
                     ></img>
                   </div>
                   <h4 className="item-title">Hardbound</h4>
-                  <p className="item-description">
-                    {hardbound_description}
-                  </p>
+                  <p className="item-description">{hardbound_description}</p>
                   <div className="buyaction-area">
-                    <span className="price-area">{Number(hardbound_price)}</span>
+                    <span className="price-area">
+                      {Number(hardbound_price)}
+                    </span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
                 </div>
@@ -429,10 +416,14 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">
-                    {"Creating an effective description for a bookmark is important for SEO and usability."}
+                    {
+                      "Creating an effective description for a bookmark is important for SEO and usability."
+                    }
                   </p>
                   <div className="buyaction-area">
-                    <span className="price-area">{bm_listdata[0]['bookmarkprice']}</span>
+                    <span className="price-area">
+                      {bm_listdata[0]["bookmarkprice"]}
+                    </span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
                 </div>
@@ -462,9 +453,7 @@ const SingleProduct = ({ match }) => {
           <div className="col-md-3"></div>
           <div className="col-md-2"></div>
           <div className="col-md-8">
-            <p className="include-content">
-              {introduction}
-            </p>
+            <p className="include-content">{introduction}</p>
           </div>
           <div className="col-md-2"></div>
         </div>
@@ -480,8 +469,7 @@ const SingleProduct = ({ match }) => {
               </div>
               <div className="content-area">
                 <div className="detail-title">Free Audio Book Code</div>
-                <div className="detail-content">
-                </div>
+                <div className="detail-content"></div>
               </div>
             </div>
           </div>
@@ -497,7 +485,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Ticket for the Movie</div>
                 <div className="detail-content">
-	  Each book is also a one time movie ticket.
+                  Each book is also a one time movie ticket.
                 </div>
               </div>
             </div>
@@ -514,7 +502,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">BENJI, the AI cat</div>
                 <div className="detail-content">
-	  Chat about the book with Benji, the AI cat!
+                  Chat about the book with Benji, the AI cat!
                 </div>
               </div>
             </div>
@@ -531,7 +519,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Author's Brain-In-A-Jar</div>
                 <div className="detail-content">
-	  		Propose changes to the author even if they are dead!
+                  Propose changes to the author even if they are dead!
                 </div>
               </div>
             </div>
@@ -557,18 +545,15 @@ const SingleProduct = ({ match }) => {
               </button>
             </div>
             <div className="pdf-maincontent">
-              <div
+              {/* <div
                 className="pdf-image"
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
-              />
+              /> */}
               <div className="pdf-content" id="reader-body">
-                {/* {pdfcontent.map((item, i) => { dangerouslySetInnerHTML={{__html: pdftext}}
-                  return (
-                    <span className="" key={i} onClick={() => showBMModal(i)}>
-                      {item}
-                    </span>
-                  );
-                })} */}
+                {paragraph &&
+                  paragraph.map((item, i) => {
+                    return item;
+                  })}
               </div>
             </div>
           </div>
