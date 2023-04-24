@@ -87,6 +87,8 @@ const BookAdd = (props) => {
         setMaxbooksupply(data.max_book_supply);
         setMaxbookmarksupply(data.max_bookmark_supply);
         setMaxhardboundsupply(data.max_hardbound_supply);
+        setBookdescription(data.book_description);
+        setHardbounddescription(data.hardbound_description)
         setStartpoint(data.book_from);
         setHardboundStartpoint(data.hardbound_from);
         setPreviosImg(data.image_url);

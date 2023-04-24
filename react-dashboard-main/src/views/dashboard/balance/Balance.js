@@ -67,10 +67,9 @@ const Balance = () => {
             const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
             // console.log(approveflag.toNumber())
             try {
-                await CCportal.approve(account, ethers.utils.parseEther(String(depositval)));
-                // const approveflag = await CCportal.allowance(CC_address, account);
-                // console.log(approveflag.toNumber())
-                // if(approveflag.toNumber() > 0) {
+                await CCportal.approve(account, ethers.utils.parseEther(String(depositval))).then(async (res) => {
+                    await res.wait()
+
                     let deposit = await CCportal.transfer(CC_address, ethers.utils.parseEther(String(depositval)));
                     await deposit.wait();
                     await axios
@@ -93,11 +92,25 @@ const Balance = () => {
                         .catch(function (error) {
                             console.log('error', error);
                         });
-                // } else {
-                //     alert("This token not approved, please check your wallet!")
-                // }
+                }).catch((error) => {
+                    toast.error("You have not enough token. Please check your wallet balance", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                    return false;
+                });
             } catch (error) {
                 console.log(error)
+                toast.error("Transaction failed. please try again.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             }
         }
     };

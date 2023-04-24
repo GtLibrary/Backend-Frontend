@@ -131,7 +131,6 @@ const SingleProduct = ({ match }) => {
       });
     } catch (error) {
       setLoading(false);
-      console.log("error => ", error);
       toast.error("failed buy book!", {
         position: "top-right",
         autoClose: 3000,
@@ -162,18 +161,17 @@ const SingleProduct = ({ match }) => {
       let bmcount = 0;
       if (bm_listdata.length > 0) {
         bm_listdata.map((item) => {
-          bmcount += item.maxbookmarksupply;
+          bmcount += Number(item.maxbookmarksupply);
           return bmcount;
         });
       } else {
         bmcount = 1;
       }
-
+      
       var bookmarks = [];
-
       if (bm_listdata.length > 0) {
         bm_listdata.map((item, index) => {
-          for (let i = 0; i < item.maxbookmarksupply; i++) {
+          for (let i = 0; i < Number(item.maxbookmarksupply); i++) {
             bookmarks.push({
               tokenname: item.tokenname,
               tokenprice: item.bookmarkprice,
@@ -196,8 +194,9 @@ const SingleProduct = ({ match }) => {
         var paragraphs = html.getElementsByTagName("p");
         let paragraphsArray = []
 
-        for (var i = 0; i < paragraphs.length; i++) {
-          const element = <div dangerouslySetInnerHTML={{ __html: paragraphs[i].outerHTML }} onClick={showBMModal(i)} />
+        for (let i = 0; i < paragraphs.length; i++) {
+          let index = i;
+          const element = <div key={i} dangerouslySetInnerHTML={{ __html: paragraphs[i].outerHTML }} onClick={() => showBMModal(index)} />
           paragraphsArray.push(element)
         }
         setPdftext(html.innerText);
