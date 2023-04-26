@@ -65,17 +65,20 @@ const Booklist = () => {
     }
 
     const deleteBooklist = (Booklist_id) => {
-        axios.delete( configData.API_SERVER + 'books/delete/' + Booklist_id, { headers: { Authorization: `${accountinfo.token}` } })
-            .then(function (response) {
-                if (response.status === 204) {
-                    getBooklists()
-                } else {
-                    getBooklists()
-                }
-            })
-            .catch(function (error) {
-                
-            });
+        const confirmed = window.confirm("Are you sure you want to delete this Book?");
+        if (confirmed) {
+            axios.delete( configData.API_SERVER + 'books/delete/' + Booklist_id, { headers: { Authorization: `${accountinfo.token}` } })
+                .then(function (response) {
+                    if (response.status === 204) {
+                        getBooklists()
+                    } else {
+                        getBooklists()
+                    }
+                })
+                .catch(function (error) {
+                    
+                });
+        }
     }
 
     return (

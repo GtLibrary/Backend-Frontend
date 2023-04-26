@@ -4,7 +4,6 @@ import json
 import requests
 import base64
 import time
-import re
 from django.shortcuts import render
 from api.books.serializers import BooksSerializer
 from api.books.models import Books
@@ -24,7 +23,7 @@ from django.db.models import Q
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
 
-CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
+# CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
 load_dotenv()
 
@@ -152,7 +151,7 @@ def art(request, pk):
     bt_Contract = web3.eth.contract(address=bt_address, abi=contract_abi)
     token_cnt = bt_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
 
-    if (token_cnt > 0) & (sender != ''):
+    if ((token_cnt > 0) & (sender != '')):
         # cur_num = bmsupply - 1
         content = bookcontent.content
         figure_content = ''
@@ -163,6 +162,7 @@ def art(request, pk):
         # else:
         #     content = content.replace('</p>', '\n')
         #     # temp_content = re.sub(CLEANR, '', content)
+        
         return Response({"content": content, "book_image": figure_content, "curserial_num": curserial_num})
     else:
         return Response({"content":"You are not token owner!!"})
