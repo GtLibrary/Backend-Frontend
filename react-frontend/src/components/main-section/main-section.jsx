@@ -4,6 +4,7 @@ import bigScore from '../../assets/img/template_1_dracula.png';
 import './main-section.styles.scss';
 
 const MainSection = () => {
+  const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
   
   return (
     <div className='main-section-container container'>
@@ -31,7 +32,7 @@ const MainSection = () => {
           <p><i>Bram Stoker</i></p>
 
           <div className="buybook-area">
-            <span className="bookprice-tag">$ 23</span>
+            <span className="bookprice-tag">23 {current_symbol}</span>
             <button type="button" className="btn btn-buybook">Preorder</button>
           </div>
         </div>

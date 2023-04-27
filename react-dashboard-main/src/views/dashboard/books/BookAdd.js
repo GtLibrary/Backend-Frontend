@@ -491,11 +491,10 @@ const BookAdd = (props) => {
             form_data.append('book_from', startpoint);
             form_data.append('hardbound_from', hardboundstartpoint);
             if (bookid) {
-                if (
-                    window.confirm(
-                        'If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?'
-                    )
-                ) {
+                const confirmed = window.confirm(
+                    'If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?'
+                )
+                if (confirmed) {
                     try {
                         const BTcontract = await getnewBookcontractdata(
                             'BT' + datamine,

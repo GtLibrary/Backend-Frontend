@@ -27,6 +27,7 @@ const SingleProduct = ({ match }) => {
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
+  const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
 
   const navigate = useNavigate();
   const [bmcontent, setBmcontent] = useState([]);
@@ -75,32 +76,27 @@ const SingleProduct = ({ match }) => {
     getBook();
   }, [id, navigate]);
 
-
-
   useEffect(() => {
     const handleValueChange = () => {
       myReaction();
     };
 
-    window.addEventListener('myValueChange', handleValueChange);
+    window.addEventListener("myValueChange", handleValueChange);
 
     return () => {
-      window.removeEventListener('myValueChange', handleValueChange);
+      window.removeEventListener("myValueChange", handleValueChange);
     };
   }, []);
 
-
   function myReaction() {
-    console.log('myValue has changed!');
-    console.log('It is now: ' + window.myValue);
+    console.log("myValue has changed!");
+    console.log("It is now: " + window.myValue);
     //showBMModal(window.myValue);
     var index = window.myValue;
     setCurserialnum(index);
-    //setBookmarkinfo(bmcontent[index]);
+    setBookmarkinfo(bmcontent[index]);
     setModalShow(true);
   }
-
-
 
   // while we check for product
   if (!product) {
@@ -185,7 +181,6 @@ const SingleProduct = ({ match }) => {
       }
       // setPdfimage(res.data.book_image);
 
-/*
       let bmcount = 0;
       if (bm_listdata.length > 0) {
         bm_listdata.map((item) => {
@@ -210,99 +205,145 @@ const SingleProduct = ({ match }) => {
           // return bookmarks;
         });
         setBmcontent(bookmarks);
-      } else {
       }
-*/
-
 
       const parser = new DOMParser();
       const htmlDoc = parser.parseFromString(res.data.content, "text/html");
       const html = htmlDoc.body.innerHTML;
+      console.log(html)
+      const allContent = htmlDoc.body.innerText;
 
-      console.log(html);
       if (html === "You are not token owner!!") {
         setPdftext(html);
       } else {
+        var bookHtml = addOnClicks(html, allContent, bmcount);
 
-	var bookHtml = addOnClicks(html);
-        console.log(bookHtml);
-
-	document.getElementById("reader-body").innerHTML = bookHtml;
+        document.getElementById("reader-body").innerHTML = bookHtml;
+        // setPdftext(bookHtml)
         //= <div key={i} dangerouslySetInnerHTML={{ __html: paragraphs[i].outerHTML }} onClick={() => showBMModal(index)} />
-
-        setPdftext(bookHtml);
         //setParagraph(paragraphsArray);
       }
     });
   };
 
-		function addOnClicks(html) {
-			var tempDiv = document.createElement('div');
-			tempDiv.innerHTML = html;
+  function addOnClicks(html, allContent, bmcount) {
+    var tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    var pTags = tempDiv.getElementsByTagName("p");
+    
+    // let paragraphs = [];
+    // for (let index = 0; index < pTags.length; index++) {
+    //   const element = pTags[index];
+    //   paragraphs.push(element);
+    // }
 
-  			var spans = [];
-  			var pTags = tempDiv.getElementsByTagName('p');
-  			for (var i = 0; i < pTags.length; i++) {
-    				var spanTags = pTags[i].getElementsByTagName('span');
-    				for (var j = 0; j < spanTags.length; j++) {
-      					spans.push(spanTags[j]);
-    				}
-  			}
-var spanAmount = 200;
-var bookmarkId = 0;
-var currentIndex = 0;
-var leftOver = ''; 
-var leftOverAmount = 0;
-while (currentIndex < spans.length) {
-  var span = spans[currentIndex];
-  var text = span.innerText;
-  var style = span.getAttribute('style');
-  var start = 0;
-  var parentId = currentIndex;
-  console.log("parentId: ", parentId);
+    // const targetLength = Math.ceil(allContent.length / bmcount);
+    // const chunks = [];
+    // let currentChunk = "";
+    // const regex = /<span.*?>.*?<\/span>|./g;
+    // const matches = allContent.match(regex);
+    // for (let i = 0; i < matches.length; i++) {
+    //   const match = matches[i];
+    //   if (currentChunk.length + match.length <= targetLength) {
+    //     currentChunk += match;
+    //   } else {
+    //     chunks.push(currentChunk);
+    //     currentChunk = match;
+    //   }
+    //   if (i === matches.length - 1) {
+    //     chunks.push(currentChunk);
+    //   }
+    // }
+    // const newSpans = chunks.map((chunk, index) => {
+    //     // chunk.setAttribute(
+    //     //   "onclick",
+    //     //   "window.myValue =" +
+    //     //     index +
+    //     //     '; window.dispatchEvent(new Event("myValueChange"));'
+    //     // );
+    //   if (chunk.startsWith("<span")) {
+    //     return <span key={index} dangerouslySetInnerHTML={{ __html: chunk }} />;
+    //   } else {
+    //     return <span key={index}>{chunk}</span>;
+    //   }
+    // });
+    // console.log(paragraphs)
 
-  var newSpans = [];
-  while (start < text.length) {
-    var end = Math.min(start + spanAmount, text.length);
-    var remainingChars = spanAmount - (end - start);
- 
-    console.log("start: ", start);
-    console.log("end: ", end);
-    console.log("remainingChars: ", remainingChars);
-
-    var newSpan = document.createElement('span');
-    newSpan.innerText = text.substring(start, end);
-
-    var nextStyle = span.getAttribute('style');
-    newSpan.setAttribute('style', nextStyle);
-
-    newSpan.setAttribute('onclick', 'window.myValue =' + bookmarkId + '; window.dispatchEvent(new Event("myValueChange"));');
-
-    newSpans.push(newSpan);
-    start = end;
-    if(remainingChars == 0) {
-     bookmarkId++;
+    // return (
+    //   <div>
+    //     {paragraphs.map(p => (
+    //       <p key={p.key}>
+    //         {newSpans}
+    //       </p>
+    //     ))}
+    //   </div>
+    // );
+    var spans = [];
+    var pTags = tempDiv.getElementsByTagName("p");
+    for (var i = 0; i < pTags.length; i++) {
+      var spanTags = pTags[i].getElementsByTagName("span");
+      for (var j = 0; j < spanTags.length; j++) {
+        spans.push(spanTags[j]);
+      }
     }
+    var spanAmount = 200;
+    var bookmarkId = 0;
+    var currentIndex = 0;
+    var leftOver = "";
+    var leftOverAmount = 0;
+    while (currentIndex < spans.length) {
+      var span = spans[currentIndex];
+      var text = span.innerText;
+      var style = span.getAttribute("style");
+      var start = 0;
+      var parentId = currentIndex;
+      console.log("parentId: ", parentId);
+
+      var newSpans = [];
+      while (start < text.length) {
+        var end = Math.min(start + spanAmount, text.length);
+        var remainingChars = spanAmount - (end - start);
+
+        console.log("start: ", start);
+        console.log("end: ", end);
+        console.log("remainingChars: ", remainingChars);
+
+        var newSpan = document.createElement("span");
+        newSpan.innerText = text.substring(start, end);
+
+        var nextStyle = span.getAttribute("style");
+        newSpan.setAttribute("style", nextStyle);
+
+        newSpan.setAttribute(
+          "onclick",
+          "window.myValue =" +
+            bookmarkId +
+            '; window.dispatchEvent(new Event("myValueChange"));'
+        );
+
+        newSpans.push(newSpan);
+        start = end;
+        if (remainingChars == 0) {
+          bookmarkId++;
+        }
+      }
+
+      //for (var j = 0; j < newSpans.length; j++) {
+      for (var j = newSpans.length - 1; j >= 0; j--) {
+        var newSpan = newSpans[j];
+        span.parentNode.insertBefore(newSpan, span.nextSibling);
+      }
+
+      currentIndex++;
+    }
+
+    for (var i = 0; i < spans.length; i++) {
+      var span = spans[i];
+      span.parentNode.removeChild(span);
+    }
+
+    return tempDiv.innerHTML;
   }
-
-  //for (var j = 0; j < newSpans.length; j++) {
-  for (var j = newSpans.length - 1; j >= 0; j--) {
-    var newSpan = newSpans[j];
-    span.parentNode.insertBefore(newSpan, span.nextSibling);
-  }
-
-  currentIndex++;
-}
-
-for (var i = 0; i < spans.length; i++) {
-  var span = spans[i];
-  span.parentNode.removeChild(span);
-}
-
-
-			return tempDiv.innerHTML;
-		}
-
 
   const onReadBook = async () => {
     if (!account) {
@@ -435,7 +476,7 @@ for (var i = 0; i < spans.length; i++) {
               )}
               <div className="book-introduction">{introduction}</div>
               <div className="buybook-area">
-                <span className="bookprice-tag">{book_price}</span>
+                <span className="bookprice-tag">{Number(book_price)} {current_symbol}</span>
                 <button
                   type="button"
                   className="btn btn-buybook"
@@ -476,7 +517,7 @@ for (var i = 0; i < spans.length; i++) {
                   <h4 className="item-title">Book</h4>
                   <p className="item-description">{book_description}</p>
                   <div className="buyaction-area">
-                    <span className="price-area">{Number(book_price)}</span>
+                    <span className="price-area">{Number(book_price)} {current_symbol}</span>
                     <button
                       className="btn btn-item"
                       onClick={() => onBuyBook()}
@@ -498,7 +539,7 @@ for (var i = 0; i < spans.length; i++) {
                   <p className="item-description">{hardbound_description}</p>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {Number(hardbound_price)}
+                      {Number(hardbound_price)} {current_symbol}
                     </span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
@@ -520,7 +561,7 @@ for (var i = 0; i < spans.length; i++) {
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {bm_listdata[0]["bookmarkprice"]}
+                      {bm_listdata[0]["bookmarkprice"]} {current_symbol}
                     </span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
@@ -647,11 +688,11 @@ for (var i = 0; i < spans.length; i++) {
                 className="pdf-image"
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
               /> */}
-              <div className="pdf-content" id="reader-body">
-                {paragraph &&
+              <div className="pdf-content" id="reader-body"  dangerouslySetInnerHTML={{ __html: pdftext }}>
+                {/* {paragraph &&
                   paragraph.map((item, i) => {
                     return item;
-                  })}
+                  })} */}
               </div>
             </div>
           </div>

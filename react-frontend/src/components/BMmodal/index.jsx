@@ -25,7 +25,6 @@ function BMdetailModal(props) {
   let tokenname;
   let tokenprice;
   let contract_address;
-  console.log("bookmarkinfo =->", bookmarkinfo)
   if (bookmarkinfo) {
     token_id = bookmarkinfo.token_id;
     tokenname = bookmarkinfo.tokenname;
