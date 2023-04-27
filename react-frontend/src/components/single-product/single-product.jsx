@@ -27,6 +27,7 @@ const SingleProduct = ({ match }) => {
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
+  const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
 
   const navigate = useNavigate();
   const [bmcontent, setBmcontent] = useState([]);
@@ -209,25 +210,74 @@ const SingleProduct = ({ match }) => {
       const parser = new DOMParser();
       const htmlDoc = parser.parseFromString(res.data.content, "text/html");
       const html = htmlDoc.body.innerHTML;
+      console.log(html)
+      const allContent = htmlDoc.body.innerText;
 
       if (html === "You are not token owner!!") {
         setPdftext(html);
       } else {
-        var bookHtml = addOnClicks(html, bmcount);
+        var bookHtml = addOnClicks(html, allContent, bmcount);
 
         document.getElementById("reader-body").innerHTML = bookHtml;
+        // setPdftext(bookHtml)
         //= <div key={i} dangerouslySetInnerHTML={{ __html: paragraphs[i].outerHTML }} onClick={() => showBMModal(index)} />
-
-        setPdftext(bookHtml);
         //setParagraph(paragraphsArray);
       }
     });
   };
 
-  function addOnClicks(html, bmcount) {
+  function addOnClicks(html, allContent, bmcount) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
+    var pTags = tempDiv.getElementsByTagName("p");
+    
+    // let paragraphs = [];
+    // for (let index = 0; index < pTags.length; index++) {
+    //   const element = pTags[index];
+    //   paragraphs.push(element);
+    // }
 
+    // const targetLength = Math.ceil(allContent.length / bmcount);
+    // const chunks = [];
+    // let currentChunk = "";
+    // const regex = /<span.*?>.*?<\/span>|./g;
+    // const matches = allContent.match(regex);
+    // for (let i = 0; i < matches.length; i++) {
+    //   const match = matches[i];
+    //   if (currentChunk.length + match.length <= targetLength) {
+    //     currentChunk += match;
+    //   } else {
+    //     chunks.push(currentChunk);
+    //     currentChunk = match;
+    //   }
+    //   if (i === matches.length - 1) {
+    //     chunks.push(currentChunk);
+    //   }
+    // }
+    // const newSpans = chunks.map((chunk, index) => {
+    //     // chunk.setAttribute(
+    //     //   "onclick",
+    //     //   "window.myValue =" +
+    //     //     index +
+    //     //     '; window.dispatchEvent(new Event("myValueChange"));'
+    //     // );
+    //   if (chunk.startsWith("<span")) {
+    //     return <span key={index} dangerouslySetInnerHTML={{ __html: chunk }} />;
+    //   } else {
+    //     return <span key={index}>{chunk}</span>;
+    //   }
+    // });
+    // console.log(paragraphs)
+
+    // return (
+    //   <div>
+    //     {paragraphs.map(p => (
+    //       <p key={p.key}>
+    //         {newSpans}
+    //       </p>
+    //     ))}
+    //   </div>
+    // );
     var spans = [];
     var pTags = tempDiv.getElementsByTagName("p");
     for (var i = 0; i < pTags.length; i++) {
@@ -426,7 +476,7 @@ const SingleProduct = ({ match }) => {
               )}
               <div className="book-introduction">{introduction}</div>
               <div className="buybook-area">
-                <span className="bookprice-tag">{book_price}</span>
+                <span className="bookprice-tag">{Number(book_price)} {current_symbol}</span>
                 <button
                   type="button"
                   className="btn btn-buybook"
@@ -467,7 +517,7 @@ const SingleProduct = ({ match }) => {
                   <h4 className="item-title">Book</h4>
                   <p className="item-description">{book_description}</p>
                   <div className="buyaction-area">
-                    <span className="price-area">{Number(book_price)}</span>
+                    <span className="price-area">{Number(book_price)} {current_symbol}</span>
                     <button
                       className="btn btn-item"
                       onClick={() => onBuyBook()}
@@ -489,7 +539,7 @@ const SingleProduct = ({ match }) => {
                   <p className="item-description">{hardbound_description}</p>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {Number(hardbound_price)}
+                      {Number(hardbound_price)} {current_symbol}
                     </span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
@@ -511,7 +561,7 @@ const SingleProduct = ({ match }) => {
                   </p>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {bm_listdata[0]["bookmarkprice"]}
+                      {bm_listdata[0]["bookmarkprice"]} {current_symbol}
                     </span>
                     <button className="btn btn-item">Buy Now</button>
                   </div>
@@ -638,11 +688,11 @@ const SingleProduct = ({ match }) => {
                 className="pdf-image"
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
               /> */}
-              <div className="pdf-content" id="reader-body">
-                {paragraph &&
+              <div className="pdf-content" id="reader-body"  dangerouslySetInnerHTML={{ __html: pdftext }}>
+                {/* {paragraph &&
                   paragraph.map((item, i) => {
                     return item;
-                  })}
+                  })} */}
               </div>
             </div>
           </div>

@@ -6,6 +6,7 @@ import './featured-product.styles.scss';
 const FeaturedProduct = (props) => {
   const navigate = useNavigate();
   const { title, image_url, book_price, author_name, id, description } = props;
+  const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
 
   return (
     <div className='col-md-3 col-sm-6 col-xs-12'>
@@ -18,7 +19,7 @@ const FeaturedProduct = (props) => {
           <p className="item-author">By {author_name}</p>
           
           <div className="buybook-area">
-            <span className="bookprice-tag">${book_price}</span>
+            <span className="bookprice-tag">{Number(book_price)} {current_symbol}</span>
             <button type="button" className="btn btn-buybook">Buy Now</button>
           </div>
         </div>
