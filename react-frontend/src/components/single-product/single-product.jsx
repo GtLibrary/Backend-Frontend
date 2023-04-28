@@ -11,7 +11,7 @@ import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
-import cc_abi from "../../utils/contract/CultureCoin.json";
+// import cc_abi from "../../utils/contract/CultureCoin.json";
 import BT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
 
@@ -26,7 +26,7 @@ const SingleProduct = ({ match }) => {
   const printpress_abi = printingpress_abi;
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
-  const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
+  // const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
 
   const navigate = useNavigate();
@@ -34,8 +34,7 @@ const SingleProduct = ({ match }) => {
   const [bookmarkinfo, setBookmarkinfo] = useState(null);
   const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState("");
-  const [paragraph, setParagraph] = useState([]);
-  // const [pdfimage, setPdfimage] = useState("");
+  // const [paragraph, setParagraph] = useState([]);
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
@@ -111,6 +110,7 @@ const SingleProduct = ({ match }) => {
     hardbound_price,
     introduction,
     bt_contract_address,
+    hb_contract_address,
     book_type_id,
     bm_listdata,
     book_description,
@@ -130,10 +130,6 @@ const SingleProduct = ({ match }) => {
         printpress_abi,
         printpress_address
       );
-
-      const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
-
-      const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
 
       await printpress_contract.methods
         .buyBook(bt_contract_address)
@@ -164,6 +160,101 @@ const SingleProduct = ({ match }) => {
     }
   };
 
+  const onBuyHardbound = async () => {
+    if (!account) {
+      return;
+    }
+    setLoading(true);
+    if (!hb_contract_address) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+
+      const bt_contract = new web3.eth.Contract(bt_abi, hb_contract_address);
+      const is_addon = await bt_contract.methods.getAddon(printpress_address).call();
+      console.log("is_addon =>", is_addon)
+      console.log(hb_contract_address)
+      await printpress_contract.methods
+        .buyBook(hb_contract_address)
+        .send({ from: account, value: web3.utils.toWei(String(hardbound_price)) });
+
+      // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
+      // await printpress_contract.methods
+      //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
+      //   .send({ from: account });
+
+      setLoading(false);
+      toast.success("successfully buy Hardbound!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy hardbound!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onBuyBookmark = async () => {
+    if (!account) {
+      return;
+    }
+    setLoading(true);
+    if (!bm_listdata[0]['item_bmcontract_address']) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+      
+    const bt_contract = new web3.eth.Contract(bt_abi, bm_listdata[0]['item_bmcontract_address']);
+    const is_addon = await bt_contract.methods.getAddon(printpress_address).call();
+    console.log("is_addon =>", is_addon)
+    console.log(bm_listdata[0]['item_bmcontract_address'])
+
+      await printpress_contract.methods
+        .buyBook(bm_listdata[0]['item_bmcontract_address'])
+        .send({ from: account, value: web3.utils.toWei(String(bm_listdata[0]['bookmarkprice'])) });
+
+      // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
+      // await printpress_contract.methods
+      //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
+      //   .send({ from: account });
+
+      setLoading(false);
+      toast.success("successfully buy bookmark!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy bookmark!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
   const getPdfData = async (testurl) => {
     const config = {
       method: "get",
@@ -179,7 +270,6 @@ const SingleProduct = ({ match }) => {
           draggable: true,
         });
       }
-      // setPdfimage(res.data.book_image);
 
       let bmcount = 0;
       if (bm_listdata.length > 0) {
@@ -229,7 +319,7 @@ const SingleProduct = ({ match }) => {
   function addOnClicks(html, allContent, bmcount) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
-    var pTags = tempDiv.getElementsByTagName("p");
+    // var pTags = tempDiv.getElementsByTagName("p");
     
     // let paragraphs = [];
     // for (let index = 0; index < pTags.length; index++) {
@@ -361,8 +451,8 @@ const SingleProduct = ({ match }) => {
     }
     setLoading(true);
     const cur_address = account;
-    const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-    const booktoken_cnt = await bt_contract.methods.balanceOf(account).call();
+    // const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
+    // const booktoken_cnt = await bt_contract.methods.balanceOf(account).call();
 
     let testurl;
     var sender;
@@ -371,11 +461,13 @@ const SingleProduct = ({ match }) => {
     } else {
       sender = "";
     }
-    if (booktoken_cnt === 0) {
-      testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
-    } else {
-      testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
-    }
+    // if (booktoken_cnt === 0) {
+    //   testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
+    // } else {
+    //   testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
+    // }
+    testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
+
 
     getPdfData(testurl);
     setLoading(false);
@@ -408,15 +500,6 @@ const SingleProduct = ({ match }) => {
 
   const onRefresh = () => {
     window.location.reload();
-  };
-
-  const showBMModal = (index) => {
-    if (!account) {
-      return;
-    }
-    setCurserialnum(index);
-    setBookmarkinfo(bmcontent[index]);
-    setModalShow(true);
   };
 
   return (
@@ -541,7 +624,7 @@ const SingleProduct = ({ match }) => {
                     <span className="price-area">
                       {Number(hardbound_price)} {current_symbol}
                     </span>
-                    <button className="btn btn-item">Buy Now</button>
+                    <button className="btn btn-item" onClick={() => onBuyHardbound()}>Buy Now</button>
                   </div>
                 </div>
               </div>
@@ -563,7 +646,7 @@ const SingleProduct = ({ match }) => {
                     <span className="price-area">
                       {bm_listdata[0]["bookmarkprice"]} {current_symbol}
                     </span>
-                    <button className="btn btn-item">Buy Now</button>
+                    <button className="btn btn-item" onClick={() => onBuyBookmark()}>Buy Now</button>
                   </div>
                 </div>
               </div>

@@ -21,8 +21,7 @@ const useStyles = makeStyles((theme) => ({
         fontSize: "16px",
     },
     warningContent: {
-        color: '#009b1a',
-        marginBottom: 0
+        color: 'black',
     }
 }));
 
@@ -37,7 +36,12 @@ const Dashboard = () => {
         <Grid container spacing={gridSpacing}>
             <Grid item xs={12}>
                 <MainCard border={false} className={classes.content}>
-                    <p className={classes.warningContent}>When you are ready to go live, from your email address mail your manuscript(s) to info@greatlibrary.io for verification.</p>
+                    <p className={classes.warningContent}>When you are ready to go live, from your email address mail your manuscript(s) to <a href='mailto:info@greatlibrary.io'>info@greatlibrary.io</a> for verification.</p>
+                </MainCard>
+                <br></br>
+                <MainCard border={false} className={classes.content}>
+                    <p className={classes.warningContent}>Authors may want to only go through the hassle of creating one book on the author portal, but we still need to vet them as authors and to do that we want them to send us all their manuscripts to <a href='mailto:info@greatlibrary.io'>info@greatlibrary.io</a> so they can be vetted and become “Is Verified.”</p>
+                    <p className={classes.warningContent}>All rough drafts and extra material should be included in this or follow up emails. This includes pdfs, docs, txt, links, jpgs, pngs, only excluding exe and other self executing binaries. (Authors should arrange for further vetting in that case.)</p>
                 </MainCard>
             </Grid>
         </Grid>

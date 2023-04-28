@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useHistory } from 'react-router-dom';
 import axios from 'axios';
 import Web3 from 'web3';
 import LoadingOverlay from 'react-loading-overlay';
@@ -21,8 +21,8 @@ import booktradable_abi from './../../../contract-json/BookTradable.json';
 LoadingOverlay.propTypes = undefined;
 
 const BookAdd = (props) => {
-    const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/
-    const onlyinteger = /^\d+(,\d{0,3})?$/
+    const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/;
+    const onlyinteger = /^\d+(,\d{0,3})?$/;
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
     const minimart_address = process.env.REACT_APP_MINIMARTADDRESS;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
@@ -30,6 +30,7 @@ const BookAdd = (props) => {
     const burnable = true;
 
     const { bookid } = useParams();
+    const history = useHistory();
     const { account } = useWeb3React();
     const printpress_abi = printingpress_abi;
     const accountinfo = useSelector((state) => state.account);
@@ -88,7 +89,7 @@ const BookAdd = (props) => {
         setMaxbookmarksupply(data.max_bookmark_supply);
         setMaxhardboundsupply(data.max_hardbound_supply);
         setBookdescription(data.book_description);
-        setHardbounddescription(data.hardbound_description)
+        setHardbounddescription(data.hardbound_description);
         setStartpoint(data.book_from);
         setHardboundStartpoint(data.hardbound_from);
         setPreviosImg(data.image_url);
@@ -219,14 +220,14 @@ const BookAdd = (props) => {
     const savePrice = async () => {
         setLoading(true);
         const { ethereum } = window;
-        
+
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             try {
                 await updatedefaultprice(bookcontractaddress, ethers.utils.parseEther(String(bookprice)));
                 await updatedefaultprice(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundprice)));
-                
+
                 for (let index = 0; index < inputList.length; index++) {
                     let item = inputList[index];
                     let tokenname = item['tokenname'];
@@ -244,11 +245,11 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(itembookmarkstartpoint)),
                         account
                     );
-                    const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                    await BookTradable.setRewardContract(bookcontractaddress)
+                    // const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                    // await BookTradable.setRewardContract(bookcontractaddress);
                     inputList[index]['item_bmcontract_address'] = BMcontract;
                 }
-                
+
                 let form_data = new FormData();
                 form_data.append('book_price', bookprice);
                 form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -463,7 +464,7 @@ const BookAdd = (props) => {
     const saveBook = async () => {
         setLoading(true);
         const { ethereum } = window;
-        
+
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
@@ -493,7 +494,7 @@ const BookAdd = (props) => {
             if (bookid) {
                 const confirmed = window.confirm(
                     'If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?'
-                )
+                );
                 if (confirmed) {
                     try {
                         const BTcontract = await getnewBookcontractdata(
@@ -508,7 +509,7 @@ const BookAdd = (props) => {
                             account
                         );
                         const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
-                        await BookTradable.setRewardContract(BTcontract)
+                        await BookTradable.setRewardContract(BTcontract);
 
                         const HBcontract = await getnewBookcontractdata(
                             'HB' + datamine,
@@ -594,7 +595,6 @@ const BookAdd = (props) => {
                                     draggable: true
                                 });
                             });
-                        
                     } catch (error) {
                         setLoading(false);
                         console.log(error);
@@ -647,10 +647,7 @@ const BookAdd = (props) => {
                             web3.utils.toWei(itembookmarkprice),
                             ethers.utils.parseEther(String(itembookmarkstartpoint)),
                             account
-			);
-
-			const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-			await BookTradable.setRewardContract(BTcontract);
+                        );
 
                         // const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
                         // await BookTradable.setRewardContract(bookcontractaddress)
@@ -669,26 +666,27 @@ const BookAdd = (props) => {
                         })
                         .then(function (response) {
                             if (response.status === 201) {
-                                setBooktitle('');
-                                setBooktype('');
-                                setPreviosImg('');
-                                setOrigintype('');
-                                setDatamine('');
-                                setCurserialnumber('');
-                                setAuthorwallet('');
-                                setAuthorname('');
-                                setBrandimage('');
-                                setIntroduction('');
-                                setBookdescription('');
-                                setHardbounddescription('');
-                                setBookmarkprice('');
-                                setBookprice('');
-                                setHardboundprice('');
-                                setMaxbooksupply('');
-                                setMaxbookmarksupply('');
-                                setMaxhardboundsupply('');
-                                setStartpoint('');
-                                setHardboundStartpoint('');
+                                // setBooktitle('');
+                                // setBooktype('');
+                                // setPreviosImg('');
+                                // setOrigintype('');
+                                // setDatamine('');
+                                // setCurserialnumber('');
+                                // setAuthorwallet('');
+                                // setAuthorname('');
+                                // setBrandimage('');
+                                // setIntroduction('');
+                                // setBookdescription('');
+                                // setHardbounddescription('');
+                                // setBookmarkprice('');
+                                // setBookprice('');
+                                // setHardboundprice('');
+                                // setMaxbooksupply('');
+                                // setMaxbookmarksupply('');
+                                // setMaxhardboundsupply('');
+                                // setStartpoint('');
+                                // setHardboundStartpoint('');
+                                history.push('/books/edit/' + response.data.id);
                             }
                             toast.success('successfully saved', {
                                 position: 'top-right',
@@ -718,23 +716,23 @@ const BookAdd = (props) => {
     const setaddon = async () => {
         setLoading(true);
         const { ethereum } = window;
-        
+
         if (ethereum) {
             try {
                 const provider = new ethers.providers.Web3Provider(ethereum);
                 const signer = provider.getSigner();
                 const BookTradable = new ethers.Contract(bookcontractaddress, booktradable_abi, signer);
                 const HardBound = new ethers.Contract(hardboundcontractaddress, booktradable_abi, signer);
-    
+
                 await BookTradable.setAddon(printingpress_address, true);
                 await BookTradable.setAddon(minimart_address, true);
                 await HardBound.setAddon(printingpress_address, true);
                 await HardBound.setAddon(minimart_address, true);
-    
+
                 for (let index = 0; index < inputList.length; index++) {
-                    let bmcontractaddress = inputList[index]['item_bmcontract_address']
+                    let bmcontractaddress = inputList[index]['item_bmcontract_address'];
                     const Bookmark = new ethers.Contract(bmcontractaddress, booktradable_abi, signer);
-                    await Bookmark.setAddon(printingpress_address, true)
+                    await Bookmark.setAddon(printingpress_address, true);
                     await Bookmark.setAddon(minimart_address, true);
                 }
             } catch (error) {
@@ -742,7 +740,7 @@ const BookAdd = (props) => {
             }
         }
         setLoading(false);
-    }
+    };
 
     return (
         <MainCard title={title}>
@@ -925,9 +923,9 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={bookprice}
                         onChange={(e) => {
-                            if(onlythreedecimal.test(e.target.value)) {
+                            if (onlythreedecimal.test(e.target.value)) {
                                 // if (e.target.value >= 0) {
-                                    setBookprice(e.target.value);
+                                setBookprice(e.target.value);
                                 // } else {
                                 //     setBookprice(0);
                                 // }
@@ -948,7 +946,7 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={maxbooksupply}
                         onChange={(e) => {
-                            if(onlyinteger.test(e.target.value)){
+                            if (onlyinteger.test(e.target.value)) {
                                 if (e.target.value >= 0) {
                                     setMaxbooksupply(e.target.value);
                                 } else {
@@ -971,7 +969,7 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={startpoint}
                         onChange={(e) => {
-                            if(onlyinteger.test(e.target.value)){
+                            if (onlyinteger.test(e.target.value)) {
                                 if (e.target.value >= 0) {
                                     setStartpoint(e.target.value);
                                 } else {
@@ -1014,7 +1012,7 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={hardboundprice}
                         onChange={(e) => {
-                            if(onlythreedecimal.test(e.target.value)){
+                            if (onlythreedecimal.test(e.target.value)) {
                                 if (e.target.value >= 0) {
                                     setHardboundprice(e.target.value);
                                 } else {
@@ -1037,7 +1035,7 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={maxhardboundsupply}
                         onChange={(e) => {
-                            if(onlyinteger.test(e.target.value)){
+                            if (onlyinteger.test(e.target.value)) {
                                 if (e.target.value >= 0) {
                                     setMaxhardboundsupply(e.target.value);
                                 } else {
@@ -1061,7 +1059,7 @@ const BookAdd = (props) => {
                         variant="filled"
                         value={hardboundstartpoint}
                         onChange={(e) => {
-                            if(onlyinteger.test(e.target.value)){
+                            if (onlyinteger.test(e.target.value)) {
                                 if (e.target.value >= 0) {
                                     setHardboundStartpoint(e.target.value);
                                 } else {
