@@ -5,8 +5,8 @@ const config = {
     defaultPath: '/dashboard/default',
     fontFamily: `'Roboto', sans-serif`,
     borderRadius: 12,
-    API_SERVER: process.env.REACT_APP_API??'http://localhost:5000/api/',
-    API_URL: 'http://localhost:5000'
+    API_SERVER: 'https://author.greatlibrary.io/api/',
+    API_URL: 'https://author.greatlibrary.io/api/'
 };
 
 export default config;

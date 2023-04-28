@@ -1,9 +1,11 @@
 from django.db import models
 import os
 from django.conf import settings
-from dotenv import load_dotenv
+#from dotenv import load_dotenv
+#import dotenv
+#dotenv.read_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), '.env'))
 
-load_dotenv()
+#load_dotenv()
 # Create your models here.
 class Books(models.Model):
     title = models.CharField(max_length=200, default='')
