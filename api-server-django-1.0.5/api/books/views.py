@@ -22,10 +22,10 @@ from django.db.models import Q
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
 #import dotenv
-#dotenv.read_dotenv(os.path.join(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".."), '.env'))
+#dotenv.read_dotenv(os.path.join(os.path.join(os.path.dirname(os.path.dirname(__file__)), "."), '.env'))
 
-from dotenv import load_dotenv
-load_dotenv()
+#from dotenv import load_dotenv
+#load_dotenv()
 
 # CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
