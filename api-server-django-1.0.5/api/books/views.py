@@ -11,7 +11,6 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.http import JsonResponse
 from api.books.moralis import Moralis
-#from dotenv import load_dotenv
 # from api.books.minter import MyFirstMinter
 # from api.books.minter import MySecondMinter
 # from api.books.minter import Minter
@@ -22,9 +21,11 @@ from api.aiprice.models import AIpricemodel
 from django.db.models import Q
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
-import dotenv
+#import dotenv
+#dotenv.read_dotenv(os.path.join(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".."), '.env'))
 
-dotenv.read_dotenv(os.path.join(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".."), '.env'))
+from dotenv import load_dotenv
+load_dotenv()
 
 # CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
