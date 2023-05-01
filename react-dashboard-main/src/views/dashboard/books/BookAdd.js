@@ -11,6 +11,7 @@ import { useSelector } from 'react-redux';
 import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Grid } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
+import InputTextField from '../../../ui-component/extended/InputTextField';
 import BookAddItem from './BookAddItem';
 import configData from '../../../config';
 import './styles.css';
@@ -785,7 +786,7 @@ const BookAdd = (props) => {
                 autoComplete="off"
             >
                 <div>
-                    <TextField
+                    <InputTextField
                         id="book-title"
                         style={{ margin: 8 }}
                         placeholder="Please input the book title"
@@ -796,10 +797,11 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={booktitle}
-                        onChange={(e) => {
-                            setBooktitle(e.target.value);
-                        }}
+                        type="text"
+                        val={booktitle}
+                        setVal={setBooktitle}
+                        errorMsg={"Book title is required."}
+                        isRequired={true}
                     />
                 </div>
                 <div className="bookimg-select">
@@ -819,7 +821,7 @@ const BookAdd = (props) => {
                     </label>
                 </div>
                 <div>
-                    <TextField
+                    <InputTextField
                         id="authorwallet"
                         style={{ margin: 8 }}
                         placeholder="Please input the author wallet address"
@@ -830,12 +832,12 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={authorwallet}
-                        onChange={(e) => {
-                            setAuthorwallet(e.target.value);
-                        }}
+                        type="text"
+                        val={authorwallet}
+                        setVal={setAuthorwallet}
+                        isRequired={true}
                     />
-                    <TextField
+                    <InputTextField
                         id="author_name"
                         style={{ margin: 8 }}
                         placeholder="Please input the author name"
@@ -846,35 +848,35 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={authorname}
-                        onChange={(e) => {
-                            setAuthorname(e.target.value);
-                        }}
+                        type="text"
+                        val={authorname}
+                        setVal={setAuthorname}
+                        isRequired={true}
+                        errorMsg={"Author name is required"}
                     />
                 </div>
                 <Grid container spacing={1}>
                     <Grid item xs={12}>
-                        <TextField
+                        <InputTextField
                             id="introduction"
                             style={{ margin: 8 }}
                             placeholder="Please input the introduction of book"
                             helperText="Introduction"
                             fullWidth
-                            multiline
+                            multiline={true}
                             rows={10}
                             InputLabelProps={{
                                 shrink: true
                             }}
                             variant="filled"
-                            value={introduction}
-                            onChange={(e) => {
-                                setIntroduction(e.target.value);
-                            }}
+                            type="text"
+                            val={introduction}
+                            setVal={setIntroduction}
                         />
                     </Grid>
                 </Grid>
                 <div>
-                    <TextField
+                    <InputTextField
                         id="datamine"
                         style={{ margin: 8 }}
                         placeholder="Please input the datamine"
@@ -885,12 +887,13 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={datamine}
-                        onChange={(e) => {
-                            setDatamine(e.target.value);
-                        }}
+                        type="text"
+                        val={datamine}
+                        setVal={setDatamine}
+                        isRequired={true}
+                        errorMsg={"Datamine is required."}
                     />
-                    <TextField
+                    <InputTextField
                         id="curserialnumber"
                         style={{ margin: 8 }}
                         placeholder="Please input the curserial number"
@@ -901,84 +904,66 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={curserialnumber}
-                        onChange={(e) => {
-                            setCurserialnumber(e.target.value);
-                        }}
+                        type="text"
+                        val={curserialnumber}
+                        setVal={setCurserialnumber}
                     />
                 </div>
                 <Divider>Book detail</Divider>
                 <div>
-                    <TextField
+                    <InputTextField
                         id="bookprice"
                         style={{ margin: 8 }}
                         placeholder="Please input the book price"
                         helperText="Book Price"
                         fullWidth
                         className="input-item"
-                        type="number"
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
-                        value={bookprice}
-                        onChange={(e) => {
-                            if (onlythreedecimal.test(e.target.value)) {
-                                // if (e.target.value >= 0) {
-                                setBookprice(e.target.value);
-                                // } else {
-                                //     setBookprice(0);
-                                // }
-                            }
-                        }}
+                        type="number"
+                        isDecimal={true}
+                        val={bookprice}
+                        setVal={setBookprice}
+                        isRequired={true}
+                        errorMsg={"Book price is required."}
                     />
-                    <TextField
+                    <InputTextField
                         id="maxbooksupply"
                         style={{ margin: 8 }}
                         placeholder="Please input the max amount of book"
                         helperText="Max Books Supply"
                         fullWidth
                         className="input-item"
-                        type="number"
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
-                        value={maxbooksupply}
-                        onChange={(e) => {
-                            if (onlyinteger.test(e.target.value)) {
-                                if (e.target.value >= 0) {
-                                    setMaxbooksupply(e.target.value);
-                                } else {
-                                    setMaxbooksupply(0);
-                                }
-                            }
-                        }}
+                        type="number"
+                        isDecimal={false}
+                        val={maxbooksupply}
+                        setVal={setMaxbooksupply}
+                        isRequired={true}
+                        errorMsg={"Max Books Supply is required."}
                     />
-                    <TextField
+                    <InputTextField
                         id="startpoint"
                         style={{ margin: 8 }}
                         placeholder="Please input the start point"
                         helperText="Start Point"
                         fullWidth
                         className="input-item"
-                        type="number"
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
-                        value={startpoint}
-                        onChange={(e) => {
-                            if (onlyinteger.test(e.target.value)) {
-                                if (e.target.value >= 0) {
-                                    setStartpoint(e.target.value);
-                                } else {
-                                    setStartpoint(0);
-                                }
-                            }
-                        }}
+                        type="number"
+                        val={startpoint}
+                        isDecimal={false}
+                        setVal={setStartpoint}
                     />
-                    <TextField
+                    <InputTextField
                         id="description"
                         style={{ margin: 8 }}
                         placeholder="Please input book description"
@@ -990,15 +975,13 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={bookdescription}
-                        onChange={(e) => {
-                            setBookdescription(e.target.value);
-                        }}
+                        val={bookdescription}
+                        setVal={setBookdescription}
                     />
                 </div>
                 <Divider>Hardbound detail</Divider>
                 <div>
-                    <TextField
+                    <InputTextField
                         id="hardboundprice"
                         style={{ margin: 8 }}
                         placeholder="Please input the hardbound price"
@@ -1010,18 +993,13 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={hardboundprice}
-                        onChange={(e) => {
-                            if (onlythreedecimal.test(e.target.value)) {
-                                if (e.target.value >= 0) {
-                                    setHardboundprice(e.target.value);
-                                } else {
-                                    setHardboundprice(0);
-                                }
-                            }
-                        }}
+                        val={hardboundprice}
+                        setVal={setHardboundprice}
+                        isRequired={true}
+                        isDecimal={true}
+                        errorMsg={"Hardbound price is required."}
                     />
-                    <TextField
+                    <InputTextField
                         id="hardbound"
                         type="number"
                         style={{ margin: 8 }}
@@ -1033,16 +1011,11 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={maxhardboundsupply}
-                        onChange={(e) => {
-                            if (onlyinteger.test(e.target.value)) {
-                                if (e.target.value >= 0) {
-                                    setMaxhardboundsupply(e.target.value);
-                                } else {
-                                    setMaxhardboundsupply(0);
-                                }
-                            }
-                        }}
+                        val={maxhardboundsupply}
+                        setVal={setMaxhardboundsupply}
+                        isRequired={true}
+                        isDecimal={false}
+                        errorMsg={"Hardbound max supply is required."}
                     />
                     <TextField
                         id="hardboundstartpoint"
@@ -1057,18 +1030,11 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={hardboundstartpoint}
-                        onChange={(e) => {
-                            if (onlyinteger.test(e.target.value)) {
-                                if (e.target.value >= 0) {
-                                    setHardboundStartpoint(e.target.value);
-                                } else {
-                                    setHardboundStartpoint(0);
-                                }
-                            }
-                        }}
+                        val={hardboundstartpoint}
+                        setVal={setHardboundStartpoint}
+                        isDecimal={false}
                     />
-                    <TextField
+                    <InputTextField
                         id="description"
                         style={{ margin: 8 }}
                         placeholder="Please input hardbound description"
@@ -1080,10 +1046,8 @@ const BookAdd = (props) => {
                             shrink: true
                         }}
                         variant="filled"
-                        value={hardbounddescription}
-                        onChange={(e) => {
-                            setHardbounddescription(e.target.value);
-                        }}
+                        val={hardbounddescription}
+                        setVal={setHardbounddescription}
                     />
                 </div>
                 {<BookAddItem inputList={inputList} setInputList={setInputList} />}
