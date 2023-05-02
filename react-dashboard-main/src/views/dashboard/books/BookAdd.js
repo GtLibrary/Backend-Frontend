@@ -523,7 +523,7 @@ const BookAdd = (props) => {
                             ethers.utils.parseEther(String(hardboundstartpoint)),
                             account
                         );
-			    
+
                         const BookTradable = new ethers.Contract(HBcontract, booktradable_abi, signer);
                         await BookTradable.setRewardContract(BTcontract);
 
@@ -545,7 +545,7 @@ const BookAdd = (props) => {
                                 account
                             );
                             const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                            await BookTradable.setRewardContract(BTcontract)
+                            await BookTradable.setRewardContract(BTcontract);
                             inputList[index]['item_bmcontract_address'] = BMcontract;
                         }
                         form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -620,9 +620,11 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(startpoint)),
                         account
                     );
-		
-                    //const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
-                    //await BookTradable.setRewardContract(BTcontract);
+
+                    const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
+                    
+                    await BookTradable.setAddon(printingpress_address, true);
+                    await BookTradable.setAddon(minimart_address, true);
 
                     const HBcontract = await getnewBookcontractdata(
                         'HB' + datamine,
@@ -635,8 +637,10 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(hardboundstartpoint)),
                         account
                     );
-		    const BookTradable = new ethers.Contract(HBcontract, booktradable_abi, signer);
-		    await BookTradable.setRewardContract(BTcontract);
+                    const HardBound = new ethers.Contract(HBcontract, booktradable_abi, signer);
+                    await HardBound.setRewardContract(BTcontract);
+                    await HardBound.setAddon(printingpress_address, true);
+                    await HardBound.setAddon(minimart_address, true);
 
                     for (let index = 0; index < inputList.length; index++) {
                         let item = inputList[index];
@@ -656,8 +660,10 @@ const BookAdd = (props) => {
                             account
                         );
 
-                        const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                        await BookTradable.setRewardContract(BTcontract)
+                        const Bookmark = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                        await Bookmark.setRewardContract(BTcontract);
+                        await Bookmark.setAddon(printingpress_address, true);
+                        await Bookmark.setAddon(minimart_address, true);
                         inputList[index]['item_bmcontract_address'] = BMcontract;
                     }
                     form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -720,35 +726,6 @@ const BookAdd = (props) => {
         setLoading(false);
     };
 
-    const setaddon = async () => {
-        setLoading(true);
-        const { ethereum } = window;
-
-        if (ethereum) {
-            try {
-                const provider = new ethers.providers.Web3Provider(ethereum);
-                const signer = provider.getSigner();
-                const BookTradable = new ethers.Contract(bookcontractaddress, booktradable_abi, signer);
-                const HardBound = new ethers.Contract(hardboundcontractaddress, booktradable_abi, signer);
-
-                await BookTradable.setAddon(printingpress_address, true);
-                await BookTradable.setAddon(minimart_address, true);
-                await HardBound.setAddon(printingpress_address, true);
-                await HardBound.setAddon(minimart_address, true);
-
-                for (let index = 0; index < inputList.length; index++) {
-                    let bmcontractaddress = inputList[index]['item_bmcontract_address'];
-                    const Bookmark = new ethers.Contract(bmcontractaddress, booktradable_abi, signer);
-                    await Bookmark.setAddon(printingpress_address, true);
-                    await Bookmark.setAddon(minimart_address, true);
-                }
-            } catch (error) {
-                console.log(error);
-            }
-        }
-        setLoading(false);
-    };
-
     return (
         <MainCard title={title}>
             {loading && (
@@ -806,7 +783,7 @@ const BookAdd = (props) => {
                         type="text"
                         val={booktitle}
                         setVal={setBooktitle}
-                        errorMsg={"Book title is required."}
+                        errorMsg={'Book title is required.'}
                         isRequired={true}
                     />
                 </div>
@@ -858,7 +835,7 @@ const BookAdd = (props) => {
                         val={authorname}
                         setVal={setAuthorname}
                         isRequired={true}
-                        errorMsg={"Author name is required"}
+                        errorMsg={'Author name is required'}
                     />
                 </div>
                 <Grid container spacing={1}>
@@ -897,7 +874,7 @@ const BookAdd = (props) => {
                         val={datamine}
                         setVal={setDatamine}
                         isRequired={true}
-                        errorMsg={"Datamine is required."}
+                        errorMsg={'Datamine is required.'}
                     />
                     <InputTextField
                         id="curserialnumber"
@@ -933,7 +910,7 @@ const BookAdd = (props) => {
                         val={bookprice}
                         setVal={setBookprice}
                         isRequired={true}
-                        errorMsg={"Book price is required."}
+                        errorMsg={'Book price is required.'}
                     />
                     <InputTextField
                         id="maxbooksupply"
@@ -951,7 +928,7 @@ const BookAdd = (props) => {
                         val={maxbooksupply}
                         setVal={setMaxbooksupply}
                         isRequired={true}
-                        errorMsg={"Max Books Supply is required."}
+                        errorMsg={'Max Books Supply is required.'}
                     />
                     <InputTextField
                         id="startpoint"
@@ -1003,7 +980,7 @@ const BookAdd = (props) => {
                         setVal={setHardboundprice}
                         isRequired={true}
                         isDecimal={true}
-                        errorMsg={"Hardbound price is required."}
+                        errorMsg={'Hardbound price is required.'}
                     />
                     <InputTextField
                         id="hardbound"
@@ -1021,7 +998,7 @@ const BookAdd = (props) => {
                         setVal={setMaxhardboundsupply}
                         isRequired={true}
                         isDecimal={false}
-                        errorMsg={"Hardbound max supply is required."}
+                        errorMsg={'Hardbound max supply is required.'}
                     />
                     <TextField
                         id="hardboundstartpoint"
@@ -1121,10 +1098,6 @@ const BookAdd = (props) => {
                         &nbsp;
                         <Button variant="contained" onClick={() => saveMaxmintWizard()}>
                             Update Maxmint Wizard
-                        </Button>
-                        &nbsp;
-                        <Button variant="contained" onClick={() => setaddon()}>
-                            Set Addon
                         </Button>
                         &nbsp;
                     </div>
