@@ -12,6 +12,13 @@ var isConfirm = false
 
 const WalletConnect = () => {
   const { account, activate, deactivate, error, active, chainId } = useWeb3React();
+  console.log("account: ", account);
+  console.log("chainId: ", chainId);
+  console.log("activate: ", activate);
+  console.log("deactivate: ", deactivate);
+  console.log("error: ", error);
+  console.log("active: ", active);
+
   const handleLogin = () => {
       isConfirm = true
       localStorage.setItem("accountStatus", "1");
@@ -37,7 +44,7 @@ const WalletConnect = () => {
               try {
                   await ethereum.request({
                       method: "wallet_switchEthereumChain",
-                      params: [{ chainId: "0xA869" }],
+                      params: [{ chainId: "0xa869" }],
                   });
               } catch (switchError) {
                   if (switchError.code === 4902) {
@@ -46,7 +53,7 @@ const WalletConnect = () => {
                               method: "wallet_addEthereumChain",
                               params: [
                                   {
-                                      chainId: "0xA869",
+                                      chainId: "0xa869",
                                       chainName: "Avalanche Testnet C-Chain",
                                       nativeCurrency: {
                                           name: "Avalanche",
