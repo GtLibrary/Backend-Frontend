@@ -90,10 +90,19 @@ const SingleProduct = ({ match }) => {
   function myReaction() {
     console.log("myValue has changed!");
     console.log("It is now: " + window.myValue);
+
     //showBMModal(window.myValue);
     var index = window.myValue;
+
     setCurserialnum(index);
-    setBookmarkinfo(bmcontent[index]);
+
+    var bmcontent = {};
+    bmcontent.token_id = index;
+    bmcontent.tokenname = "foo";
+    bmcontent.tokenprice = "bar";
+    bmcontent.contract_address = "baz";
+
+    setBookmarkinfo(bmcontent);
     setModalShow(true);
   }
 
