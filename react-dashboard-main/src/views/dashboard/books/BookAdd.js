@@ -508,7 +508,7 @@ const BookAdd = (props) => {
                             ethers.utils.parseEther(String(startpoint)),
                             account
                         );
-                        //const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
+                        const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
                         //await BookTradable.setRewardContract(BTcontract);
 
                         const HBcontract = await getnewBookcontractdata(
@@ -523,8 +523,9 @@ const BookAdd = (props) => {
                             account
                         );
 			    
-                        const BookTradable = new ethers.Contract(HBcontract, booktradable_abi, signer);
-                        await BookTradable.setRewardContract(BTcontract);
+                        const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
+                        await BookTradableHB.setRewardContract(BTcontract);
+			await BookTradableBT.setAddon(HBcontract, true);
 
                         for (let index = 0; index < inputList.length; index++) {
                             let item = inputList[index];
@@ -543,8 +544,10 @@ const BookAdd = (props) => {
                                 ethers.utils.parseEther(String(itembookmarkstartpoint)),
                                 account
                             );
-                            const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                            await BookTradable.setRewardContract(BTcontract)
+                            const BookTradableBM = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                            await BookTradableBM.setRewardContract(BTcontract)
+			    await BookTradableBT.setAddon(BMcontract, true);
+
                             inputList[index]['item_bmcontract_address'] = BMcontract;
                         }
                         form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -620,7 +623,7 @@ const BookAdd = (props) => {
                         account
                     );
 		
-                    //const BookTradable = new ethers.Contract(BTcontract, booktradable_abi, signer);
+                    const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
                     //await BookTradable.setRewardContract(BTcontract);
 
                     const HBcontract = await getnewBookcontractdata(
@@ -634,8 +637,9 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(hardboundstartpoint)),
                         account
                     );
-		    const BookTradable = new ethers.Contract(HBcontract, booktradable_abi, signer);
-		    await BookTradable.setRewardContract(BTcontract);
+		    const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
+		    await BookTradableHB.setRewardContract(BTcontract);
+		    await BookTradableBT.setAddon(HBcontract, true);
 
                     for (let index = 0; index < inputList.length; index++) {
                         let item = inputList[index];
@@ -655,8 +659,10 @@ const BookAdd = (props) => {
                             account
                         );
 
-                        const BookTradable = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                        await BookTradable.setRewardContract(BTcontract)
+                        const BookTradableBM = new ethers.Contract(BMcontract, booktradable_abi, signer);
+                        await BookTradableBM.setRewardContract(BTcontract)
+		        await BookTradableBT.setAddon(BMcontract, true);
+
                         inputList[index]['item_bmcontract_address'] = BMcontract;
                     }
                     form_data.append('bm_listdata', JSON.stringify(inputList));
