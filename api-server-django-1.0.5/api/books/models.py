@@ -11,7 +11,7 @@ class Books(models.Model):
     title = models.CharField(max_length=200, default='')
     introduction = models.TextField(default = '', null=True)
     content = models.TextField(default = '')
-    adcontent = models.JSONField(default={})
+    adcontent = models.JSONField(default=dict)
     image_url = models.ImageField(upload_to='post_main_images', blank=True, null=True)
     author_name = models.CharField(max_length=200, default='')
     author_wallet = models.CharField(max_length=200, default='')
@@ -32,7 +32,7 @@ class Books(models.Model):
     hardbound_from = models.TextField(default='')
     bt_contract_address = models.CharField(max_length=200, default='')
     hb_contract_address = models.CharField(max_length=200, default='')
-    bm_listdata = models.JSONField(default=[])
+    bm_listdata = models.JSONField(default=list)
     is_ads = models.BooleanField(default=False)
     pub_date = models.DateTimeField('date published',auto_now=True, null=False, blank=False)
     class Meta:
