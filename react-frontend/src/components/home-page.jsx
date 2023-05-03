@@ -10,17 +10,17 @@ const HomePage = () => {
   const [products, setProducts] = useState([]);
   const [googleads, setGoogleads] = useState([]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     window.adsbygoogle = window.adsbygoogle || []
     window.adsbygoogle.push({})
-  }, [])
+  }, []) */
 
   const getBooklists = async () => {
     const { data } = await axios
         .get(process.env.REACT_APP_API + 'getbooklist')
     setProducts(data)
-    const { googleads } = await axios.get(process.env.REACT_APP_API + 'getadslist')
-    setGoogleads(googleads)
+    //const { googleads } = await axios.get(process.env.REACT_APP_API + 'getadslist')
+    //setGoogleads(googleads)
   }
 
   useEffect(() => {
@@ -31,7 +31,7 @@ const HomePage = () => {
       <Layout>
         <Hero />
         <MainSection />
-        { googleads ? (
+        /* { googleads ? (
           googleads.map((item, index) => {
             <AdSense.Google
               client={item.adcontent?item.adcontent.client:''}
@@ -41,7 +41,7 @@ const HomePage = () => {
               format={item.adcontent?item.adcontent.format:''}
             />
           })
-        ): (<></>)}
+        ): (<></>)} */
         <FeaturedCollection products={products} />
       </Layout>
     </>
