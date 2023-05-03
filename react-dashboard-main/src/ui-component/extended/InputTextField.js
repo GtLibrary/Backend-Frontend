@@ -1,12 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // material-ui
 import { TextField } from '@material-ui/core';
 
 //-----------------------|| InputTextField ||-----------------------//
 
-const InputTextField = ({ id, className, style, placeholder, helperText, multiline, rows, type, val, setVal, errorMsg, isRequired, isDecimal }) => {
-    const [error, setError] = useState(false);
+const InputTextField = ({ id, className, style, error, placeholder, helperText, multiline, rows, type, val, setVal, errorMsg, isRequired, isDecimal }) => {
+    if(error === undefined) {
+        error = false
+    }
+    const [errorflag, setErrorflag] = useState(error);
 
     const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/;
     const onlyinteger = /^\d+(,\d{0,3})?$/;
@@ -27,6 +30,10 @@ const InputTextField = ({ id, className, style, placeholder, helperText, multili
         }
     }
 
+    useEffect(() => {
+        setErrorflag(error);
+    }, [error])
+
     return (
         <>
             <TextField
@@ -39,9 +46,9 @@ const InputTextField = ({ id, className, style, placeholder, helperText, multili
                 variant="filled"
                 rows={rows}
                 multiline={multiline}
-                error={error}
+                error={errorflag}
                 placeholder={placeholder}
-                helperText={error ? errorMsg : helperText}
+                helperText={errorflag ? errorMsg : helperText}
                 fullWidth
                 type={type}
                 value={val}
@@ -49,23 +56,23 @@ const InputTextField = ({ id, className, style, placeholder, helperText, multili
                     if(type === "number") {
                         if (e.target.value == '') {
                             setVal('');
-                            setError(validateData(type, e.target.value));
+                            setErrorflag(validateData(type, e.target.value));
                         } else {
                             if(isDecimal) {
                                 if (onlythreedecimal.test(e.target.value)) {
                                     setVal(e.target.value);
-                                    setError(validateData(type, e.target.value));
+                                    setErrorflag(validateData(type, e.target.value));
                                 }
                             } else {
                                 if (onlyinteger.test(e.target.value)) {
                                     setVal(e.target.value);
-                                    setError(validateData(type, e.target.value));
+                                    setErrorflag(validateData(type, e.target.value));
                                 }
                             }
                         }
                     } else {
                         setVal(e.target.value);
-                        setError(validateData(type, e.target.value));
+                        setErrorflag(validateData(type, e.target.value));
                     }
                 }}
             />

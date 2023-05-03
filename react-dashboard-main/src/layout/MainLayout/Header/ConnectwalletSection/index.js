@@ -12,13 +12,7 @@ var isConfirm = false
 
 const WalletConnect = () => {
   const { account, activate, deactivate, error, active, chainId } = useWeb3React();
-  console.log("account: ", account);
-  console.log("chainId: ", chainId);
-  console.log("activate: ", activate);
-  console.log("deactivate: ", deactivate);
-  console.log("error: ", error);
-  console.log("active: ", active);
-
+  
   const handleLogin = () => {
       isConfirm = true
       localStorage.setItem("accountStatus", "1");

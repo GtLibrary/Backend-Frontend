@@ -65,6 +65,16 @@ const BookAdd = (props) => {
     const [inputList, setInputList] = useState([
         { tokenname: '', bookmarkprice: 0, maxbookmarksupply: 0, bookmarkstartpoint: 0, item_bmcontract_address: '' }
     ]);
+    const [errors, setErrors] = useState({
+        booktitle: false,
+        authorwallet: false,
+        authorname: false,
+        datamine: false,
+        bookprice: false,
+        maxbooksupply: false,
+        hbprice: false,
+        maxhbsupply: false,
+    })
 
     const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
@@ -465,7 +475,53 @@ const BookAdd = (props) => {
     const saveBook = async () => {
         setLoading(true);
         const { ethereum } = window;
-
+        let checked = false;
+        
+        if(booktitle === '') {
+            setErrors(errors => ({...errors, booktitle: true}));
+            checked = true;
+        }
+        if(authorwallet === '') {
+            setErrors(errors => ({...errors, authorwallet: true}))
+            checked = true;
+        }
+        if(authorname === '') {
+            setErrors(errors => ({...errors, authorname: true}))
+            checked = true;
+        }
+        if(datamine === '') {
+            setErrors(errors => ({...errors, datamine: true}))
+            checked = true;
+        }
+        if(bookprice >= 0) {
+            setErrors(errors => ({...errors, bookprice: true}))
+            checked = true;
+        }
+        if(maxbookmarksupply >= 0) {
+            setErrors(errors => ({...errors, maxbookmarksupply: true}))
+            checked = true;
+        }
+        if(hardboundprice >= 0) {
+            setErrors(errors => ({...errors, hbprice: true}))
+            checked = true;
+        }
+        if(maxhardboundsupply >= 0) {
+            setErrors(errors => ({...errors, maxhbsupply: true}))
+            checked = true;
+        }
+        
+        if(checked) {
+            toast.error('failed save data. please check all input field', {
+                position: 'top-right',
+                autoClose: 3000,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true
+            });
+            setLoading(false);
+            return false;
+        }
+        
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
@@ -779,6 +835,7 @@ const BookAdd = (props) => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        error={errors.booktitle}
                         variant="filled"
                         type="text"
                         val={booktitle}
@@ -814,6 +871,7 @@ const BookAdd = (props) => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        error={errors.authorwallet}
                         variant="filled"
                         type="text"
                         val={authorwallet}
@@ -830,6 +888,7 @@ const BookAdd = (props) => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        error={errors.authorname}
                         variant="filled"
                         type="text"
                         val={authorname}
@@ -869,6 +928,7 @@ const BookAdd = (props) => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        error={errors.datamine}
                         variant="filled"
                         type="text"
                         val={datamine}
@@ -904,6 +964,7 @@ const BookAdd = (props) => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        error={errors.bookprice}
                         variant="filled"
                         type="number"
                         isDecimal={true}
@@ -922,6 +983,7 @@ const BookAdd = (props) => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        error={errors.maxbooksupply}
                         variant="filled"
                         type="number"
                         isDecimal={false}
@@ -975,6 +1037,7 @@ const BookAdd = (props) => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        error={errors.maxhbsupply}
                         variant="filled"
                         val={hardboundprice}
                         setVal={setHardboundprice}
@@ -993,6 +1056,7 @@ const BookAdd = (props) => {
                         InputLabelProps={{
                             shrink: true
                         }}
+                        error={errors.hbmaxsupply}
                         variant="filled"
                         val={maxhardboundsupply}
                         setVal={setMaxhardboundsupply}
@@ -1000,7 +1064,7 @@ const BookAdd = (props) => {
                         isDecimal={false}
                         errorMsg={'Hardbound max supply is required.'}
                     />
-                    <TextField
+                    <InputTextField
                         id="hardboundstartpoint"
                         // label="Book  Name"
                         style={{ margin: 8 }}

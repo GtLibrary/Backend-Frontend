@@ -20,6 +20,7 @@ const Balance = () => {
     const { account } = useWeb3React();
     const [curccbal, setCurccbal] = useState(0.0);
     const [depositval, setDepositval] = useState(0);
+    const [withrawval, setWithrawval] = useState(0);
     const [currppccbal, setCurrppccbal] = useState(0);
     const [depositppval, setDepositppval] = useState(0);
 
@@ -137,9 +138,56 @@ const Balance = () => {
                 });
             } catch (error) {
                 console.log(error)
+                toast.error("Transaction failed. please try again.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             }
         }
     }
+    
+    const withrawPPCC = async () => {
+        const { ethereum } = window;
+
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const Printpressportal = new ethers.Contract(Printpress_address, Printpress_abi, signer);
+            const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
+            try {
+                const allowance = await CCportal.allowance(account, Printpress_address);
+                if (allowance.lt(ethers.utils.parseEther(String(withrawval)))) { // check if allowance is less than the amount being withdrawn
+                    const tx = await CCportal.approve(Printpress_address, ethers.constants.MaxUint256);
+                    await tx.wait();
+                }
+
+                let withraw = await Printpressportal.withdraw(ethers.utils.parseEther(String(withrawval)));
+                await withraw.wait();
+                getPPbalance();
+                setWithrawval(0)
+                toast.success("Deposited CC.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            } catch (error) {
+                console.log(error)
+                setWithrawval(0)
+                toast.error("Transaction failed. please try again.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            }
+        }
+    };
 
     return (
         <MainCard title="Balance">
@@ -240,6 +288,36 @@ const Balance = () => {
             </Box>
             <Button variant="contained" onClick={() => depositppCC()}>
                 Deposit Gas UP
+            </Button>
+            <Box
+                component="form"
+                sx={{
+                    '& .MuiTextField-root': { m: 1, width: '50ch' }
+                }}
+                noValidate
+                autoComplete="off"
+            >
+                <div>
+                    <TextField
+                        id="withraw_val"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the withraw CCoin amount"
+                        helperText="withraw amount"
+                        fullWidth
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={withrawval}
+                        onChange={(e) => {
+                            setWithrawval(e.target.value);
+                        }}
+                    />
+                </div>
+            </Box>
+            <Button variant="contained" onClick={() => withrawPPCC()}>
+                Withraw GAS CCoin
             </Button>
             <Box
                 component="form"

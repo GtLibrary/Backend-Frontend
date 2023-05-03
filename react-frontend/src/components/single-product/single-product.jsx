@@ -11,7 +11,7 @@ import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
-// import cc_abi from "../../utils/contract/CultureCoin.json";
+import cc_abi from "../../utils/contract/CultureCoin.json";
 import BT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
 
@@ -26,7 +26,7 @@ const SingleProduct = ({ match }) => {
   const printpress_abi = printingpress_abi;
   const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
-  // const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
+  const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
 
   const navigate = useNavigate();
@@ -34,6 +34,7 @@ const SingleProduct = ({ match }) => {
   const [bookmarkinfo, setBookmarkinfo] = useState(null);
   const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState("");
+  const [dexrate, setDexrate] = useState(0);
   // const [paragraph, setParagraph] = useState([]);
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -74,6 +75,18 @@ const SingleProduct = ({ match }) => {
 
     getBook();
   }, [id, navigate]);
+
+  useEffect(() => {
+    const getDexrate = async () => {
+      const ccoin_contract = new web3.eth.Contract(
+        cc_abi,
+        cc_address
+      );
+      const curdexrate = await ccoin_contract.methods.dexXMTSPRate().call();
+      setDexrate(web3.utils.fromWei(curdexrate));
+    }
+    getDexrate();
+  }, [])
 
   useEffect(() => {
     const handleValueChange = () => {
@@ -135,10 +148,48 @@ const SingleProduct = ({ match }) => {
         .buyBook(bt_contract_address)
         .send({ from: account, value: web3.utils.toWei(String(book_price)) });
 
-      // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
-      // await printpress_contract.methods
-      //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
-      //   .send({ from: account });
+      setLoading(false);
+      toast.success("successfully buy book!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy book!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onBuyBookCC = async () => {
+    if (!account) {
+      return;
+    }
+    setLoading(true);
+    if (!bt_contract_address) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+      const ccoin_contract = new web3.eth.Contract(
+        cc_abi,
+        cc_address
+      );
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price * dexrate))).send({ from: account });
+      await printpress_contract.methods
+        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(book_price * dexrate)))
+        .send({ from: account });
 
       setLoading(false);
       toast.success("successfully buy book!", {
@@ -174,10 +225,6 @@ const SingleProduct = ({ match }) => {
         printpress_address
       );
 
-      const bt_contract = new web3.eth.Contract(bt_abi, hb_contract_address);
-      const is_addon = await bt_contract.methods.getAddon(printpress_address).call();
-      console.log("is_addon =>", is_addon)
-      console.log(hb_contract_address)
       await printpress_contract.methods
         .buyBook(hb_contract_address)
         .send({ from: account, value: web3.utils.toWei(String(hardbound_price)) });
@@ -186,6 +233,50 @@ const SingleProduct = ({ match }) => {
       // await printpress_contract.methods
       //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
       //   .send({ from: account });
+
+      setLoading(false);
+      toast.success("successfully buy Hardbound!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy hardbound!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onBuyHardboundCC = async () => {
+    if (!account) {
+      return;
+    }
+    setLoading(true);
+    if (!hb_contract_address) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+
+      const ccoin_contract = new web3.eth.Contract(
+        cc_abi,
+        cc_address
+      );
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(hardbound_price * dexrate))).send({ from: account });
+      await printpress_contract.methods
+        .buyBookCC(hb_contract_address,  web3.utils.toWei(String(hardbound_price * dexrate)))
+        .send({ from: account });
 
       setLoading(false);
       toast.success("successfully buy Hardbound!", {
@@ -220,20 +311,53 @@ const SingleProduct = ({ match }) => {
         printpress_abi,
         printpress_address
       );
-      
-    const bt_contract = new web3.eth.Contract(bt_abi, bm_listdata[0]['item_bmcontract_address']);
-    const is_addon = await bt_contract.methods.getAddon(printpress_address).call();
-    console.log("is_addon =>", is_addon)
-    console.log(bm_listdata[0]['item_bmcontract_address'])
 
       await printpress_contract.methods
         .buyBook(bm_listdata[0]['item_bmcontract_address'])
         .send({ from: account, value: web3.utils.toWei(String(bm_listdata[0]['bookmarkprice'])) });
 
-      // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
-      // await printpress_contract.methods
-      //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
-      //   .send({ from: account });
+      setLoading(false);
+      toast.success("successfully buy bookmark!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy bookmark!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onBuyBookmarkCC = async () => {
+    if (!account) {
+      return;
+    }
+    setLoading(true);
+    if (!bm_listdata[0]['item_bmcontract_address']) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+      const ccoin_contract = new web3.eth.Contract(
+        cc_abi,
+        cc_address
+      );
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(hardbound_price * dexrate))).send({ from: account });
+      await printpress_contract.methods
+        .buyBookCC(bm_listdata[0]['item_bmcontract_address'],  web3.utils.toWei(String(bm_listdata[0]['bookmarkprice'] * dexrate)))
+        .send({ from: account });
 
       setLoading(false);
       toast.success("successfully buy bookmark!", {
@@ -307,11 +431,7 @@ const SingleProduct = ({ match }) => {
         setPdftext(html);
       } else {
         var bookHtml = addOnClicks(html, allContent, bmcount);
-
         document.getElementById("reader-body").innerHTML = bookHtml;
-        // setPdftext(bookHtml)
-        //= <div key={i} dangerouslySetInnerHTML={{ __html: paragraphs[i].outerHTML }} onClick={() => showBMModal(index)} />
-        //setParagraph(paragraphsArray);
       }
     });
   };
@@ -319,55 +439,6 @@ const SingleProduct = ({ match }) => {
   function addOnClicks(html, allContent, bmcount) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
-    // var pTags = tempDiv.getElementsByTagName("p");
-    
-    // let paragraphs = [];
-    // for (let index = 0; index < pTags.length; index++) {
-    //   const element = pTags[index];
-    //   paragraphs.push(element);
-    // }
-
-    // const targetLength = Math.ceil(allContent.length / bmcount);
-    // const chunks = [];
-    // let currentChunk = "";
-    // const regex = /<span.*?>.*?<\/span>|./g;
-    // const matches = allContent.match(regex);
-    // for (let i = 0; i < matches.length; i++) {
-    //   const match = matches[i];
-    //   if (currentChunk.length + match.length <= targetLength) {
-    //     currentChunk += match;
-    //   } else {
-    //     chunks.push(currentChunk);
-    //     currentChunk = match;
-    //   }
-    //   if (i === matches.length - 1) {
-    //     chunks.push(currentChunk);
-    //   }
-    // }
-    // const newSpans = chunks.map((chunk, index) => {
-    //     // chunk.setAttribute(
-    //     //   "onclick",
-    //     //   "window.myValue =" +
-    //     //     index +
-    //     //     '; window.dispatchEvent(new Event("myValueChange"));'
-    //     // );
-    //   if (chunk.startsWith("<span")) {
-    //     return <span key={index} dangerouslySetInnerHTML={{ __html: chunk }} />;
-    //   } else {
-    //     return <span key={index}>{chunk}</span>;
-    //   }
-    // });
-    // console.log(paragraphs)
-
-    // return (
-    //   <div>
-    //     {paragraphs.map(p => (
-    //       <p key={p.key}>
-    //         {newSpans}
-    //       </p>
-    //     ))}
-    //   </div>
-    // );
     var spans = [];
     var pTags = tempDiv.getElementsByTagName("p");
     for (var i = 0; i < pTags.length; i++) {
@@ -379,12 +450,9 @@ const SingleProduct = ({ match }) => {
     var spanAmount = 200;
     var bookmarkId = 0;
     var currentIndex = 0;
-    var leftOver = "";
-    var leftOverAmount = 0;
     while (currentIndex < spans.length) {
       var span = spans[currentIndex];
       var text = span.innerText;
-      var style = span.getAttribute("style");
       var start = 0;
       var parentId = currentIndex;
       console.log("parentId: ", parentId);
@@ -418,17 +486,16 @@ const SingleProduct = ({ match }) => {
         }
       }
 
-      //for (var j = 0; j < newSpans.length; j++) {
-      for (var j = newSpans.length - 1; j >= 0; j--) {
-        var newSpan = newSpans[j];
+      for (let j = newSpans.length - 1; j >= 0; j--) {
+        let newSpan = newSpans[j];
         span.parentNode.insertBefore(newSpan, span.nextSibling);
       }
 
       currentIndex++;
     }
 
-    for (var i = 0; i < spans.length; i++) {
-      var span = spans[i];
+    for (let i = 0; i < spans.length; i++) {
+      let span = spans[i];
       span.parentNode.removeChild(span);
     }
 
@@ -451,8 +518,6 @@ const SingleProduct = ({ match }) => {
     }
     setLoading(true);
     const cur_address = account;
-    // const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-    // const booktoken_cnt = await bt_contract.methods.balanceOf(account).call();
 
     let testurl;
     var sender;
@@ -461,14 +526,7 @@ const SingleProduct = ({ match }) => {
     } else {
       sender = "";
     }
-    // if (booktoken_cnt === 0) {
-    //   testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
-    // } else {
-    //   testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
-    // }
     testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
-
-
     getPdfData(testurl);
     setLoading(false);
   };
@@ -568,6 +626,16 @@ const SingleProduct = ({ match }) => {
                   Buy Now
                 </button>
               </div>
+              <div className="buybook-area">
+                <span className="bookprice-tag">{(Number(book_price) * dexrate).toFixed(3)} CC</span>
+                <button
+                  type="button"
+                  className="btn btn-buybook"
+                  onClick={() => onBuyBookCC()}
+                >
+                  Buy with CC
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -608,6 +676,16 @@ const SingleProduct = ({ match }) => {
                       Buy Now
                     </button>
                   </div>
+                  <div className="buyaction-area">
+                    <span className="price-area">{(Number(book_price) * dexrate).toFixed(3)} CC</span>
+                    <button
+                      type="button"
+                      className="btn btn-item"
+                      onClick={() => onBuyBookCC()}
+                    >
+                      Buy with CC
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="col-md-4">
@@ -625,6 +703,12 @@ const SingleProduct = ({ match }) => {
                       {Number(hardbound_price)} {current_symbol}
                     </span>
                     <button className="btn btn-item" onClick={() => onBuyHardbound()}>Buy Now</button>
+                  </div>
+                  <div className="buyaction-area">
+                    <span className="price-area">
+                      {(Number(hardbound_price) * dexrate).toFixed(3)} CC
+                    </span>
+                    <button className="btn btn-item" onClick={() => onBuyHardboundCC()}>Buy with CC</button>
                   </div>
                 </div>
               </div>
@@ -647,6 +731,12 @@ const SingleProduct = ({ match }) => {
                       {bm_listdata[0]["bookmarkprice"]} {current_symbol}
                     </span>
                     <button className="btn btn-item" onClick={() => onBuyBookmark()}>Buy Now</button>
+                  </div>
+                  <div className="buyaction-area">
+                    <span className="price-area">
+                      {(Number(bm_listdata[0]["bookmarkprice"]) * dexrate).toFixed(3)} CC
+                    </span>
+                    <button className="btn btn-item" onClick={() => onBuyBookmark()}>Buy with CC</button>
                   </div>
                 </div>
               </div>
