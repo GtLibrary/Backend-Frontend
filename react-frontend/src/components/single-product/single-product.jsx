@@ -12,7 +12,6 @@ import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
 import cc_abi from "../../utils/contract/CultureCoin.json";
-import BT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
 
 LoadingOverlay.propTypes = undefined;
@@ -24,18 +23,15 @@ const SingleProduct = ({ match }) => {
   const web3 = new Web3(window.ethereum);
 
   const printpress_abi = printingpress_abi;
-  const bt_abi = BT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
 
   const navigate = useNavigate();
-  const [bmcontent, setBmcontent] = useState([]);
   const [bookmarkinfo, setBookmarkinfo] = useState(null);
   const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState("");
   const [dexrate, setDexrate] = useState(0);
-  // const [paragraph, setParagraph] = useState([]);
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
@@ -405,48 +401,20 @@ const SingleProduct = ({ match }) => {
         });
       }
 
-      let bmcount = 0;
-      if (bm_listdata.length > 0) {
-        bm_listdata.map((item) => {
-          bmcount += Number(item.maxbookmarksupply);
-          return bmcount;
-        });
-      } else {
-        bmcount = 1;
-      }
-      
-      var bookmarks = [];
-      if (bm_listdata.length > 0) {
-        bm_listdata.map((item, index) => {
-          for (let i = 0; i < Number(item.maxbookmarksupply); i++) {
-            bookmarks.push({
-              tokenname: item.tokenname,
-              tokenprice: item.bookmarkprice,
-              contract_address: item.item_bmcontract_address,
-              token_id: i,
-            });
-          }
-          // return bookmarks;
-        });
-        setBmcontent(bookmarks);
-      }
-
       const parser = new DOMParser();
       const htmlDoc = parser.parseFromString(res.data.content, "text/html");
       const html = htmlDoc.body.innerHTML;
-      console.log(html)
-      const allContent = htmlDoc.body.innerText;
 
       if (html === "You are not token owner!!") {
         setPdftext(html);
       } else {
-        var bookHtml = addOnClicks(html, allContent, bmcount);
+        var bookHtml = addOnClicks(html);
         document.getElementById("reader-body").innerHTML = bookHtml;
       }
     });
   };
 
-  function addOnClicks(html, allContent, bmcount) {
+  function addOnClicks(html) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
     var spans = [];
@@ -746,7 +714,7 @@ const SingleProduct = ({ match }) => {
                     <span className="price-area">
                       {(Number(bm_listdata[0]["bookmarkprice"]) * dexrate).toFixed(3)} CC
                     </span>
-                    <button className="btn btn-item" onClick={() => onBuyBookmark()}>Buy with CC</button>
+                    <button className="btn btn-item" onClick={() => onBuyBookmarkCC()}>Buy with CC</button>
                   </div>
                 </div>
               </div>

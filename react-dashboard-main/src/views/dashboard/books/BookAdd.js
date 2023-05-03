@@ -8,7 +8,7 @@ import { ethers } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { useSelector } from 'react-redux';
 // material-ui
-import { Button, Box, TextField, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Grid } from '@material-ui/core';
+import { Button, Box, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Grid } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import InputTextField from '../../../ui-component/extended/InputTextField';
@@ -22,8 +22,6 @@ import booktradable_abi from './../../../contract-json/BookTradable.json';
 LoadingOverlay.propTypes = undefined;
 
 const BookAdd = (props) => {
-    const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/;
-    const onlyinteger = /^\d+(,\d{0,3})?$/;
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
     const minimart_address = process.env.REACT_APP_MINIMARTADDRESS;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
@@ -233,8 +231,6 @@ const BookAdd = (props) => {
         const { ethereum } = window;
 
         if (ethereum) {
-            const provider = new ethers.providers.Web3Provider(ethereum);
-            const signer = provider.getSigner();
             try {
                 await updatedefaultprice(bookcontractaddress, ethers.utils.parseEther(String(bookprice)));
                 await updatedefaultprice(hardboundcontractaddress, ethers.utils.parseEther(String(hardboundprice)));
