@@ -68,6 +68,7 @@ const SingleProduct = ({ match }) => {
             return navigate("/books");
           } else {
             setProduct(res.data[0]);
+            window.product = res.data[0];
           }
         })
         .catch((error) => console.log(error));
@@ -94,21 +95,30 @@ const SingleProduct = ({ match }) => {
     };
 
     window.addEventListener("myValueChange", handleValueChange);
-
     return () => {
       window.removeEventListener("myValueChange", handleValueChange);
     };
-  }, []);
 
-  function myReaction() {
-    console.log("myValue has changed!");
-    console.log("It is now: " + window.myValue);
-    //showBMModal(window.myValue);
-    var index = window.myValue;
-    setCurserialnum(index);
-    setBookmarkinfo(bmcontent[index]);
-    setModalShow(true);
-  }
+
+    function myReaction() {
+      console.log("myValue has changed!");
+      console.log("It is now: " + window.myValue);
+      console.log("Product is: ", window.product);
+      //showBMModal(window.myValue);
+      var index = window.myValue;
+      var product = window.product;
+      setCurserialnum(index);
+      var bmcontent = {};
+      bmcontent.token_id = index;
+      bmcontent.tokenname = product.title;
+      bmcontent.tokenprice = "Unknown."; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
+      bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
+      bmcontent.product = product;
+      setBookmarkinfo(bmcontent);
+      setModalShow(true);
+    }
+
+  }, []);
 
   // while we check for product
   if (!product) {
