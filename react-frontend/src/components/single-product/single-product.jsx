@@ -19,6 +19,7 @@ LoadingOverlay.propTypes = undefined;
 const SingleProduct = ({ match }) => {
   const { account } = useWeb3React();
   const { speak } = useSpeechSynthesis();
+  const { ethereum } = window;
 
   const web3 = new Web3(window.ethereum);
 
@@ -75,12 +76,14 @@ const SingleProduct = ({ match }) => {
 
   useEffect(() => {
     const getDexrate = async () => {
-      const ccoin_contract = new web3.eth.Contract(
-        cc_abi,
-        cc_address
-      );
-      const curdexrate = await ccoin_contract.methods.dexXMTSPRate().call();
-      setDexrate(web3.utils.fromWei(curdexrate));
+      if (ethereum) {
+        const ccoin_contract = new web3.eth.Contract(
+          cc_abi,
+          cc_address
+        );
+        const curdexrate = await ccoin_contract.methods.dexXMTSPRate().call();
+        setDexrate(web3.utils.fromWei(curdexrate));
+      }
     }
     getDexrate();
   }, [])

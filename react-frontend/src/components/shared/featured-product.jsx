@@ -13,6 +13,7 @@ const FeaturedProduct = (props) => {
   const navigate = useNavigate();
   const { account } = useWeb3React();
   const web3 = new Web3(window.ethereum);
+  const { ethereum } = window;
 
   const [loading, setLoading] = useState(false);
   const [dexrate, setDexrate] = useState(0);
@@ -26,12 +27,14 @@ const FeaturedProduct = (props) => {
 
   useEffect(() => {
     const getDexrate = async () => {
-      const ccoin_contract = new web3.eth.Contract(
-        cc_abi,
-        cc_address
-      );
-      const curdexrate = await ccoin_contract.methods.dexXMTSPRate().call();
-      setDexrate(web3.utils.fromWei(curdexrate));
+      if (ethereum) {
+        const ccoin_contract = new web3.eth.Contract(
+          cc_abi,
+          cc_address
+          );
+          const curdexrate = await ccoin_contract.methods.dexXMTSPRate().call();
+          setDexrate(web3.utils.fromWei(curdexrate));
+      }
     }
     getDexrate();
   }, [])
@@ -45,15 +48,17 @@ const FeaturedProduct = (props) => {
       return;
     }
     try {
-      const printpress_contract = new web3.eth.Contract(
-        printpress_abi,
-        printpress_address
-      );
+      
+      if (ethereum) {
+        const printpress_contract = new web3.eth.Contract(
+          printpress_abi,
+          printpress_address
+        );
 
-      await printpress_contract.methods
-        .buyBook(bt_contract_address)
-        .send({ from: account, value: web3.utils.toWei(String(book_price)) });
-
+        await printpress_contract.methods
+          .buyBook(bt_contract_address)
+          .send({ from: account, value: web3.utils.toWei(String(book_price)) });
+      }
       setLoading(false);
       toast.success("successfully buy book!", {
         position: "top-right",
@@ -83,20 +88,21 @@ const FeaturedProduct = (props) => {
       return;
     }
     try {
-      const printpress_contract = new web3.eth.Contract(
-        printpress_abi,
-        printpress_address
-      );
-      const ccoin_contract = new web3.eth.Contract(
-        cc_abi,
-        cc_address
-      );
+      if (ethereum) {
+        const printpress_contract = new web3.eth.Contract(
+          printpress_abi,
+          printpress_address
+        );
+        const ccoin_contract = new web3.eth.Contract(
+          cc_abi,
+          cc_address
+        );
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price * dexrate))).send({ from: account });
-      await printpress_contract.methods
-        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(book_price * dexrate)))
-        .send({ from: account });
-
+        await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price * dexrate))).send({ from: account });
+        await printpress_contract.methods
+          .buyBookCC(bt_contract_address,  web3.utils.toWei(String(book_price * dexrate)))
+          .send({ from: account });
+      }
       setLoading(false);
       toast.success("successfully buy book!", {
         position: "top-right",
