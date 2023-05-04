@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 import { useNavigate } from "react-router-dom";
 import Web3 from "web3";
+import { ethers } from "ethers";
 import LoadingOverlay from "react-loading-overlay";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -12,6 +13,7 @@ import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
 import cc_abi from "../../utils/contract/CultureCoin.json";
+import NBT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
 
 LoadingOverlay.propTypes = undefined;
@@ -24,6 +26,7 @@ const SingleProduct = ({ match }) => {
   const web3 = new Web3(window.ethereum);
 
   const printpress_abi = printingpress_abi;
+  const bt_abi = NBT_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
@@ -99,20 +102,35 @@ const SingleProduct = ({ match }) => {
     };
 
 
-    function myReaction() {
-      console.log("myValue has changed!");
-      console.log("It is now: " + window.myValue);
-      console.log("Product is: ", window.product);
-      //showBMModal(window.myValue);
+    async function myReaction() {
       var index = window.myValue;
       var product = window.product;
-      setCurserialnum(index);
+      
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const bookTradable = new ethers.Contract(
+          product.bm_listdata[0].item_bmcontract_address,
+          bt_abi,
+          signer
+      );
+      const curtotalsupply = await bookTradable.totalSupply();
+
       var bmcontent = {};
-      bmcontent.token_id = index;
-      bmcontent.tokenname = product.title;
-      bmcontent.tokenprice = "Unknown."; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
-      bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
-      bmcontent.product = product;
+      if (curtotalsupply > index) {
+        bmcontent.token_id = index;
+        bmcontent.tokenname = product.title;
+        bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
+        bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
+        bmcontent.product = product;
+      } else {
+        bmcontent.token_id = curtotalsupply;
+        bmcontent.tokenname = product.title;
+        bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
+        bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
+        bmcontent.product = product;
+      }
+
+      setCurserialnum(index);
       setBookmarkinfo(bmcontent);
       setModalShow(true);
     }
@@ -435,17 +453,11 @@ const SingleProduct = ({ match }) => {
       var span = spans[currentIndex];
       var text = span.innerText;
       var start = 0;
-      var parentId = currentIndex;
-      console.log("parentId: ", parentId);
 
       var newSpans = [];
       while (start < text.length) {
         var end = Math.min(start + spanAmount, text.length);
         var remainingChars = spanAmount - (end - start);
-
-        console.log("start: ", start);
-        console.log("end: ", end);
-        console.log("remainingChars: ", remainingChars);
 
         var newSpan = document.createElement("span");
         newSpan.innerText = text.substring(start, end);

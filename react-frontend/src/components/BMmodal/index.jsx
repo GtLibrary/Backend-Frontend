@@ -3,7 +3,6 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useWeb3React } from "@web3-react/core";
 import Web3 from "web3";
-import axios from "axios";
 import { ethers } from "ethers";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -18,7 +17,7 @@ function BMdetailModal(props) {
   const { account } = useWeb3React();
 
   const web3 = new Web3(window.ethereum);
-  const { id, curserial_num, bookmarkinfo } = props;
+  const { id, curserial_num, bookmarkinfo, show } = props;
   let _token_id, _class, _price
 
   let token_id;
@@ -102,7 +101,7 @@ function BMdetailModal(props) {
         }
     };
     loadcontractdata();
-  }, []);
+  }, [show]);
 
   let user_wallet;
   if (account) {
@@ -116,11 +115,12 @@ function BMdetailModal(props) {
       printpress_abi,
       printpress_address
     );
+    
+    const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+    await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(tokenprice))).send({ from: account });
 
-    await printpress_contract.methods.buyBook(contract_address).send({
-      from: user_wallet,
-      value: web3.utils.toWei(String(tokenprice)),
-      gas: await web3.eth.getGasPrice(),
+    await printpress_contract.methods.buyBookCC(contract_address, web3.utils.toWei(String(tokenprice))).send({
+      from: user_wallet
     });
     
     // await printpress_contract.methods.buyBook(contract_address, web3.utils.toWei(String(tokenprice))).send({
@@ -237,17 +237,17 @@ function BMdetailModal(props) {
         >
           <Tab eventKey="bookmark" title="Bookmark">
             <div>
-                <p>Bookmark Token ID: {tokenname} #{token_id}</p>
-                <p>Token Contract Address: {contract_address}</p>
-                <p>Current Owner: { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
-                <p>Current Price: {tokenprice} CCoin</p>
+                <p>Bookmark ID: {tokenname} #{token_id}</p>
+                <p>Bookmark Token Contract Address: {contract_address}</p>
+                <p>Current Token Owner: { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
+                <p>Current Token Price: {tokenprice} CC</p>
                 <p>Your Account: {account}</p>
                 <button
                     type="button"
                     className="btn btn-primary btn-sm"
                     onClick={() => buyBookMark()}
                 >
-                    Buy {tokenname} Bookmark Now
+                    Buy "{tokenname}" Bookmark Now
                 </button>
                 { account === NFTOwner ? (
                     <>
@@ -257,7 +257,7 @@ function BMdetailModal(props) {
                           className="btn btn-danger btn-sm"
                           onClick={() => sellBookMark()}
                           >
-                          Sell {tokenname} Bookmark Now
+                          Sell "{tokenname}" Bookmark Now
                       </button>
                     </>
                 ) : (
