@@ -15,6 +15,7 @@ from api.books.moralis import Moralis
 # from api.books.minter import MySecondMinter
 # from api.books.minter import Minter
 from web3 import Web3, HTTPProvider
+from eth_account.messages import encode_defunct
 from api.openaikey.models import Apikey
 from api.wallet.models import Wallet, WalletTransaction
 from api.aiprice.models import AIpricemodel
@@ -132,21 +133,23 @@ def getBookmarkTotalSupply(bookmarkcontractid):
 
 # Create your views here.
 
-@api_view(['GET'])
+@api_view(['POST'])
 def art(request, pk):
 
+    req_data = request.body.decode('utf-8')
+    body = json.loads(req_data)
     bookcontent = Books.objects.get(pk=pk)
     curserial_num = bookcontent.curserial_number
-    curserial_num = re.sub(r'[^a-zA-Z0-9\.]', '', curserial_num)
     datamine = bookcontent.datamine
-    datamine = re.sub(r'[^a-zA-Z0-9\.]', '', datamine)
-
+    # curserial_num = re.sub(r'[^a-zA-Z0-9\.]', '', curserial_num)
+    # datamine = re.sub(r'[^a-zA-Z0-9\.]', '', datamine)
+    
     daedalusToken = request.GET.get('daedalusToken', '0')
     daedalusToken = re.sub(r'[^a-zA-Z0-9\.]', '', daedalusToken)
 
-    msg = request.GET.get('msg', '')
-    signature = request.GET.get('sig', 'default')
-    sender = request.GET.get('sender', '')
+    msg = encode_defunct(text=body['msg'])
+    signature = body['signature']
+    sender = Web3.toChecksumAddress(web3.eth.account.recover_message(msg, signature=signature))
 
     # bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
     cwd = os.getcwd()

@@ -19,20 +19,22 @@ function BMdetailModal(props) {
   const web3 = new Web3(window.ethereum);
   const { id, curserial_num, bookmarkinfo, show } = props;
   let _token_id, _class, _price
-
+  let bm_id;
   let token_id;
   let tokenname;
   let tokenprice;
   let contract_address;
   if (bookmarkinfo) {
+    bm_id = bookmarkinfo.bm_id;
     token_id = bookmarkinfo.token_id;
     tokenname = bookmarkinfo.tokenname;
     tokenprice = bookmarkinfo.tokenprice;
     contract_address = bookmarkinfo.contract_address;
   } else {
+    bm_id = 0;
     token_id = "";
     tokenname = "";
-    tokenprice = "";
+    tokenprice = 0;
     contract_address = "";
   }
   const printpress_abi = printingpress_abi;
@@ -237,7 +239,7 @@ function BMdetailModal(props) {
         >
           <Tab eventKey="bookmark" title="Bookmark">
             <div>
-                <p>Bookmark ID: {tokenname} #{token_id}</p>
+                <p>Bookmark ID: {tokenname} #{bm_id}</p>
                 <p>Bookmark Token Contract Address: {contract_address}</p>
                 <p>Current Token Owner: { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
                 <p>Current Token Price: {tokenprice} CC</p>
