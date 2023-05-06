@@ -30,6 +30,7 @@ const SingleProduct = ({ match }) => {
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
+  const _cCA = process.env.REACT_APP_CCA;
 
   const navigate = useNavigate();
   const [bookmarkinfo, setBookmarkinfo] = useState(null);
@@ -116,20 +117,22 @@ const SingleProduct = ({ match }) => {
       const curtotalsupply = await bookTradable.totalSupply();
 
       var bmcontent = {};
-      if (curtotalsupply > index) {
+      if (Number(curtotalsupply) > index) {
+        bmcontent.bm_id = index;
         bmcontent.token_id = index;
         bmcontent.tokenname = product.title;
         bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
         bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
         bmcontent.product = product;
       } else {
-        bmcontent.token_id = curtotalsupply;
+        bmcontent.bm_id = index;
+        bmcontent.token_id = Number(curtotalsupply);
         bmcontent.tokenname = product.title;
         bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
         bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
         bmcontent.product = product;
       }
-
+      
       setCurserialnum(index);
       setBookmarkinfo(bmcontent);
       setModalShow(true);
@@ -145,6 +148,7 @@ const SingleProduct = ({ match }) => {
   const {
     image_url,
     title,
+    datamine,
     author_name,
     book_price,
     hardbound_price,
@@ -406,33 +410,50 @@ const SingleProduct = ({ match }) => {
     }
   };
 
-  const getPdfData = async (testurl) => {
+  const getPdfData = async () => {
+    
+    const cur_address = account;
+
+    const libraryNonce = await web3.eth.getTransactionCount(_cCA);
+    const signingMessage = "" + libraryNonce + " Great Library \n" + datamine + ": Connect to begin your journey"
+    const signature = await web3.eth.personal.sign(signingMessage, cur_address);
+    const testurl = process.env.REACT_APP_API + `art/${id}`;
+
     const config = {
-      method: "get",
+      method: "post",
       url: testurl,
+      data: {
+        msg: signingMessage,
+        signature: signature
+      }
     };
-    await axios(config).then((res) => {
-      if (res.data.content === "You are not token owner!!") {
-        toast.error(res.data.content, {
-          position: "top-right",
-          autoClose: 3000,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      }
-
-      const parser = new DOMParser();
-      const htmlDoc = parser.parseFromString(res.data.content, "text/html");
-      const html = htmlDoc.body.innerHTML;
-
-      if (html === "You are not token owner!!") {
-        setPdftext(html);
-      } else {
-        var bookHtml = addOnClicks(html);
-        document.getElementById("reader-body").innerHTML = bookHtml;
-      }
-    });
+    
+    try {
+      await axios(config).then((res) => {
+        if (res.data.content === "You are not token owner!!") {
+          toast.error(res.data.content, {
+            position: "top-right",
+            autoClose: 3000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        }
+  
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(res.data.content, "text/html");
+        const html = htmlDoc.body.innerHTML;
+  
+        if (html === "You are not token owner!!") {
+          setPdftext(html);
+        } else {
+          var bookHtml = addOnClicks(html);
+          document.getElementById("reader-body").innerHTML = bookHtml;
+        }
+      });
+    } catch (error) {
+      console.log(error)
+    }
   };
 
   function addOnClicks(html) {
@@ -510,17 +531,7 @@ const SingleProduct = ({ match }) => {
       return;
     }
     setLoading(true);
-    const cur_address = account;
-
-    let testurl;
-    var sender;
-    if (account) {
-      sender = cur_address;
-    } else {
-      sender = "";
-    }
-    testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
-    getPdfData(testurl);
+    await getPdfData();
     setLoading(false);
   };
 
