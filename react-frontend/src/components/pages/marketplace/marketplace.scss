@@ -1,0 +1,25 @@
+.product-list-container {
+    padding: 3rem 0;
+    min-height: calc(100vh - 154px);
+    .product-list-title {
+      margin-top: 5rem;
+      text-align: center;
+    }
+  
+    .product-list {
+      div {
+        cursor: pointer;
+      }
+    }
+  }
+  
+  @media(min-width: 1024px) {
+    .product-list-container {
+      .product-list {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: flex-start;
+        align-items: stretch;
+      }
+    }
+  }
