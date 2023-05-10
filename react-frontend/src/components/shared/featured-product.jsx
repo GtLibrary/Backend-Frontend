@@ -32,7 +32,7 @@ const FeaturedProduct = (props) => {
           cc_abi,
           cc_address
           );
-          const curdexrate = await ccoin_contract.methods.dexXMTSPRate().call();
+          const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
           setDexrate(web3.utils.fromWei(curdexrate));
       }
     }

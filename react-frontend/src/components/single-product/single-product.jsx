@@ -85,8 +85,8 @@ const SingleProduct = ({ match }) => {
           cc_abi,
           cc_address
         );
-        const curdexrate = await ccoin_contract.methods.dexXMTSPRate().call();
-        setDexrate(web3.utils.fromWei(curdexrate));
+        const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+        setDexrate((1 / web3.utils.fromWei(curdexrate)));
       }
     }
     getDexrate();
@@ -216,10 +216,10 @@ const SingleProduct = ({ match }) => {
         cc_abi,
         cc_address
       );
-
+console.log("price for avax: ", web3.utils.toWei(String(book_price * (dexrate).toFixed(6))))
       await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price * dexrate))).send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(book_price * dexrate)))
+        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(book_price * (dexrate).toFixed(6))))
         .send({ from: account });
 
       setLoading(false);
