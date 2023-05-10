@@ -26,6 +26,7 @@ const Balance = () => {
     const [withrawval, setWithrawval] = useState(0);
     const [currppccbal, setCurrppccbal] = useState(0);
     const [depositppval, setDepositppval] = useState(0);
+    const [depositgascc, setDepositgascc] = useState(0);
     const [loading, setLoading] = useState(false);
 
     const CC_address = process.env.REACT_APP_CULTURECOINADDRESS;
@@ -157,6 +158,44 @@ const Balance = () => {
         setLoading(false);
     }
     
+    const depositwithCC = async () => {
+        setLoading(true);
+        const { ethereum } = window;
+
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+            const Printpressportal = new ethers.Contract(Printpress_address, Printpress_abi, signer);
+            const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
+            
+            try {
+                await CCportal.approve(account, ethers.utils.parseEther(String(depositgascc))).then(async (res) => {
+                    await res.wait();
+                    let deposit = await Printpressportal.addBalanceCC(account, ethers.utils.parseEther(String(depositgascc)));
+                    await deposit.wait();
+                    getPPbalance();
+                    setDepositgascc(0)
+                    toast.success("Deposited CC.", {
+                        position: "top-right",
+                        autoClose: 3000,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                    });
+                })
+            } catch (error) {
+                console.log(error)
+                toast.error("Transaction failed. please try again.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
+            }
+        }
+        setLoading(false);
+    }
     const withdrawPPCC = async () => {
         setLoading(true);
         const { ethereum } = window;
@@ -270,7 +309,7 @@ const Balance = () => {
                 </div>
             </Box>
             <Button variant="contained" onClick={() => depositCC()}>
-                Deposit CCoin
+                Deposit CCoin to own account
             </Button>
             <Box
                 component="form"
@@ -319,7 +358,56 @@ const Balance = () => {
                 </div>
             </Box>
             <Button variant="contained" onClick={() => depositppCC()}>
-                Deposit Gas UP
+                Deposit Gas UP CC with Avax
+            </Button>
+            <Box
+                component="form"
+                sx={{
+                    '& .MuiTextField-root': { m: 1, width: '50ch' }
+                }}
+                noValidate
+                autoComplete="off"
+            >
+                <div>
+                    <TextField
+                        id="cur_cc_balance"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Current CCoin Balance in printpress contract"
+                        helperText="Current CCoin balance in printpress contract"
+                        fullWidth
+                        disabled
+                        type="number"
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={currppccbal}
+                    />
+
+                    <TextField
+                        id="deposit_val"
+                        // label="Book  Name"
+                        style={{ margin: 8 }}
+                        placeholder="Please input the deposit CCoin amount"
+                        helperText="Deposit amount"
+                        fullWidth
+                        type="number"
+                        // margin="normal"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        value={depositgascc}
+                        onChange={(e) => {
+                            setDepositgascc(e.target.value);
+                        }}
+                    />
+                </div>
+            </Box>
+            <Button variant="contained" onClick={() => depositwithCC()}>
+                Deposit Gas UP CCoin
             </Button>
             <Box
                 component="form"
