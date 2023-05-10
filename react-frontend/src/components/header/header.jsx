@@ -16,7 +16,7 @@ const Header = () => {
           <Navbar.Toggle aria-controls="basic-navbar-nav" className="navbar-btn" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="nav-list">
-              <Nav.Link href="https://books.greatlibrary.io">Books</Nav.Link>
+              <Nav.Link href="/books">Books</Nav.Link>
               <Nav.Link href="https://author.greatlibrary.io">Authors</Nav.Link>
               <Nav.Link href="/swap">Swap</Nav.Link>
               <Nav.Link href="/marketplace">Marketplace</Nav.Link>

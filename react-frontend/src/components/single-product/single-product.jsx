@@ -124,6 +124,7 @@ const SingleProduct = ({ match }) => {
         bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
         bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
         bmcontent.product = product;
+        bmcontent.curdexrate = dexrate;
       } else {
         bmcontent.bm_id = index;
         bmcontent.token_id = Number(curtotalsupply);
@@ -131,6 +132,7 @@ const SingleProduct = ({ match }) => {
         bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
         bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
         bmcontent.product = product;
+        bmcontent.curdexrate = dexrate;
       }
       
       setCurserialnum(index);
