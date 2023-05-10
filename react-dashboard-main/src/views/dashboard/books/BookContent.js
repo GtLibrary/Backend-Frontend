@@ -251,7 +251,7 @@ const BookContent = (props) => {
                             <Button variant="outlined">Back To List</Button>
                         </Link>
                     </Box>
-                    <p>Paste your manuscript from Google Docs in the box belowr. Then click Save.</p>
+                    <p style={{fontFamily: 'Crimson Text'}}>Paste your manuscript from Google Docs in the box below. Then click Save.</p>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
                         <div className='contenteditable-area' onPaste={handlePaste} ref={contentEditable} contentEditable={true} dangerouslySetInnerHTML={{ __html: bookcontent }} ></div>
                     </Box>

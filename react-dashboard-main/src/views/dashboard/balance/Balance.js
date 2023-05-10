@@ -4,6 +4,7 @@ import { useWeb3React } from '@web3-react/core';
 import axios from 'axios';
 import { ethers } from 'ethers';
 import { toast } from "react-toastify";
+import LoadingOverlay from 'react-loading-overlay';
 import configData from '../../../config';
 
 // material-ui
@@ -15,6 +16,8 @@ import MainCard from '../../../ui-component/cards/MainCard';
 import CC_abi from './../../../contract-json/CultureCoin.json';
 import Printpress_abi from './../../../contract-json/PrintingPress.json';
 
+LoadingOverlay.propTypes = undefined;
+
 const Balance = () => {
     const accountinfo = useSelector((state) => state.account);
     const { account } = useWeb3React();
@@ -23,6 +26,7 @@ const Balance = () => {
     const [withrawval, setWithrawval] = useState(0);
     const [currppccbal, setCurrppccbal] = useState(0);
     const [depositppval, setDepositppval] = useState(0);
+    const [loading, setLoading] = useState(false);
 
     const CC_address = process.env.REACT_APP_CULTURECOINADDRESS;
     const Printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
@@ -60,6 +64,7 @@ const Balance = () => {
     }, []);
 
     const depositCC = async () => {
+        setLoading(true);
         const { ethereum } = window;
 
         if (ethereum) {
@@ -114,9 +119,11 @@ const Balance = () => {
                 });
             }
         }
+        setLoading(false);
     };
 
     const depositppCC = async () => {
+        setLoading(true);
         const { ethereum } = window;
 
         if (ethereum) {
@@ -147,23 +154,18 @@ const Balance = () => {
                 });
             }
         }
+        setLoading(false);
     }
     
     const withdrawPPCC = async () => {
+        setLoading(true);
         const { ethereum } = window;
 
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const Printpressportal = new ethers.Contract(Printpress_address, Printpress_abi, signer);
-            const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
-            console.log("withraw amount:", ethers.utils.parseEther(String(withrawval)))
             try {
-                const allowance = await CCportal.allowance(account, Printpress_address);
-                if (allowance.lt(ethers.utils.parseEther(String(withrawval)))) { // check if allowance is less than the amount being withdrawn
-                    const tx = await CCportal.approve(Printpress_address, ethers.constants.MaxUint256);
-                    await tx.wait();
-                }
                 let withraw = await Printpressportal.withdraw(ethers.utils.parseEther(String(withrawval)));
                 await withraw.wait();
                 getPPbalance();
@@ -187,10 +189,40 @@ const Balance = () => {
                 });
             }
         }
+        setLoading(false);
     };
 
     return (
         <MainCard title="Balance">
+            {loading && (
+                <div
+                    style={{
+                        background: '#00000055',
+                        width: '100%',
+                        height: '100%',
+                        zIndex: '1000',
+                        position: 'fixed',
+                        top: 0,
+                        left: 0
+                    }}
+                >
+                    <LoadingOverlay
+                        active={true}
+                        spinner={true}
+                        text="Loading ..."
+                        styles={{
+                            overlay: (base) => ({
+                                ...base,
+                                background: 'rgba(255, 255, 255)',
+                                position: 'absolute',
+                                marginTop: '300px',
+                                zIndex: '1111'
+                            })
+                        }}
+                        fadeSpeed={9000}
+                    ></LoadingOverlay>
+                </div>
+            )}
             <Box
                 component="form"
                 sx={{
