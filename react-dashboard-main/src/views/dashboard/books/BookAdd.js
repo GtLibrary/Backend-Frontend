@@ -96,6 +96,7 @@ const BookAdd = (props) => {
         setHardboundprice(data.hardbound_price);
         setMaxbooksupply(data.max_book_supply);
         setMaxbookmarksupply(data.max_bookmark_supply);
+        console.log("maxbookmarksupply:", data.max_bookmark_supply);
         setMaxhardboundsupply(data.max_hardbound_supply);
         setBookdescription(data.book_description);
         setHardbounddescription(data.hardbound_description);
@@ -475,36 +476,49 @@ const BookAdd = (props) => {
         
         if(booktitle === '') {
             setErrors(errors => ({...errors, booktitle: true}));
+            console.log("booktitle: ", booktitle);
             checked = true;
         }
         if(authorwallet === '') {
             setErrors(errors => ({...errors, authorwallet: true}))
+            console.log("authorwallet: ", authorwallet);
             checked = true;
         }
         if(authorname === '') {
             setErrors(errors => ({...errors, authorname: true}))
+            console.log("authorname: ", authorname);
             checked = true;
         }
         if(datamine === '') {
             setErrors(errors => ({...errors, datamine: true}))
+            console.log("datamine: ", datamine);
             checked = true;
         }
-        if(bookprice >= 0) {
+        if(bookprice <= 0) {
             setErrors(errors => ({...errors, bookprice: true}))
+            console.log("bookprice: ", bookprice);
             checked = true;
         }
-        if(maxbookmarksupply >= 0) {
-            setErrors(errors => ({...errors, maxbookmarksupply: true}))
-            checked = true;
-        }
-        if(hardboundprice >= 0) {
+        try {
+          if(inputList[0]['maxbookmarksupply'] <= 0) {
+              setErrors(errors => ({...errors, maxbookmarksupply: true}))
+              console.log("maxbookmarksupply: ", maxbookmarksupply);
+              checked = true;
+          }
+	} catch(e) {
+          console.log("User has no bookmark!", e);
+	}
+        if(hardboundprice <= 0) {
             setErrors(errors => ({...errors, hbprice: true}))
+            console.log("hardboundprice: ", hardboundprice);
             checked = true;
         }
-        if(maxhardboundsupply >= 0) {
-            setErrors(errors => ({...errors, maxhbsupply: true}))
-            checked = true;
-        }
+
+        if(maxhardboundsupply <= 0) {
+             setErrors(errors => ({...errors, maxhbsupply: true}))
+             console.log("maxhardboundsupply: ", maxhardboundsupply);
+             checked = true;
+         }
         
         if(checked) {
             toast.error('failed save data. please check all input field', {
