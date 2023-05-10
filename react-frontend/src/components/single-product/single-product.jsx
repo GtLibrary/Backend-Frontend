@@ -85,7 +85,8 @@ const SingleProduct = ({ match }) => {
           cc_abi,
           cc_address
         );
-        const curdexrate = await ccoin_contract.methods.dexXMTSPRate().call();
+        const curdexrate = await ccoin_contract.methods.dexCCRate().call();
+        console.log("curdexrate:", curdexrate);
         setDexrate(web3.utils.fromWei(curdexrate));
       }
     }
@@ -217,9 +218,13 @@ const SingleProduct = ({ match }) => {
         cc_address
       );
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price * dexrate))).send({ from: account });
+      var price = book_price / dexrate + 0.00001;
+      console.log("Price in cc: ", price);
+      console.log("Est price in XMTSP: ", price * dexrate);
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(book_price * dexrate)))
+        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(price)))
         .send({ from: account });
 
       setLoading(false);
@@ -304,9 +309,13 @@ const SingleProduct = ({ match }) => {
         cc_address
       );
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(hardbound_price * dexrate))).send({ from: account });
+      var price = hardbound_price / dexrate + 0.00001;
+      console.log("Price in cc: ", price);
+      console.log("Est price in XMTSP: ", price * dexrate);
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(hb_contract_address,  web3.utils.toWei(String(hardbound_price * dexrate)))
+        .buyBookCC(hb_contract_address,  web3.utils.toWei(String(price)))
         .send({ from: account });
 
       setLoading(false);
@@ -385,9 +394,13 @@ const SingleProduct = ({ match }) => {
         cc_address
       );
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(hardbound_price * dexrate))).send({ from: account });
+      var price = bm_listdata[0]['bookmarkprice'] / dexrate + 0.00001;
+      console.log("Price in cc: ", price);
+      console.log("Est price in XMTSP: ", price * dexrate);
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(bm_listdata[0]['item_bmcontract_address'],  web3.utils.toWei(String(bm_listdata[0]['bookmarkprice'] * dexrate)))
+        .buyBookCC(bm_listdata[0]['item_bmcontract_address'],  web3.utils.toWei(String(price)))
         .send({ from: account });
 
       setLoading(false);
