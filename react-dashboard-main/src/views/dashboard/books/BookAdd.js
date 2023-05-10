@@ -71,8 +71,8 @@ const BookAdd = (props) => {
         bookprice: false,
         maxbooksupply: false,
         hbprice: false,
-        maxhbsupply: false,
-    })
+        maxhbsupply: false
+    });
 
     const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
@@ -96,7 +96,7 @@ const BookAdd = (props) => {
         setHardboundprice(data.hardbound_price);
         setMaxbooksupply(data.max_book_supply);
         setMaxbookmarksupply(data.max_bookmark_supply);
-        console.log("maxbookmarksupply:", data.max_bookmark_supply);
+        console.log('maxbookmarksupply:', data.max_bookmark_supply);
         setMaxhardboundsupply(data.max_hardbound_supply);
         setBookdescription(data.book_description);
         setHardbounddescription(data.hardbound_description);
@@ -473,54 +473,54 @@ const BookAdd = (props) => {
         setLoading(true);
         const { ethereum } = window;
         let checked = false;
-        
-        if(booktitle === '') {
-            setErrors(errors => ({...errors, booktitle: true}));
-            console.log("booktitle: ", booktitle);
+
+        if (booktitle === '') {
+            setErrors((errors) => ({ ...errors, booktitle: true }));
+            console.log('booktitle: ', booktitle);
             checked = true;
         }
-        if(authorwallet === '') {
-            setErrors(errors => ({...errors, authorwallet: true}))
-            console.log("authorwallet: ", authorwallet);
+        if (authorwallet === '') {
+            setErrors((errors) => ({ ...errors, authorwallet: true }));
+            console.log('authorwallet: ', authorwallet);
             checked = true;
         }
-        if(authorname === '') {
-            setErrors(errors => ({...errors, authorname: true}))
-            console.log("authorname: ", authorname);
+        if (authorname === '') {
+            setErrors((errors) => ({ ...errors, authorname: true }));
+            console.log('authorname: ', authorname);
             checked = true;
         }
-        if(datamine === '') {
-            setErrors(errors => ({...errors, datamine: true}))
-            console.log("datamine: ", datamine);
+        if (datamine === '') {
+            setErrors((errors) => ({ ...errors, datamine: true }));
+            console.log('datamine: ', datamine);
             checked = true;
         }
-        if(bookprice <= 0) {
-            setErrors(errors => ({...errors, bookprice: true}))
-            console.log("bookprice: ", bookprice);
+        if (bookprice <= 0) {
+            setErrors((errors) => ({ ...errors, bookprice: true }));
+            console.log('bookprice: ', bookprice);
             checked = true;
         }
         try {
-          if(inputList[0]['maxbookmarksupply'] <= 0) {
-              setErrors(errors => ({...errors, maxbookmarksupply: true}))
-              console.log("maxbookmarksupply: ", maxbookmarksupply);
-              checked = true;
-          }
-	} catch(e) {
-          console.log("User has no bookmark!", e);
-	}
-        if(hardboundprice <= 0) {
-            setErrors(errors => ({...errors, hbprice: true}))
-            console.log("hardboundprice: ", hardboundprice);
+            if (inputList[0]['maxbookmarksupply'] <= 0) {
+                setErrors((errors) => ({ ...errors, maxbookmarksupply: true }));
+                console.log('maxbookmarksupply: ', maxbookmarksupply);
+                checked = true;
+            }
+        } catch (e) {
+            console.log('User has no bookmark!', e);
+        }
+        if (hardboundprice <= 0) {
+            setErrors((errors) => ({ ...errors, hbprice: true }));
+            console.log('hardboundprice: ', hardboundprice);
             checked = true;
         }
 
-        if(maxhardboundsupply <= 0) {
-             setErrors(errors => ({...errors, maxhbsupply: true}))
-             console.log("maxhardboundsupply: ", maxhardboundsupply);
-             checked = true;
-         }
-        
-        if(checked) {
+        if (maxhardboundsupply <= 0) {
+            setErrors((errors) => ({ ...errors, maxhbsupply: true }));
+            console.log('maxhardboundsupply: ', maxhardboundsupply);
+            checked = true;
+        }
+
+        if (checked) {
             toast.error('failed save data. please check all input field', {
                 position: 'top-right',
                 autoClose: 3000,
@@ -531,7 +531,7 @@ const BookAdd = (props) => {
             setLoading(false);
             return false;
         }
-        
+
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
@@ -560,7 +560,7 @@ const BookAdd = (props) => {
             form_data.append('hardbound_from', hardboundstartpoint);
             if (bookid) {
                 const confirmed = window.confirm(
-                    'If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed: (y)es/(n)o?'
+                    'If you proceed you risk destroying your current book/bookmark. Consider updating your token instead. Proceed?'
                 );
                 if (confirmed) {
                     try {
@@ -578,8 +578,8 @@ const BookAdd = (props) => {
                         const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
                         //await BookTradable.setRewardContract(BTcontract);
 
-                    	await BookTradableBT.setAddon(printingpress_address, true);
-                    	await BookTradableBT.setAddon(minimart_address, true);
+                        await BookTradableBT.setAddon(printingpress_address, true);
+                        await BookTradableBT.setAddon(minimart_address, true);
 
                         const HBcontract = await getnewBookcontractdata(
                             'HB' + datamine,
@@ -592,13 +592,13 @@ const BookAdd = (props) => {
                             ethers.utils.parseEther(String(hardboundstartpoint)),
                             account
                         );
-			    
+
                         const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
                         await BookTradableHB.setRewardContract(BTcontract);
                         await BookTradableHB.setAddon(printingpress_address, true);
                         await BookTradableHB.setAddon(minimart_address, true);
 
-			await BookTradableBT.setAddon(HBcontract, true);
+                        await BookTradableBT.setAddon(HBcontract, true);
 
                         for (let index = 0; index < inputList.length; index++) {
                             let item = inputList[index];
@@ -618,11 +618,11 @@ const BookAdd = (props) => {
                                 account
                             );
                             const BookTradableBM = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                            await BookTradableBM.setRewardContract(BTcontract)
+                            await BookTradableBM.setRewardContract(BTcontract);
                             await BookTradableBM.setAddon(printingpress_address, true);
                             await BookTradableBM.setAddon(minimart_address, true);
 
-			    await BookTradableBT.setAddon(BMcontract, true);
+                            await BookTradableBT.setAddon(BMcontract, true);
 
                             inputList[index]['item_bmcontract_address'] = BMcontract;
                         }
@@ -698,10 +698,10 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(startpoint)),
                         account
                     );
-		
+
                     const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
                     //await BookTradable.setRewardContract(BTcontract);
-                    
+
                     await BookTradableBT.setAddon(printingpress_address, true);
                     await BookTradableBT.setAddon(minimart_address, true);
 
@@ -716,12 +716,12 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(hardboundstartpoint)),
                         account
                     );
-		    const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
-		    await BookTradableHB.setRewardContract(BTcontract);
+                    const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
+                    await BookTradableHB.setRewardContract(BTcontract);
                     await BookTradableHB.setAddon(printingpress_address, true);
                     await BookTradableHB.setAddon(minimart_address, true);
 
-		    await BookTradableBT.setAddon(HBcontract, true);
+                    await BookTradableBT.setAddon(HBcontract, true);
 
                     for (let index = 0; index < inputList.length; index++) {
                         let item = inputList[index];
@@ -742,11 +742,11 @@ const BookAdd = (props) => {
                         );
 
                         const BookTradableBM = new ethers.Contract(BMcontract, booktradable_abi, signer);
-                        await BookTradableBM.setRewardContract(BTcontract)
+                        await BookTradableBM.setRewardContract(BTcontract);
                         await BookTradableBM.setAddon(printingpress_address, true);
                         await BookTradableBM.setAddon(minimart_address, true);
-			    
-		        await BookTradableBT.setAddon(BMcontract, true);
+
+                        await BookTradableBT.setAddon(BMcontract, true);
                         inputList[index]['item_bmcontract_address'] = BMcontract;
                     }
                     form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -762,27 +762,7 @@ const BookAdd = (props) => {
                         })
                         .then(function (response) {
                             if (response.status === 201) {
-                                // setBooktitle('');
-                                // setBooktype('');
-                                // setPreviosImg('');
-                                // setOrigintype('');
-                                // setDatamine('');
-                                // setCurserialnumber('');
-                                // setAuthorwallet('');
-                                // setAuthorname('');
-                                // setBrandimage('');
-                                // setIntroduction('');
-                                // setBookdescription('');
-                                // setHardbounddescription('');
-                                // setBookmarkprice('');
-                                // setBookprice('');
-                                // setHardboundprice('');
-                                // setMaxbooksupply('');
-                                // setMaxbookmarksupply('');
-                                // setMaxhardboundsupply('');
-                                // setStartpoint('');
-                                // setHardboundStartpoint('');
-                                history.push('/books/edit/' + response.data.id);
+                                history.push('/dashboard/books/edit/' + response.data.id);
                             }
                             toast.success('successfully saved', {
                                 position: 'top-right',
