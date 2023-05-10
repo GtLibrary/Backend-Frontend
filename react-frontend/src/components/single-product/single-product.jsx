@@ -85,8 +85,8 @@ const SingleProduct = ({ match }) => {
           cc_abi,
           cc_address
         );
-        const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
-        setDexrate((1 / web3.utils.fromWei(curdexrate)));
+        const curdexrate = await ccoin_contract.methods.dexCCRate().call();
+        setDexrate(web3.utils.fromWei(curdexrate));
       }
     }
     getDexrate();
@@ -216,10 +216,12 @@ const SingleProduct = ({ match }) => {
         cc_abi,
         cc_address
       );
-console.log("price for avax: ", web3.utils.toWei(String(book_price * (dexrate).toFixed(6))))
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price * dexrate))).send({ from: account });
+
+      var price = book_price / dexrate + 0.00001;
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(book_price * (dexrate).toFixed(6))))
+        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(price)))
         .send({ from: account });
 
       setLoading(false);
@@ -304,9 +306,11 @@ console.log("price for avax: ", web3.utils.toWei(String(book_price * (dexrate).t
         cc_address
       );
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(hardbound_price * dexrate))).send({ from: account });
+      var price = hardbound_price / dexrate + 0.00001;
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(hb_contract_address,  web3.utils.toWei(String(hardbound_price * dexrate)))
+        .buyBookCC(hb_contract_address,  web3.utils.toWei(String(price)))
         .send({ from: account });
 
       setLoading(false);
@@ -385,9 +389,11 @@ console.log("price for avax: ", web3.utils.toWei(String(book_price * (dexrate).t
         cc_address
       );
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(hardbound_price * dexrate))).send({ from: account });
+      var price = bm_listdata[0]['bookmarkprice'] / dexrate + 0.00001;
+
+      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(bm_listdata[0]['item_bmcontract_address'],  web3.utils.toWei(String(bm_listdata[0]['bookmarkprice'] * dexrate)))
+        .buyBookCC(bm_listdata[0]['item_bmcontract_address'],  web3.utils.toWei(String(price)))
         .send({ from: account });
 
       setLoading(false);
@@ -631,7 +637,7 @@ console.log("price for avax: ", web3.utils.toWei(String(book_price * (dexrate).t
                 </button>
               </div>
               <div className="buybook-area">
-                <span className="bookprice-tag">{(Number(book_price) * dexrate).toFixed(3)} CC</span>
+                <span className="bookprice-tag">{(Number(book_price) / dexrate).toFixed(3)} CC</span>
                 <button
                   type="button"
                   className="btn btn-buybook"
@@ -681,7 +687,7 @@ console.log("price for avax: ", web3.utils.toWei(String(book_price * (dexrate).t
                     </button>
                   </div>
                   <div className="buyaction-area">
-                    <span className="price-area">{(Number(book_price) * dexrate).toFixed(3)} CC</span>
+                    <span className="price-area">{(Number(book_price) / dexrate).toFixed(3)} CC</span>
                     <button
                       type="button"
                       className="btn btn-item"
@@ -710,7 +716,7 @@ console.log("price for avax: ", web3.utils.toWei(String(book_price * (dexrate).t
                   </div>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {(Number(hardbound_price) * dexrate).toFixed(3)} CC
+                      {(Number(hardbound_price) / dexrate).toFixed(3)} CC
                     </span>
                     <button className="btn btn-item" onClick={() => onBuyHardboundCC()}>Buy with CC</button>
                   </div>
@@ -738,7 +744,7 @@ console.log("price for avax: ", web3.utils.toWei(String(book_price * (dexrate).t
                   </div>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {(Number(bm_listdata[0]["bookmarkprice"]) * dexrate).toFixed(3)} CC
+                      {(Number(bm_listdata[0]["bookmarkprice"]) / dexrate).toFixed(3)} CC
                     </span>
                     <button className="btn btn-item" onClick={() => onBuyBookmarkCC()}>Buy with CC</button>
                   </div>

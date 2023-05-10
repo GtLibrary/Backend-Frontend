@@ -32,7 +32,7 @@ const FeaturedProduct = (props) => {
           cc_abi,
           cc_address
           );
-          const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+          const curdexrate = await ccoin_contract.methods.dexCCRate().call();
           setDexrate(web3.utils.fromWei(curdexrate));
       }
     }
@@ -98,9 +98,11 @@ const FeaturedProduct = (props) => {
           cc_address
         );
 
-        await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price * dexrate))).send({ from: account });
+        var price = book_price / dexrate + 0.00001;
+  
+        await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
         await printpress_contract.methods
-          .buyBookCC(bt_contract_address,  web3.utils.toWei(String(book_price * dexrate)))
+          .buyBookCC(bt_contract_address,  web3.utils.toWei(String(price)))
           .send({ from: account });
       }
       setLoading(false);
@@ -138,7 +140,7 @@ const FeaturedProduct = (props) => {
             <button type="button" className="btn btn-buybook" onClick={() => onBuyBook()}>Buy Now</button>
           </div>
           <div className="buybook-area">
-            <span className="bookprice-tag">{(Number(book_price * dexrate)).toFixed(3)} CC</span>
+            <span className="bookprice-tag">{(Number(book_price / dexrate)).toFixed(3)} CC</span>
             <button type="button" className="btn btn-buybook" onClick={() => onBuyBookCC()}>Buy with CC</button>
           </div>
         </div>
