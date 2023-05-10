@@ -149,7 +149,7 @@ const Balance = () => {
         }
     }
     
-    const withrawPPCC = async () => {
+    const withdrawPPCC = async () => {
         const { ethereum } = window;
 
         if (ethereum) {
@@ -157,18 +157,18 @@ const Balance = () => {
             const signer = provider.getSigner();
             const Printpressportal = new ethers.Contract(Printpress_address, Printpress_abi, signer);
             const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
+            console.log("withraw amount:", ethers.utils.parseEther(String(withrawval)))
             try {
                 const allowance = await CCportal.allowance(account, Printpress_address);
                 if (allowance.lt(ethers.utils.parseEther(String(withrawval)))) { // check if allowance is less than the amount being withdrawn
                     const tx = await CCportal.approve(Printpress_address, ethers.constants.MaxUint256);
                     await tx.wait();
                 }
-
                 let withraw = await Printpressportal.withdraw(ethers.utils.parseEther(String(withrawval)));
                 await withraw.wait();
                 getPPbalance();
                 setWithrawval(0)
-                toast.success("Deposited CC.", {
+                toast.success("Successfully withraw CC.", {
                     position: "top-right",
                     autoClose: 3000,
                     closeOnClick: true,
@@ -316,7 +316,7 @@ const Balance = () => {
                     />
                 </div>
             </Box>
-            <Button variant="contained" onClick={() => withrawPPCC()}>
+            <Button variant="contained" onClick={() => {withdrawPPCC()}}>
                 Withraw GAS CCoin
             </Button>
             <Box

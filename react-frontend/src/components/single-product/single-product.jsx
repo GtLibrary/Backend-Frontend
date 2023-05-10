@@ -86,7 +86,6 @@ const SingleProduct = ({ match }) => {
           cc_address
         );
         const curdexrate = await ccoin_contract.methods.dexCCRate().call();
-        console.log("curdexrate:", curdexrate);
         setDexrate(web3.utils.fromWei(curdexrate));
       }
     }
@@ -219,8 +218,6 @@ const SingleProduct = ({ match }) => {
       );
 
       var price = book_price / dexrate + 0.00001;
-      console.log("Price in cc: ", price);
-      console.log("Est price in XMTSP: ", price * dexrate);
 
       await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
@@ -310,8 +307,6 @@ const SingleProduct = ({ match }) => {
       );
 
       var price = hardbound_price / dexrate + 0.00001;
-      console.log("Price in cc: ", price);
-      console.log("Est price in XMTSP: ", price * dexrate);
 
       await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
@@ -395,8 +390,6 @@ const SingleProduct = ({ match }) => {
       );
 
       var price = bm_listdata[0]['bookmarkprice'] / dexrate + 0.00001;
-      console.log("Price in cc: ", price);
-      console.log("Est price in XMTSP: ", price * dexrate);
 
       await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
       await printpress_contract.methods
@@ -644,7 +637,7 @@ const SingleProduct = ({ match }) => {
                 </button>
               </div>
               <div className="buybook-area">
-                <span className="bookprice-tag">{(Number(book_price) * dexrate).toFixed(3)} CC</span>
+                <span className="bookprice-tag">{(Number(book_price) / dexrate).toFixed(3)} CC</span>
                 <button
                   type="button"
                   className="btn btn-buybook"
@@ -694,7 +687,7 @@ const SingleProduct = ({ match }) => {
                     </button>
                   </div>
                   <div className="buyaction-area">
-                    <span className="price-area">{(Number(book_price) * dexrate).toFixed(3)} CC</span>
+                    <span className="price-area">{(Number(book_price) / dexrate).toFixed(3)} CC</span>
                     <button
                       type="button"
                       className="btn btn-item"
@@ -723,7 +716,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {(Number(hardbound_price) * dexrate).toFixed(3)} CC
+                      {(Number(hardbound_price) / dexrate).toFixed(3)} CC
                     </span>
                     <button className="btn btn-item" onClick={() => onBuyHardboundCC()}>Buy with CC</button>
                   </div>
@@ -751,7 +744,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {(Number(bm_listdata[0]["bookmarkprice"]) * dexrate).toFixed(3)} CC
+                      {(Number(bm_listdata[0]["bookmarkprice"]) / dexrate).toFixed(3)} CC
                     </span>
                     <button className="btn btn-item" onClick={() => onBuyBookmarkCC()}>Buy with CC</button>
                   </div>
