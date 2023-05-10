@@ -23,7 +23,7 @@ const Balance = () => {
     const { account } = useWeb3React();
     const [curccbal, setCurccbal] = useState(0.0);
     const [depositval, setDepositval] = useState(0);
-    const [withrawval, setWithrawval] = useState(0);
+    const [withdrawval, setWithdrawval] = useState(0);
     const [currppccbal, setCurrppccbal] = useState(0);
     const [depositppval, setDepositppval] = useState(0);
     const [depositgascc, setDepositgascc] = useState(0);
@@ -205,11 +205,11 @@ const Balance = () => {
             const signer = provider.getSigner();
             const Printpressportal = new ethers.Contract(Printpress_address, Printpress_abi, signer);
             try {
-                let withraw = await Printpressportal.withdraw(ethers.utils.parseEther(String(withrawval)));
-                await withraw.wait();
+                let withdraw = await Printpressportal.withdraw(ethers.utils.parseEther(String(withdrawval)));
+                await withdraw.wait();
                 getPPbalance();
-                setWithrawval(0)
-                toast.success("Successfully withraw CC.", {
+                setWithdrawval(0)
+                toast.success("Successfully withdraw CC.", {
                     position: "top-right",
                     autoClose: 3000,
                     closeOnClick: true,
@@ -218,7 +218,7 @@ const Balance = () => {
                 });
             } catch (error) {
                 console.log(error)
-                setWithrawval(0)
+                setWithdrawval(0)
                 toast.error("Transaction failed. please try again.", {
                     position: "top-right",
                     autoClose: 3000,
@@ -419,25 +419,25 @@ const Balance = () => {
             >
                 <div>
                     <TextField
-                        id="withraw_val"
+                        id="withdraw_val"
                         style={{ margin: 8 }}
-                        placeholder="Please input the withraw CCoin amount"
-                        helperText="withraw amount"
+                        placeholder="Please input the withdraw CCoin amount"
+                        helperText="withdraw amount"
                         fullWidth
                         type="number"
                         InputLabelProps={{
                             shrink: true
                         }}
                         variant="filled"
-                        value={withrawval}
+                        value={withdrawval}
                         onChange={(e) => {
-                            setWithrawval(e.target.value);
+                            setWithdrawval(e.target.value);
                         }}
                     />
                 </div>
             </Box>
             <Button variant="contained" onClick={() => {withdrawPPCC()}}>
-                Withraw GAS CCoin
+                Withdraw GAS CCoin
             </Button>
             <Box
                 component="form"
