@@ -251,7 +251,7 @@ const BookContent = (props) => {
                             <Button variant="outlined">Back To List</Button>
                         </Link>
                     </Box>
-                    <Box display="flex" flexDirection="column" className="upload-content" p={1} m={1} bgcolor="background.paper">
+                    {/* <Box display="flex" flexDirection="column" className="upload-content" p={1} m={1} bgcolor="background.paper">
                         <input
                             accept="application/pdf, application/epub+zip"
                             className="hidden"
@@ -262,7 +262,7 @@ const BookContent = (props) => {
                             }}
                         />
                         <span>select the pdf file</span>
-                    </Box>
+                    </Box> */}
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
                         <div className='contenteditable-area' onPaste={handlePaste} ref={contentEditable} contentEditable={true} dangerouslySetInnerHTML={{ __html: bookcontent }} ></div>
                     </Box>
