@@ -45,7 +45,7 @@ const Dashboard = () => {
                 }
             }).catch(error => {
                 console.log(error)
-                setNeterror("The backend doesn't response now. Trying again after backend living.")
+                setNeterror("The backend doesn't response now. You may need to logout and back in again.")
             })
     }
 
