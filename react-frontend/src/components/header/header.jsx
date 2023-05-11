@@ -12,7 +12,7 @@ const Header = () => {
     <div className="header">
       <Navbar expand="lg">
         <Container>
-          <Navbar.Brand href="https:/greatlibrary.io/">The Great Library</Navbar.Brand>
+          <Navbar.Brand href="https://greatlibrary.io/">The Great Library</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" className="navbar-btn" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="nav-list">
