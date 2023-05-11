@@ -68,6 +68,7 @@ const Dashboard = () => {
                 )}
                 <MainCard border={false} className={classes.content}>
                     <p className={classes.normalContent}>Ready to go live? Email your manuscript(s) to <a href='mailto:info@greatlibrary.io'>info@greatlibrary.io</a> for verification. Please, send us all your manuscripts, rough drafts, maps, art, or other metadata for the property or properties you wish to list with the library even if you haven't created books in the library for them yet. It is better to have more than less for our verification process.</p>
+	            <p>New to the library? Read the listing document for help: <a href="https://whitepaper.greatlibrary.io/people/for-new-authors-listing-with-the-library" target="_blank">Listing With The Great Library</a></p>
                 </MainCard>
                 <br></br>
                 <MainCard border={false} className={classes.content}>
