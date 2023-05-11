@@ -59,6 +59,7 @@ const BookAdd = (props) => {
     const [booktypes, setBooktypes] = useState([]);
     const [origintypes, setOrigintypes] = useState([]);
     const [previosImg, setPreviosImg] = useState('');
+    const [curimg, setCurimg] = useState(false);
     const [loading, setLoading] = useState(false);
     const [inputList, setInputList] = useState([
         { tokenname: '', bookmarkprice: 0, maxbookmarksupply: 0, bookmarkstartpoint: 0, item_bmcontract_address: '' }
@@ -137,6 +138,7 @@ const BookAdd = (props) => {
     const handleFileUpload = (event) => {
         setBrandimage(event.target.files[0]);
         setPreviosImg(URL.createObjectURL(event.target.files[0]));
+        setCurimg(false)
     };
 
     const getnewBookcontractdata = async (
@@ -477,6 +479,10 @@ const BookAdd = (props) => {
         if (booktitle === '') {
             setErrors((errors) => ({ ...errors, booktitle: true }));
             console.log('booktitle: ', booktitle);
+            checked = true;
+        }
+        if (previosImg === '') {
+            setCurimg(true);
             checked = true;
         }
         if (authorwallet === '') {
@@ -862,6 +868,9 @@ const BookAdd = (props) => {
                             onChange={handleFileUpload}
                             required
                         />
+                        { curimg ? (<>
+                                <p style={{color: 'red'}}>Book image is required.</p>
+                            </>): (<></>)}
                         <Fab color="secondary" size="small" component="span" aria-label="add" variant="extended">
                             Upload photo
                         </Fab>
