@@ -23,6 +23,7 @@ class Books(models.Model):
         settings.AUTH_USER_MODEL, related_name='user', null=True, on_delete=models.CASCADE)
     book_type_id = models.BigIntegerField(default=0)
     max_book_supply = models.TextField(default='-1')
+    byteperbookmark = models.TextField(default='0')
     max_hardbound_supply = models.TextField(default='-1')
     book_price = models.DecimalField(max_digits = 10,decimal_places=3, default=0.0)
     hardbound_price = models.DecimalField(max_digits = 10,decimal_places=3, default=0.0)

@@ -475,7 +475,7 @@ const SingleProduct = ({ match }) => {
         spans.push(spanTags[j]);
       }
     }
-    var spanAmount = 200;
+    var spanAmount = Number(product.byteperbookmark) >= 0 ? Number(product.byteperbookmark) : 200;
     var bookmarkId = 0;
     var currentIndex = 0;
     while (currentIndex < spans.length) {
