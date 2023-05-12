@@ -735,7 +735,7 @@ const SingleProduct = ({ match }) => {
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">
                     {
-                      "Creating an effective description for a bookmark is important for SEO and usability."
+                      "By owning a bookmark, you not only gain special access and control over a piece of the book, but you also gain access to special parts of the book's game(s). As a bookmark owner, you can participate in the book's success and share in the rewards. Don't miss out on this unique opportunity to own a piece of your favorite book!"
                     }
                   </p>
                   <div className="buyaction-area">
