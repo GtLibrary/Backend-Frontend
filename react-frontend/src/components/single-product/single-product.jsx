@@ -639,7 +639,7 @@ const SingleProduct = ({ match }) => {
                 </button>
               </div>
               <div className="buybook-area">
-                <span className="bookprice-tag">{(Number(book_price) / dexrate).toFixed(3)} CC</span>
+                <span className="bookprice-tag">{(Number(book_price) / dexrate).toFixed(4)} CC</span>
                 <button
                   type="button"
                   className="btn btn-buybook"
@@ -689,7 +689,7 @@ const SingleProduct = ({ match }) => {
                     </button>
                   </div>
                   <div className="buyaction-area">
-                    <span className="price-area">{(Number(book_price) / dexrate).toFixed(3)} CC</span>
+                    <span className="price-area">{(Number(book_price) / dexrate).toFixed(4)} CC</span>
                     <button
                       type="button"
                       className="btn btn-item"
@@ -718,7 +718,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {(Number(hardbound_price) / dexrate).toFixed(3)} CC
+                      {(Number(hardbound_price) / dexrate).toFixed(4)} CC
                     </span>
                     <button className="btn btn-item" onClick={() => onBuyHardboundCC()}>Buy with CC</button>
                   </div>
@@ -746,7 +746,7 @@ const SingleProduct = ({ match }) => {
                   </div>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {(Number(bm_listdata[0]["bookmarkprice"]) / dexrate).toFixed(3)} CC
+                      {(Number(bm_listdata[0]["bookmarkprice"]) / dexrate).toFixed(4)} CC
                     </span>
                     <button className="btn btn-item" onClick={() => onBuyBookmarkCC()}>Buy with CC</button>
                   </div>
