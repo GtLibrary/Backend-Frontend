@@ -31,7 +31,7 @@ const HomePage = () => {
       <Layout>
         <Hero />
         <MainSection />
-        /* { googleads ? (
+        {/* { googleads ? (
           googleads.map((item, index) => {
             <AdSense.Google
               client={item.adcontent?item.adcontent.client:''}
@@ -41,7 +41,7 @@ const HomePage = () => {
               format={item.adcontent?item.adcontent.format:''}
             />
           })
-        ): (<></>)} */
+        ): (<></>)} */}
         <FeaturedCollection products={products} />
       </Layout>
     </>
