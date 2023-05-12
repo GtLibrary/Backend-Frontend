@@ -98,7 +98,7 @@ const FeaturedProduct = (props) => {
           cc_address
         );
 
-        var price = book_price / dexrate + 0.00001;
+        let price = book_price / dexrate + 0.00001;
   
         await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
         await printpress_contract.methods
@@ -140,7 +140,7 @@ const FeaturedProduct = (props) => {
             <button type="button" className="btn btn-buybook" onClick={() => onBuyBook()}>Buy Now</button>
           </div>
           <div className="buybook-area">
-            <span className="bookprice-tag">{(Number(book_price / dexrate)).toFixed(3)} CC</span>
+            <span className="bookprice-tag">{(Number(book_price / dexrate)).toFixed(4)} CC</span>
             <button type="button" className="btn btn-buybook" onClick={() => onBuyBookCC()}>Buy with CC</button>
           </div>
         </div>
