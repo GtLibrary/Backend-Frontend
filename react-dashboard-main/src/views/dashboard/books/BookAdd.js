@@ -45,6 +45,7 @@ const BookAdd = (props) => {
     const [datamine, setDatamine] = useState('');
     const [introduction, setIntroduction] = useState('');
     const [bookdescription, setBookdescription] = useState('');
+    const [byteperbookmark, setByteperbookmark] = useState(200);
     const [hardbounddescription, setHardbounddescription] = useState('');
     const [maxbooksupply, setMaxbooksupply] = useState(0);
     const [maxbookmarksupply, setMaxbookmarksupply] = useState(0);
@@ -97,9 +98,9 @@ const BookAdd = (props) => {
         setHardboundprice(data.hardbound_price);
         setMaxbooksupply(data.max_book_supply);
         setMaxbookmarksupply(data.max_bookmark_supply);
-        console.log('maxbookmarksupply:', data.max_bookmark_supply);
         setMaxhardboundsupply(data.max_hardbound_supply);
         setBookdescription(data.book_description);
+        setByteperbookmark(data.byteperbookmark);
         setHardbounddescription(data.hardbound_description);
         setStartpoint(data.book_from);
         setHardboundStartpoint(data.hardbound_from);
@@ -430,6 +431,7 @@ const BookAdd = (props) => {
         form_data.append('origin_type_id', origintype);
         form_data.append('book_type_id', booktype);
         form_data.append('book_description', bookdescription);
+        form_data.append('byteperbookmark', byteperbookmark);
         form_data.append('hardbound_description', hardbounddescription);
         await axios
             .put(configData.API_SERVER + 'books/edit/' + bookid, form_data, {
@@ -556,6 +558,7 @@ const BookAdd = (props) => {
             form_data.append('book_type_id', booktype);
             form_data.append('book_price', bookprice);
             form_data.append('book_description', bookdescription);
+            form_data.append('byteperbookmark', byteperbookmark);
             form_data.append('hardbound_description', hardbounddescription);
             form_data.append('bookmark_price', bookmarkprice);
             form_data.append('hardbound_price', hardboundprice);
@@ -1038,6 +1041,21 @@ const BookAdd = (props) => {
                         variant="filled"
                         val={bookdescription}
                         setVal={setBookdescription}
+                    />
+                    <InputTextField
+                        id="byteperbookmark"
+                        style={{ margin: 8 }}
+                        placeholder="Please input byteperbookmark"
+                        helperText="Byte per Bookmark"
+                        fullWidth
+                        className="input-item"
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true
+                        }}
+                        variant="filled"
+                        val={byteperbookmark}
+                        setVal={setByteperbookmark}
                     />
                 </div>
                 <Divider>Hardbound detail</Divider>
