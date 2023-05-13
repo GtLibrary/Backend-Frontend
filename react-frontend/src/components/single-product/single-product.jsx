@@ -503,7 +503,7 @@ const SingleProduct = ({ match }) => {
 
         newSpans.push(newSpan);
         start = end;
-        if (remainingChars == 0) {
+        if (remainingChars === 0) {
           bookmarkId++;
         }
       }
@@ -673,7 +673,7 @@ const SingleProduct = ({ match }) => {
                 <div className="addtional-item">
                   <div className="img-area">
                     <img
-                      src="/assets/img/bookmark.png"
+                      src={image_url}
                       alt="bookmark brand"
                     ></img>
                   </div>
@@ -704,7 +704,7 @@ const SingleProduct = ({ match }) => {
                 <div className="addtional-item">
                   <div className="img-area">
                     <img
-                      src="/assets/img/bookmark.png"
+                      src={image_url}
                       alt="bookmark brand"
                     ></img>
                   </div>
@@ -728,7 +728,7 @@ const SingleProduct = ({ match }) => {
                 <div className="addtional-item">
                   <div className="img-area">
                     <img
-                      src="/assets/img/bookmark.png"
+                      src={image_url}
                       alt="bookmark brand"
                     ></img>
                   </div>
