@@ -540,6 +540,16 @@ const BookAdd = (props) => {
             return false;
         }
 
+        
+        const checkavax = window.confirm(
+            "If you don't have enough AVAX, maybe book mint fail. Please check again your wallet for deploy book"
+        );
+        if(!checkavax) {
+            setLoading(false);
+            return;
+        }
+
+
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
