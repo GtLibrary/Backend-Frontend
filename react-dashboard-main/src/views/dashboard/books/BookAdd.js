@@ -554,6 +554,9 @@ const BookAdd = (props) => {
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
+            
+            const printpress = new ethers.Contract(printingpress_address, printpress_abi, signer);
+
             let form_data = new FormData();
             if (brandimage) {
                 form_data.append('image_url', brandimage, brandimage.name);
@@ -597,7 +600,19 @@ const BookAdd = (props) => {
                         );
                         const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
                         //await BookTradable.setRewardContract(BTcontract);
-
+                        const is_validBT = await printpress.isOurContact(BTcontract)
+                        
+                        if(!is_validBT) {
+                            setLoading(false);
+                            toast.error("It's not our book", {
+                                position: 'top-right',
+                                autoClose: 3000,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true
+                            });
+                            return false;
+                        }
                         await BookTradableBT.setAddon(printingpress_address, true);
                         await BookTradableBT.setAddon(minimart_address, true);
 
@@ -612,7 +627,19 @@ const BookAdd = (props) => {
                             ethers.utils.parseEther(String(hardboundstartpoint)),
                             account
                         );
-
+                        const is_validHB = await printpress.isOurContact(HBcontract)
+                        
+                        if(!is_validHB) {
+                            setLoading(false);
+                            toast.error("It's not our book", {
+                                position: 'top-right',
+                                autoClose: 3000,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true
+                            });
+                            return false;
+                        }
                         const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
                         await BookTradableHB.setRewardContract(BTcontract);
                         await BookTradableHB.setAddon(printingpress_address, true);
@@ -637,6 +664,19 @@ const BookAdd = (props) => {
                                 ethers.utils.parseEther(String(itembookmarkstartpoint)),
                                 account
                             );
+                            const is_validBM = await printpress.isOurContact(BMcontract)
+                            
+                            if(!is_validBM) {
+                                setLoading(false);
+                                toast.error("It's not our book", {
+                                    position: 'top-right',
+                                    autoClose: 3000,
+                                    closeOnClick: true,
+                                    pauseOnHover: true,
+                                    draggable: true
+                                });
+                                return false;
+                            }
                             const BookTradableBM = new ethers.Contract(BMcontract, booktradable_abi, signer);
                             await BookTradableBM.setRewardContract(BTcontract);
                             await BookTradableBM.setAddon(printingpress_address, true);
@@ -722,6 +762,19 @@ const BookAdd = (props) => {
                     const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
                     //await BookTradable.setRewardContract(BTcontract);
 
+                    const is_validBT = await printpress.isOurContact(BTcontract)
+                        
+                    if(!is_validBT) {
+                        setLoading(false);
+                        toast.error("It's not our book", {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
+                        return false;
+                    }
                     await BookTradableBT.setAddon(printingpress_address, true);
                     await BookTradableBT.setAddon(minimart_address, true);
 
@@ -736,6 +789,19 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(hardboundstartpoint)),
                         account
                     );
+                    const is_validHB = await printpress.isOurContact(HBcontract)
+                    
+                    if(!is_validHB) {
+                        setLoading(false);
+                        toast.error("It's not our book", {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
+                        return false;
+                    }
                     const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
                     await BookTradableHB.setRewardContract(BTcontract);
                     await BookTradableHB.setAddon(printingpress_address, true);
@@ -760,6 +826,20 @@ const BookAdd = (props) => {
                             ethers.utils.parseEther(String(itembookmarkstartpoint)),
                             account
                         );
+
+                        const is_validBM = await printpress.isOurContact(BMcontract)
+                            
+                        if(!is_validBM) {
+                            setLoading(false);
+                            toast.error("It's not our book", {
+                                position: 'top-right',
+                                autoClose: 3000,
+                                closeOnClick: true,
+                                pauseOnHover: true,
+                                draggable: true
+                            });
+                            return false;
+                        }
 
                         const BookTradableBM = new ethers.Contract(BMcontract, booktradable_abi, signer);
                         await BookTradableBM.setRewardContract(BTcontract);
