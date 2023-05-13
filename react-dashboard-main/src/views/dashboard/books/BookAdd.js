@@ -509,7 +509,8 @@ const BookAdd = (props) => {
         }
         try {
             if (inputList[0]['maxbookmarksupply'] <= 0) {
-                setErrors((errors) => ({ ...errors, maxbookmarksupply: true }));
+                //setErrors((errors) => ({ ...errors, maxbookmarksupply: true }));
+		alert("Bookmark exists but max bookmark supply was left empty, or it was set equal to or less than zero.");
                 console.log('maxbookmarksupply: ', maxbookmarksupply);
                 checked = true;
             }
@@ -542,7 +543,7 @@ const BookAdd = (props) => {
 
         
         const checkavax = window.confirm(
-            "If you don't have enough AVAX, maybe book mint fail. Please check again your wallet for deploy book"
+            "If you don't have enough AVAX, book mint may fail. Please check your wallet before minting book. No more than 0.5 AVAX will be needed and the price could be far less depending on congestion. Remember, we are taking no cut of the cost to mint your books."
         );
         if(!checkavax) {
             setLoading(false);
