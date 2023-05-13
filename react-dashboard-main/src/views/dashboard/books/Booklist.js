@@ -87,7 +87,7 @@ const Booklist = () => {
                 <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
                     <Button variant="contained" onClick={() => {newBookadd()}}>Add New Book</Button>
                 </Box>
-                <TableContainer sx={{ maxHeight: 440 }}>
+                <TableContainer sx={{ maxHeight: 520 }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>
