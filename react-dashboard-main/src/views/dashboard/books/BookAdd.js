@@ -45,7 +45,7 @@ const BookAdd = (props) => {
     const [datamine, setDatamine] = useState('');
     const [introduction, setIntroduction] = useState('');
     const [bookdescription, setBookdescription] = useState('');
-    const [byteperbookmark, setByteperbookmark] = useState(200);
+    const [byteperbookmark, setByteperbookmark] = useState(2048);
     const [hardbounddescription, setHardbounddescription] = useState('');
     const [maxbooksupply, setMaxbooksupply] = useState(0);
     const [maxbookmarksupply, setMaxbookmarksupply] = useState(0);
