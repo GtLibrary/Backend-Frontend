@@ -154,6 +154,10 @@
       padding: 16px;
       border-radius: 16px;
       .img-area {
+        // max-height: 180px;
+        // /* width: auto; */
+        // overflow: hidden;
+        // border-radius: 10px;
         img {
           border-radius: 12px;
           aspect-ratio: 1.5;
