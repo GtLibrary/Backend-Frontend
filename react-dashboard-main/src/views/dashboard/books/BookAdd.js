@@ -41,7 +41,7 @@ const BookAdd = (props) => {
     const [brandimage, setBrandimage] = useState(null);
     const [authorwallet, setAuthorwallet] = useState(account);
     const [authorname, setAuthorname] = useState('');
-    const [curserialnumber, setCurserialnumber] = useState('');
+    // const [curserialnumber, setCurserialnumber] = useState('');
     const [datamine, setDatamine] = useState('');
     const [introduction, setIntroduction] = useState('');
     const [bookdescription, setBookdescription] = useState('');
@@ -89,7 +89,7 @@ const BookAdd = (props) => {
         setBooktype(data.book_type_id);
         setOrigintype(data.origin_type_id);
         setDatamine(data.datamine);
-        setCurserialnumber(data.curserial_number);
+        // setCurserialnumber(data.curserial_number);
         setAuthorwallet(data.author_wallet);
         setAuthorname(data.author_name);
         setIntroduction(data.introduction);
@@ -566,7 +566,7 @@ const BookAdd = (props) => {
             form_data.append('author_wallet', authorwallet);
             form_data.append('author_name', authorname);
             form_data.append('introduction', introduction);
-            form_data.append('curserial_number', curserialnumber);
+            // form_data.append('curserial_number', curserialnumber);
             form_data.append('datamine', datamine);
             form_data.append('origin_type_id', origintype);
             form_data.append('book_type_id', booktype);
@@ -704,7 +704,7 @@ const BookAdd = (props) => {
                                     setPreviosImg('');
                                     setOrigintype('');
                                     setDatamine('');
-                                    setCurserialnumber('');
+                                    // setCurserialnumber('');
                                     setAuthorwallet('');
                                     setAuthorname('');
                                     setBrandimage('');
@@ -1046,7 +1046,7 @@ const BookAdd = (props) => {
                         isRequired={true}
                         errorMsg={'Datamine is required.'}
                     />
-                    <InputTextField
+                    {/* <InputTextField
                         id="curserialnumber"
                         style={{ margin: 8 }}
                         placeholder="Please input the curserial number"
@@ -1060,7 +1060,7 @@ const BookAdd = (props) => {
                         type="text"
                         val={curserialnumber}
                         setVal={setCurserialnumber}
-                    />
+                    /> */}
                 </div>
                 <Divider>Book detail</Divider>
                 <div>
