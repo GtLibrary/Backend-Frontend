@@ -52,6 +52,7 @@ const Balance = () => {
             const Printpressportal = new ethers.Contract(Printpress_address, Printpress_abi, signer);
             
             try {
+console.log("Why is this getting called now?");
                 let getdeposit = await Printpressportal.getBalance(account);
                 setCurrppccbal(ethers.utils.formatEther(getdeposit))
             } catch (error) {
