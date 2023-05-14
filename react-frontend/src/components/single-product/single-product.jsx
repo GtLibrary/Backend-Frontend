@@ -437,30 +437,28 @@ const SingleProduct = ({ match }) => {
     };
     
     try {
-      let res = await axios(config)
-      
-      console.log("asdfsadfsadfasdf")
-      console.log("res =>", res.data)
-      if (res.data.content === "You are not token owner!!") {
-        toast.error(res.data.content, {
-          position: "top-right",
-          autoClose: 3000,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-        });
-      }
-
-      const parser = new DOMParser();
-      const htmlDoc = parser.parseFromString(res.data.content, "text/html");
-      const html = htmlDoc.body.innerHTML;
-
-      if (html === "You are not token owner!!") {
-        setPdftext(html);
-      } else {
-        var bookHtml = addOnClicks(html);
-        document.getElementById("reader-body").innerHTML = bookHtml;
-      }
+      await axios(config).then((res) => {
+        if (res.data.content === "You are not token owner!!") {
+          toast.error(res.data.content, {
+            position: "top-right",
+            autoClose: 3000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        }
+  
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(res.data.content, "text/html");
+        const html = htmlDoc.body.innerHTML;
+  
+        if (html === "You are not token owner!!") {
+          setPdftext(html);
+        } else {
+          var bookHtml = addOnClicks(html);
+          document.getElementById("reader-body").innerHTML = bookHtml;
+        }
+      });
     } catch (error) {
       console.log(error)
     }
@@ -477,9 +475,7 @@ const SingleProduct = ({ match }) => {
         spans.push(spanTags[j]);
       }
     }
-
     var spanAmount = Number(product.byteperbookmark) > 0 ? Number(product.byteperbookmark) : 2048;
-    
     var bookmarkId = 0;
     var currentIndex = 0;
     while (currentIndex < spans.length) {
@@ -543,7 +539,7 @@ const SingleProduct = ({ match }) => {
       return;
     }
     setLoading(true);
-    getPdfData();
+    await getPdfData();
     setLoading(false);
   };
 
