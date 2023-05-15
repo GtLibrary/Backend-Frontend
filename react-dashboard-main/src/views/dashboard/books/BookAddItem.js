@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { IconTrash, IconPlus } from '@tabler/icons';
 // material-ui
 import { Button, TextField, Divider } from '@material-ui/core';
  
-function BookAddItem({ inputList, setInputList }) {
+function BookAddItem({ inputList, setInputList, avaxprice }) {
     const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/
     const onlyinteger = /^\d+(,\d{0,3})?$/
     // handle input change
@@ -23,7 +23,7 @@ function BookAddItem({ inputList, setInputList }) {
     
     // handle click event of the Add button
     const handleAddClick = () => {
-        setInputList([...inputList, { tokenname: "", bookmarkprice: 0, maxbookmarksupply: 0, bookmarkstartpoint: 0, item_bmcontract_address: "" }]);
+        setInputList([...inputList, { tokenname: "", bookmarkprice: 60, maxbookmarksupply: 390, bookmarkstartpoint: 0, item_bmcontract_address: "" }]);
     };
 
     return (
@@ -55,7 +55,7 @@ function BookAddItem({ inputList, setInputList }) {
                                         style={{ margin: 8 }}
                                         name="bookmarkprice"
                                         placeholder="Please input the bookmark price"
-                                        helperText="Bookmark Price"
+                                        helperText={`Bookmark Price (~ ${avaxprice * item.bookmarkprice}) USD`}
                                         fullWidth
                                         className='input-item'
                                         type="number"
