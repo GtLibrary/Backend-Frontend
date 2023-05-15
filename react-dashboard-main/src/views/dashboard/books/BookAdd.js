@@ -74,7 +74,7 @@ const BookAdd = (props) => {
     const [curimg, setCurimg] = useState(false);
     const [loading, setLoading] = useState(false);
     const [inputList, setInputList] = useState([
-        { tokenname: '', bookmarkprice: '60', maxbookmarksupply: '390', bookmarkstartpoint: '0', item_bmcontract_address: '' }
+        { tokenname: generateRandomString(8), bookmarkprice: '60', maxbookmarksupply: '390', bookmarkstartpoint: '0', item_bmcontract_address: '' }
     ]);
     const [errors, setErrors] = useState({
         booktitle: false,
