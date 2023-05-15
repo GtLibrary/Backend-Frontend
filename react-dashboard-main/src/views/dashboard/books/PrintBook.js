@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from "react-router-dom";
 import axios from 'axios';
+import Web3 from 'web3';
 import { ethers } from "ethers";
 import { useSelector } from 'react-redux';
 import { useWeb3React } from "@web3-react/core";
@@ -20,6 +21,7 @@ import printingpress_abi from './../../../contract-json/PrintingPress.json';
 import booktradable_abi from './../../../contract-json/BookTradable.json';
 
 const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
+const onlyinteger = /^\d+(,\d{0,3})?$/
 
 const PrintBook = (props) => {
     
@@ -31,7 +33,7 @@ const PrintBook = (props) => {
     const [ bookcontractaddress, setBookcontractaddress ] = useState('');
     const [ maxbooksupply, setMaxbooksupply ] = useState(0);
     const [ bookprice, setBookprice ] = useState(0);
-    const [ amount, setAmount ] = useState(0);
+    const [ mintamount, setMintamount ] = useState(0);
     const [ gasrewards, setGasrewards] = useState(0);
     const [ tokentype, setTokentype ] = useState(1);
     const [ curmintedamount, setCurmintedamount ] = useState(0);
@@ -39,6 +41,9 @@ const PrintBook = (props) => {
     const [tokentypes, setTokentypes] = useState([])
 
     const accountinfo = useSelector((state) => state.account);
+    const providerUrl = process.env.REACT_APP_PROVIDERURL;
+
+    const web3 = new Web3(new Web3.providers.HttpProvider(providerUrl));
 
     const getPrintBookById = async () => {
         const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + bookid, { headers: { Authorization: `${accountinfo.token}` } });
@@ -70,7 +75,7 @@ const PrintBook = (props) => {
                 "contractaddress": bmlist[i].item_bmcontract_address,
                 "maxtokensupply": bmlist[i].maxbookmarksupply,
                 "startpoint": bmlist[i].bookmarkstartpoint,
-                "tokenprice": data.bookmarkprice
+                "tokenprice": bmlist[i].bookmarkprice
             };
             tokenlist.push(element)
         }
@@ -130,10 +135,8 @@ const PrintBook = (props) => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(printingpress_address, printingpress_abi, signer);
-            // const btcontractPortal = new ethers.Contract(bookcontractaddress, booktradable_abi, signer);
-            // const balance = yaawait contractPortal.getBalance(account)
             try {
-                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, amount, ethers.utils.parseEther(String(bookprice)), ethers.utils.parseEther(String(gasrewards)));
+                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, Number(mintamount), web3.utils.toWei(String(bookprice)), ethers.utils.parseEther(String(gasrewards)));
                 await contract.wait();
                 toast.success("successfully Mint Book", {
                     position: "top-right",
@@ -331,9 +334,16 @@ const PrintBook = (props) => {
                                     shrink: true
                                 }}
                                 variant="filled"
-                                value={amount}
+                                value={mintamount}
                                 onChange={(e) => {
-                                    setAmount(e.target.value);
+                                    if(onlyinteger.test(e.target.value)) {
+                                        if(e.target.value > 0) {
+                                            console.log(e.target.value)
+                                            setMintamount(e.target.value);
+                                        } else {
+                                            return;
+                                        }
+                                    }
                                 }}
                             />
                         </div>

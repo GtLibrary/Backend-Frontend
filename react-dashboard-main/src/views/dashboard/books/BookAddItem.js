@@ -3,6 +3,16 @@ import { IconTrash, IconPlus } from '@tabler/icons';
 // material-ui
 import { Button, TextField, Divider } from '@material-ui/core';
  
+const generateRandomString = (length) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
 function BookAddItem({ inputList, setInputList, avaxprice }) {
     const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/
     const onlyinteger = /^\d+(,\d{0,3})?$/
@@ -23,7 +33,7 @@ function BookAddItem({ inputList, setInputList, avaxprice }) {
     
     // handle click event of the Add button
     const handleAddClick = () => {
-        setInputList([...inputList, { tokenname: "", bookmarkprice: 60, maxbookmarksupply: 390, bookmarkstartpoint: 0, item_bmcontract_address: "" }]);
+        setInputList([...inputList, { tokenname: generateRandomString(8), bookmarkprice: '60', maxbookmarksupply: '390', bookmarkstartpoint: '0', item_bmcontract_address: "" }]);
     };
 
     return (
@@ -55,7 +65,7 @@ function BookAddItem({ inputList, setInputList, avaxprice }) {
                                         style={{ margin: 8 }}
                                         name="bookmarkprice"
                                         placeholder="Please input the bookmark price"
-                                        helperText={`Bookmark Price (~ ${avaxprice * item.bookmarkprice}) USD`}
+                                        helperText={`Bookmark Price (~ ${avaxprice * Number(item.bookmarkprice)}) USD`}
                                         fullWidth
                                         className='input-item'
                                         type="number"
