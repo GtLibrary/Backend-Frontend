@@ -339,7 +339,7 @@ const BookAdd = (props) => {
                     baseuri,
                     burnable,
                     ethers.utils.parseEther(String(itemmaxbookmarksupply)),
-                    web3.utils.toWei(itembookmarkprice),
+                    web3.utils.toWei(String(itembookmarkprice)),
                     itembookmarkstartpoint,
                     account
                 );
@@ -398,7 +398,7 @@ const BookAdd = (props) => {
                     baseuri,
                     burnable,
                     ethers.utils.parseEther(String(itemmaxbookmarksupply)),
-                    web3.utils.toWei(itembookmarkprice),
+                    web3.utils.toWei(String(itembookmarkprice)),
                     ethers.utils.parseEther(String(itembookmarkstartpoint)),
                     account
                 );
@@ -614,7 +614,7 @@ const BookAdd = (props) => {
                             baseuri,
                             burnable,
                             ethers.utils.parseEther(String(maxbooksupply)),
-                            web3.utils.toWei(bookprice),
+                            web3.utils.toWei(String(bookprice)),
                             ethers.utils.parseEther(String(startpoint)),
                             account
                         );
@@ -643,7 +643,7 @@ const BookAdd = (props) => {
                             baseuri,
                             burnable,
                             ethers.utils.parseEther(String(maxhardboundsupply)),
-                            web3.utils.toWei(hardboundprice),
+                            web3.utils.toWei(String(hardboundprice)),
                             ethers.utils.parseEther(String(hardboundstartpoint)),
                             account
                         );
@@ -680,7 +680,7 @@ const BookAdd = (props) => {
                                 baseuri,
                                 burnable,
                                 ethers.utils.parseEther(String(itemmaxbookmarksupply)),
-                                web3.utils.toWei(itembookmarkprice),
+                                web3.utils.toWei(String(itembookmarkprice)),
                                 ethers.utils.parseEther(String(itembookmarkstartpoint)),
                                 account
                             );
@@ -774,7 +774,7 @@ const BookAdd = (props) => {
                         baseuri,
                         burnable,
                         ethers.utils.parseEther(String(maxbooksupply)),
-                        web3.utils.toWei(bookprice),
+                        web3.utils.toWei(String(bookprice)),
                         ethers.utils.parseEther(String(startpoint)),
                         account
                     );
@@ -805,7 +805,7 @@ const BookAdd = (props) => {
                         baseuri,
                         burnable,
                         ethers.utils.parseEther(String(maxhardboundsupply)),
-                        web3.utils.toWei(hardboundprice),
+                        web3.utils.toWei(String(hardboundprice)),
                         ethers.utils.parseEther(String(hardboundstartpoint)),
                         account
                     );
@@ -842,7 +842,7 @@ const BookAdd = (props) => {
                             baseuri,
                             burnable,
                             ethers.utils.parseEther(String(itemmaxbookmarksupply)),
-                            web3.utils.toWei(itembookmarkprice),
+                            web3.utils.toWei(String(itembookmarkprice)),
                             ethers.utils.parseEther(String(itembookmarkstartpoint)),
                             account
                         );
