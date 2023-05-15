@@ -11,6 +11,7 @@ import { useSpeechSynthesis } from "react-speech-kit";
 import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
+import SavebookModal from "../SBmodal";
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
 import cc_abi from "../../utils/contract/CultureCoin.json";
 import NBT_abi from "../../utils/contract/BookTradable.json";
@@ -40,8 +41,10 @@ const SingleProduct = ({ match }) => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
+  const [sbmodalshow, setSbmodalshow] = useState(false);
   const [curserialnum, setCurserialnum] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [pagecontent, setPagecontent] = useState(null);
 
   useEffect(() => {
     const bookurl = process.env.REACT_APP_API + `bookdata/${id}`;
@@ -548,17 +551,9 @@ const SingleProduct = ({ match }) => {
       return;
     }
     const pageHTML = document.querySelector(".pdf-content").outerHTML;
-    const blob = new Blob([pageHTML], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const tempEl = document.createElement("a");
-    document.body.appendChild(tempEl);
-    tempEl.href = url;
-    tempEl.download = title + ".download.html";
-    tempEl.click();
-    setTimeout(() => {
-      URL.revokeObjectURL(url);
-      tempEl.parentNode.removeChild(tempEl);
-    }, 2000);
+    setPagecontent(pageHTML)
+    setSbmodalshow(true);
+    
   };
 
   const onAudioBook = () => {
@@ -890,6 +885,12 @@ const SingleProduct = ({ match }) => {
         id={id}
         curserial_num={curserialnum}
       />
+      <SavebookModal 
+        show={sbmodalshow}
+        onHide={() => {setSbmodalshow(false)}}
+        pagecontent={pagecontent}
+        title={title}
+      ></SavebookModal>
     </Layout>
   );
 };
