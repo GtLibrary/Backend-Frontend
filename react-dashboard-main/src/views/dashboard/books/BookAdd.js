@@ -983,10 +983,10 @@ const BookAdd = (props) => {
                             required
                         />
                         { curimg ? (<>
-                                <p style={{color: 'red'}}>Book image is required.</p>
+                                <p style={{color: 'red'}}>Book cover image is required.</p>
                             </>): (<></>)}
                         <Fab color="secondary" size="small" component="span" aria-label="add" variant="extended">
-                            Upload photo
+                            Upload cover image
                         </Fab>
                     </label>
                 </div>
