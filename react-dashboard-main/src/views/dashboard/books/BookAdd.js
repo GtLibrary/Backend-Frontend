@@ -8,7 +8,7 @@ import { ethers } from 'ethers';
 import { useWeb3React } from '@web3-react/core';
 import { useSelector } from 'react-redux';
 // material-ui
-import { Button, Box, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Grid } from '@material-ui/core';
+import { Button, Box, FormControl, InputLabel, Select, MenuItem, Fab, Divider, Grid, Typography } from '@material-ui/core';
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import InputTextField from '../../../ui-component/extended/InputTextField';
@@ -20,6 +20,16 @@ import printingpress_abi from './../../../contract-json/PrintingPress.json';
 import booktradable_abi from './../../../contract-json/BookTradable.json';
 
 LoadingOverlay.propTypes = undefined;
+
+const generateRandomString = (length) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
 
 const BookAdd = (props) => {
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
@@ -33,6 +43,7 @@ const BookAdd = (props) => {
     const { account } = useWeb3React();
     const printpress_abi = printingpress_abi;
     const accountinfo = useSelector((state) => state.account);
+    const [curavaxprice, setCuravaxprice] = useState(0.0);
 
     const [booktitle, setBooktitle] = useState('');
     const [bookcontractaddress, setBookcontractaddress] = useState('');
@@ -40,21 +51,21 @@ const BookAdd = (props) => {
     const [title, setTitle] = useState('Add New Book');
     const [brandimage, setBrandimage] = useState(null);
     const [authorwallet, setAuthorwallet] = useState(account);
-    const [authorname, setAuthorname] = useState('');
+    const [authorname, setAuthorname] = useState(accountinfo.user.username);
     // const [curserialnumber, setCurserialnumber] = useState('');
-    const [datamine, setDatamine] = useState('');
+    const [datamine, setDatamine] = useState(generateRandomString(8));
     const [introduction, setIntroduction] = useState('');
     const [bookdescription, setBookdescription] = useState('');
     const [byteperbookmark, setByteperbookmark] = useState(2048);
     const [hardbounddescription, setHardbounddescription] = useState('');
-    const [maxbooksupply, setMaxbooksupply] = useState(0);
-    const [maxbookmarksupply, setMaxbookmarksupply] = useState(0);
-    const [maxhardboundsupply, setMaxhardboundsupply] = useState(0);
+    const [maxbooksupply, setMaxbooksupply] = useState(100000000);
+    const [maxbookmarksupply, setMaxbookmarksupply] = useState(390);
+    const [maxhardboundsupply, setMaxhardboundsupply] = useState(1000);
     const [startpoint, setStartpoint] = useState(0);
-    const [hardboundstartpoint, setHardboundStartpoint] = useState(0);
-    const [bookprice, setBookprice] = useState(0);
-    const [bookmarkprice, setBookmarkprice] = useState(0);
-    const [hardboundprice, setHardboundprice] = useState(0);
+    const [hardboundstartpoint, setHardboundStartpoint] = useState(5);
+    const [bookprice, setBookprice] = useState(1);
+    const [bookmarkprice, setBookmarkprice] = useState(60);
+    const [hardboundprice, setHardboundprice] = useState(5);
     const [booktype, setBooktype] = useState(0);
     const [origintype, setOrigintype] = useState(0);
     const [booktypes, setBooktypes] = useState([]);
@@ -63,7 +74,7 @@ const BookAdd = (props) => {
     const [curimg, setCurimg] = useState(false);
     const [loading, setLoading] = useState(false);
     const [inputList, setInputList] = useState([
-        { tokenname: '', bookmarkprice: 0, maxbookmarksupply: 0, bookmarkstartpoint: 0, item_bmcontract_address: '' }
+        { tokenname: '', bookmarkprice: 60, maxbookmarksupply: 390, bookmarkstartpoint: 0, item_bmcontract_address: '' }
     ]);
     const [errors, setErrors] = useState({
         booktitle: false,
@@ -109,6 +120,15 @@ const BookAdd = (props) => {
         setHardboundcontractaddress(data.hb_contract_address);
         setInputList(data.bm_listdata);
     };
+
+    useEffect(() => {
+        async function getAvaxprice() {
+            const response = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=avalanche-2&vs_currencies=usd');
+            const price = response.data['avalanche-2'].usd;
+            setCuravaxprice(price)
+        }
+        getAvaxprice()
+    }, [])
 
     useEffect(() => {
         getBooktypes();
@@ -1068,7 +1088,7 @@ const BookAdd = (props) => {
                         id="bookprice"
                         style={{ margin: 8 }}
                         placeholder="Please input the book price"
-                        helperText="Book Price"
+                        helperText={`Book Price (~ ${curavaxprice * bookprice} USD)`}
                         fullWidth
                         className="input-item"
                         InputLabelProps={{
@@ -1155,7 +1175,7 @@ const BookAdd = (props) => {
                         id="hardboundprice"
                         style={{ margin: 8 }}
                         placeholder="Please input the hardbound price"
-                        helperText="Hardbound Price"
+                        helperText={`Hardbound Price (~ ${curavaxprice * hardboundprice} USD)`}
                         fullWidth
                         className="input-item"
                         type="number"
@@ -1222,7 +1242,7 @@ const BookAdd = (props) => {
                         setVal={setHardbounddescription}
                     />
                 </div>
-                {<BookAddItem inputList={inputList} setInputList={setInputList} />}
+                {<BookAddItem inputList={inputList} setInputList={setInputList} avaxprice={curavaxprice} />}
                 <Grid container spacing={1}>
                     <Grid item xs={6}>
                         <FormControl className="mui-formcontrol" fullWidth>
