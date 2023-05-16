@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 
 // material-ui
 import { Grid, Button, Box } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 // toast message
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
@@ -13,47 +13,46 @@ import { gridSpacing } from '../../../store/constant';
 import configData from '../../../config';
 import './styles.css';
 
-import { pdfjs } from 'react-pdf';
-import { parseEpub } from '@gxl/epub-parser';
-// import { pdfjs } from "pdfjs-dist";
-// pdfjs.GlobalWorkerOptions.workerSrc ='pdf.worker.min.js';
-pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
-
-// import PDFJSWorker from 'node_modules/pdfjs-dist/build/pdf.worker.js';
-// pdfjs.GlobalWorkerOptions.workerSrc = PDFJSWorker;
 //==============================|| book content ||==============================//
-
-const useStyles = makeStyles((theme) => ({
-    maincontent: {
-        height: 'calc(100vh - 210px)',
-        overflowY: 'scroll'
-    }
-}));
 
 const BookContent = (props) => {
     const { id } = useParams();
     const [bookcontent, setBookcontent] = useState('<p>Hello from CKEditor 5!</p>');
     const [title, setTitle] = useState('Book Content Edit');
     const [epubfile, setEpubfile] = useState(null);
+    const [bookfile, setBookfile] = useState(null);
     const accountinfo = useSelector((state) => state.account);
     const contentEditable = useRef();
-    const classes = useStyles();
 
     const getBookcontentById = async () => {
         const { data } = await axios.get(configData.API_SERVER + 'books/edit/' + id, {
             headers: { Authorization: `${accountinfo.token}` }
         });
         setBookcontent(data.content);
+        setBookfile(data.epub_file);
     };
 
     const updateBookcontent = async () => {
+        
+        let form_data = new FormData();
+        if (epubfile) {
+            form_data.append('epub_file', epubfile);
+        }
+        form_data.append('content', bookcontent);
+
         await axios.put(
-            configData.API_SERVER + 'books/edit/' + id,
-            {
-                content: bookcontent
-            },
+            configData.API_SERVER + 'books/edit/' + id, 
+            form_data,
             { headers: { Authorization: `${accountinfo.token}` } }
         );
+        
+        toast.success('successfully save data', {
+            position: 'top-right',
+            autoClose: 3000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true
+        });
     };
 
     useEffect(() => {
@@ -66,24 +65,6 @@ const BookContent = (props) => {
     const saveBookcontent = () => {
         if (id) {
             updateBookcontent();
-        } else {
-            
-            let form_data = new FormData();
-            form_data.append('epubfile', epubfile);
-
-            axios
-                .post(configData.API_SERVER + 'bookcontent/save', {
-                    headers: { Authorization: `${accountinfo.token}` },
-                    content: bookcontent
-                })
-                .then(function (response) {
-                    if (response.success === 201) {
-                        setBookcontent('');
-                    } else {
-                        setBookcontent('');
-                    }
-                })
-                .catch(function (error) {});
         }
     };
 
@@ -108,9 +89,10 @@ const BookContent = (props) => {
                             <Button variant="outlined">Back To List</Button>
                         </Link>
                     </Box>
+                    <p style={{fontFamily: 'Crimson Text'}}>Save epub file for user download.</p>
                     <Box display="flex" flexDirection="column" className="upload-content" p={1} m={1} bgcolor="background.paper">
                         <input
-                            accept="application/pdf, application/epub+zip"
+                            accept="application/epub+zip"
                             className="hidden"
                             id="button-file"
                             type="file"
@@ -118,7 +100,8 @@ const BookContent = (props) => {
                                 uploadepub(e);
                             }}
                         />
-                        <span>select the pdf file</span>
+                        <span>select the epub file</span>
+                        {bookfile !== null? (<a href={bookfile}>current epub file</a>):(<></>)}
                     </Box>
                     <p style={{fontFamily: 'Crimson Text'}}>Paste your manuscript from Google Docs in the box below. Then click Save.</p>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
