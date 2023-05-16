@@ -33,7 +33,7 @@ function BookAddItem({ inputList, setInputList, avaxprice }) {
     
     // handle click event of the Add button
     const handleAddClick = () => {
-        setInputList([...inputList, { tokenname: generateRandomString(8), bookmarkprice: '60', maxbookmarksupply: '390', bookmarkstartpoint: '0', item_bmcontract_address: "" }]);
+        setInputList([...inputList, { tokenname: generateRandomString(8), bookmarkprice: '60', maxbookmarksupply: '390', bookmarkstartpoint: '10', item_bmcontract_address: "" }]);
     };
 
     return (
