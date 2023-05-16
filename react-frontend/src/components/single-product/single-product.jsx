@@ -890,6 +890,7 @@ const SingleProduct = ({ match }) => {
         onHide={() => {setSbmodalshow(false)}}
         pagecontent={pagecontent}
         title={title}
+        id={id}
       ></SavebookModal>
     </Layout>
   );

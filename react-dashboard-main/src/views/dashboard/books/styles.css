@@ -24,4 +24,5 @@
     height: 500px;
     overflow-y: scroll;
     border: 2px solid grey;
+    background: white;
 }

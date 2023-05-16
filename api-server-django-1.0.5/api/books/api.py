@@ -1,4 +1,4 @@
-from rest_framework import generics
+from rest_framework import generics, parsers
 from rest_framework.response import Response
 from .serializers import BooksSerializer
 from .models import Books
@@ -11,6 +11,7 @@ class BooksCreateApi(generics.CreateAPIView):
     permission_classes = (IsStaff,)
     queryset = Books.objects.all()
     serializer_class = BooksSerializer
+    parser_classes = [parsers.MultiPartParser]
 
     def perform_create(self, serializer_class):
         # cwd = os.getcwd()

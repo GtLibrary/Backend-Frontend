@@ -35,6 +35,7 @@ class Books(models.Model):
     hb_contract_address = models.CharField(max_length=200, default='')
     bm_listdata = models.JSONField(default=list)
     is_ads = models.BooleanField(default=False)
+    epub_file = models.FileField(upload_to='epub/', blank=True, null=True)
     pub_date = models.DateTimeField('date published',auto_now=True, null=False, blank=False)
     class Meta:
         ordering = ['title']
