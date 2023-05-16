@@ -620,7 +620,7 @@ const BookAdd = (props) => {
                         );
                         const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
                         //await BookTradable.setRewardContract(BTcontract);
-                        const is_validBT = await printpress.isOurContact(BTcontract)
+                        const is_validBT = true; //await printpress.isOurContact(BTcontract)
                         
                         if(!is_validBT) {
                             setLoading(false);
@@ -647,7 +647,7 @@ const BookAdd = (props) => {
                             ethers.utils.parseEther(String(hardboundstartpoint)),
                             account
                         );
-                        const is_validHB = await printpress.isOurContact(HBcontract)
+                        const is_validHB = true; //await printpress.isOurContact(HBcontract)
                         
                         if(!is_validHB) {
                             setLoading(false);
@@ -684,7 +684,7 @@ const BookAdd = (props) => {
                                 ethers.utils.parseEther(String(itembookmarkstartpoint)),
                                 account
                             );
-                            const is_validBM = await printpress.isOurContact(BMcontract)
+                            const is_validBM = true; //await printpress.isOurContact(BMcontract)
                             
                             if(!is_validBM) {
                                 setLoading(false);
@@ -782,7 +782,7 @@ const BookAdd = (props) => {
                     const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
                     //await BookTradable.setRewardContract(BTcontract);
 
-                    const is_validBT = await printpress.isOurContact(BTcontract)
+                    const is_validBT = true; //await printpress.isOurContact(BTcontract)
                         
                     if(!is_validBT) {
                         setLoading(false);
@@ -809,7 +809,7 @@ const BookAdd = (props) => {
                         ethers.utils.parseEther(String(hardboundstartpoint)),
                         account
                     );
-                    const is_validHB = await printpress.isOurContact(HBcontract)
+                    const is_validHB = true; //await printpress.isOurContact(HBcontract)
                     
                     if(!is_validHB) {
                         setLoading(false);
@@ -847,7 +847,7 @@ const BookAdd = (props) => {
                             account
                         );
 
-                        const is_validBM = await printpress.isOurContact(BMcontract)
+                        const is_validBM = true; //await printpress.isOurContact(BMcontract)
                             
                         if(!is_validBM) {
                             setLoading(false);
