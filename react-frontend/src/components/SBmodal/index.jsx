@@ -85,10 +85,10 @@ function SavebookModal(props) {
         <Button onClick={() => {savebookbare()}}>Save as bare html</Button>
         <br/>
         <br/>
-        <Button onClick={() => {downloadepub()}}>Save as .epub [Not Yet Implemented]</Button>
+        <Button onClick={() => {downloadepub()}}>Save as .epub</Button>
         <br/>
         <br/>
-        <Button>Save as Smart Book [Coming Soon!]</Button>
+        <Button>Save as live Smart Book [Coming Soon!]</Button>
       </Modal.Body>
       <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
