@@ -65,7 +65,7 @@ function BookAddItem({ inputList, setInputList, avaxprice }) {
                                         style={{ margin: 8 }}
                                         name="bookmarkprice"
                                         placeholder="Please input the bookmark price"
-                                        helperText={`Bookmark Price (~ ${avaxprice * Number(item.bookmarkprice)}) USD`}
+                                        helperText={`Bookmark Price (~ ${(avaxprice * Number(item.bookmarkprice)).toFixed(3)}) USD`}
                                         fullWidth
                                         className='input-item'
                                         type="number"

@@ -126,7 +126,7 @@ const FeaturedProduct = (props) => {
   };
 
   return (
-    <div className='col-md-3 col-sm-6 col-xs-12'>
+    <div className='col-xs-12 col-sm-6 col-md-6 col-lg-3'>
       <div className="featured-product">
         <div className='featured-image' onClick={() => navigate(`/product/${id}`)}>
           <img src={image_url} alt='product' />
