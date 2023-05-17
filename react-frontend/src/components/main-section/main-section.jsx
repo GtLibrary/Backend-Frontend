@@ -33,7 +33,6 @@ const MainSection = () => {
           <p><i>Bram Stoker</i></p>
 
           <div className="buybook-area">
-            <span className="bookprice-tag">1 {current_symbol} (Approximately 15-20 USDC)</span>
             <button type="button" className="btn btn-buybook" onClick={() => window.location.href = current_promo_url} >On Sale Now</button>
           </div>
         </div>
