@@ -7,7 +7,6 @@ import { ethers } from "ethers";
 import LoadingOverlay from "react-loading-overlay";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useSpeechSynthesis } from "react-speech-kit";
 import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
@@ -21,7 +20,7 @@ LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
   const { account, chainId } = useWeb3React();
-  const { speak } = useSpeechSynthesis();
+  const [audioBlob, setAudioBlob] = useState(null);
   const { ethereum } = window;
 
   const web3 = new Web3(window.ethereum);
@@ -85,20 +84,17 @@ const SingleProduct = ({ match }) => {
   useEffect(() => {
     const getDexrate = async () => {
       if (ethereum) {
-        const ccoin_contract = new web3.eth.Contract(
-          cc_abi,
-          cc_address
-        );
+        const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
         try {
           const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
           setDexrate(web3.utils.fromWei(curdexrate));
         } catch (error) {
-          console.log(error)
+          console.log(error);
         }
       }
-    }
+    };
     getDexrate();
-  }, [chainId])
+  }, [chainId]);
 
   useEffect(() => {
     const handleValueChange = () => {
@@ -110,17 +106,16 @@ const SingleProduct = ({ match }) => {
       window.removeEventListener("myValueChange", handleValueChange);
     };
 
-
     async function myReaction() {
       var index = window.myValue;
       var product = window.product;
-      
+
       const provider = new ethers.providers.Web3Provider(ethereum);
       const signer = provider.getSigner();
       const bookTradable = new ethers.Contract(
-          product.bm_listdata[0].item_bmcontract_address,
-          bt_abi,
-          signer
+        product.bm_listdata[0].item_bmcontract_address,
+        bt_abi,
+        signer
       );
       const curtotalsupply = await bookTradable.totalSupply();
 
@@ -130,7 +125,8 @@ const SingleProduct = ({ match }) => {
         bmcontent.token_id = index;
         bmcontent.tokenname = product.title;
         bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
-        bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
+        bmcontent.contract_address =
+          product.bm_listdata[0].item_bmcontract_address;
         bmcontent.product = product;
         bmcontent.curdexrate = dexrate;
       } else {
@@ -138,16 +134,16 @@ const SingleProduct = ({ match }) => {
         bmcontent.token_id = Number(curtotalsupply);
         bmcontent.tokenname = product.title;
         bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
-        bmcontent.contract_address = product.bm_listdata[0].item_bmcontract_address;
+        bmcontent.contract_address =
+          product.bm_listdata[0].item_bmcontract_address;
         bmcontent.product = product;
         bmcontent.curdexrate = dexrate;
       }
-      
+
       setCurserialnum(index);
       setBookmarkinfo(bmcontent);
       setModalShow(true);
     }
-
   }, []);
 
   // while we check for product
@@ -222,16 +218,15 @@ const SingleProduct = ({ match }) => {
         printpress_abi,
         printpress_address
       );
-      const ccoin_contract = new web3.eth.Contract(
-        cc_abi,
-        cc_address
-      );
+      const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
 
       var price = book_price / dexrate + 0.00001;
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
+      await ccoin_contract.methods
+        .approve(printpress_address, web3.utils.toWei(String(price)))
+        .send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(bt_contract_address,  web3.utils.toWei(String(price)))
+        .buyBookCC(bt_contract_address, web3.utils.toWei(String(price)))
         .send({ from: account });
 
       setLoading(false);
@@ -268,9 +263,10 @@ const SingleProduct = ({ match }) => {
         printpress_address
       );
 
-      await printpress_contract.methods
-        .buyBook(hb_contract_address)
-        .send({ from: account, value: web3.utils.toWei(String(hardbound_price)) });
+      await printpress_contract.methods.buyBook(hb_contract_address).send({
+        from: account,
+        value: web3.utils.toWei(String(hardbound_price)),
+      });
 
       // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
       // await printpress_contract.methods
@@ -311,16 +307,15 @@ const SingleProduct = ({ match }) => {
         printpress_address
       );
 
-      const ccoin_contract = new web3.eth.Contract(
-        cc_abi,
-        cc_address
-      );
+      const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
 
       var price = hardbound_price / dexrate + 0.00001;
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
+      await ccoin_contract.methods
+        .approve(printpress_address, web3.utils.toWei(String(price)))
+        .send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(hb_contract_address,  web3.utils.toWei(String(price)))
+        .buyBookCC(hb_contract_address, web3.utils.toWei(String(price)))
         .send({ from: account });
 
       setLoading(false);
@@ -348,7 +343,7 @@ const SingleProduct = ({ match }) => {
       return;
     }
     setLoading(true);
-    if (!bm_listdata[0]['item_bmcontract_address']) {
+    if (!bm_listdata[0]["item_bmcontract_address"]) {
       return;
     }
     try {
@@ -358,8 +353,11 @@ const SingleProduct = ({ match }) => {
       );
 
       await printpress_contract.methods
-        .buyBook(bm_listdata[0]['item_bmcontract_address'])
-        .send({ from: account, value: web3.utils.toWei(String(bm_listdata[0]['bookmarkprice'])) });
+        .buyBook(bm_listdata[0]["item_bmcontract_address"])
+        .send({
+          from: account,
+          value: web3.utils.toWei(String(bm_listdata[0]["bookmarkprice"])),
+        });
 
       setLoading(false);
       toast.success("successfully buy bookmark!", {
@@ -386,7 +384,7 @@ const SingleProduct = ({ match }) => {
       return;
     }
     setLoading(true);
-    if (!bm_listdata[0]['item_bmcontract_address']) {
+    if (!bm_listdata[0]["item_bmcontract_address"]) {
       return;
     }
     try {
@@ -394,16 +392,18 @@ const SingleProduct = ({ match }) => {
         printpress_abi,
         printpress_address
       );
-      const ccoin_contract = new web3.eth.Contract(
-        cc_abi,
-        cc_address
-      );
+      const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
 
-      var price = bm_listdata[0]['bookmarkprice'] / dexrate + 0.00001;
+      var price = bm_listdata[0]["bookmarkprice"] / dexrate + 0.00001;
 
-      await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
+      await ccoin_contract.methods
+        .approve(printpress_address, web3.utils.toWei(String(price)))
+        .send({ from: account });
       await printpress_contract.methods
-        .buyBookCC(bm_listdata[0]['item_bmcontract_address'],  web3.utils.toWei(String(price)))
+        .buyBookCC(
+          bm_listdata[0]["item_bmcontract_address"],
+          web3.utils.toWei(String(price))
+        )
         .send({ from: account });
 
       setLoading(false);
@@ -427,11 +427,15 @@ const SingleProduct = ({ match }) => {
   };
 
   const getPdfData = async () => {
-    
     const cur_address = account;
 
     const libraryNonce = await web3.eth.getTransactionCount(_cCA);
-    const signingMessage = "" + libraryNonce + " Great Library \n" + datamine + ": Connect to begin your journey"
+    const signingMessage =
+      "" +
+      libraryNonce +
+      " Great Library \n" +
+      datamine +
+      ": Connect to begin your journey";
     const signature = await web3.eth.personal.sign(signingMessage, cur_address);
     const testurl = process.env.REACT_APP_API + `art/${id}`;
 
@@ -440,10 +444,10 @@ const SingleProduct = ({ match }) => {
       url: testurl,
       data: {
         msg: signingMessage,
-        signature: signature
-      }
+        signature: signature,
+      },
     };
-    
+
     try {
       await axios(config).then((res) => {
         if (res.data.content === "You are not token owner!!") {
@@ -455,20 +459,21 @@ const SingleProduct = ({ match }) => {
             draggable: true,
           });
         }
-  
+
         const parser = new DOMParser();
         const htmlDoc = parser.parseFromString(res.data.content, "text/html");
         const html = htmlDoc.body.innerHTML;
-  
+
         if (html === "You are not token owner!!") {
           setPdftext(html);
         } else {
           var bookHtml = addOnClicks(html);
+          setPdftext(htmlDoc.body.innerText);
           document.getElementById("reader-body").innerHTML = bookHtml;
         }
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
@@ -483,7 +488,10 @@ const SingleProduct = ({ match }) => {
         spans.push(spanTags[j]);
       }
     }
-    var spanAmount = Number(product.byteperbookmark) > 0 ? Number(product.byteperbookmark) : 2048;
+    var spanAmount =
+      Number(product.byteperbookmark) > 0
+        ? Number(product.byteperbookmark)
+        : 2048;
     var bookmarkId = 0;
     var currentIndex = 0;
     while (currentIndex < spans.length) {
@@ -556,16 +564,124 @@ const SingleProduct = ({ match }) => {
       return;
     }
     const pageHTML = document.querySelector(".pdf-content").outerHTML;
-    setPagecontent(pageHTML)
+    setPagecontent(pageHTML);
     setSbmodalshow(true);
-    
   };
 
-  const onAudioBook = () => {
+  const onAudioBook = async () => {
     if (!account) {
       return;
     }
-    speak({ text: pdftext });
+    const { SpeechSynthesisUtterance, speechSynthesis } = window;
+    const text = "Create an asynchronous function that splits the input text into chunks, synthesizes each chunk as speech output, and waits for the speech synthesis to complete before moving on to the next chunk. You can use the  await  keyword to pause the execution of the function until the  end  event is emitted by the  SpeechSynthesisUtterance  object."
+
+    const textChunks = splitTextIntoChunks(text, 100);
+    const audioChunks = [];
+    for (const textChunk of textChunks) {
+      const audioChunk = await new Promise((resolve, reject) => {
+        // const synth = window.speechSynthesis;
+        // const utterance = new SpeechSynthesisUtterance(textChunk);
+        const utterance = new SpeechSynthesisUtterance();
+        var voices = speechSynthesis.getVoices();
+        utterance.voice = voices[10];
+        utterance.voiceURI = 'native';
+        utterance.volume = 1;
+        utterance.rate = 1;
+        utterance.pitch = 2;
+        utterance.text = textChunk;
+        utterance.lang = 'en-US';
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+
+        utterance.addEventListener('end', async () => {
+          
+          // const audioBuffer = await getAudioBuffer(speechSynthesis);
+          // const audioBlob = new Blob([audioBuffer], { type: "audio/mpeg" });
+          // const audioURL = URL.createObjectURL(audioBlob);
+          // console.log(audioURL)
+          resolve();
+        });
+        utterance.addEventListener('error', () => {
+          reject(`Error synthesizing speech: ${utterance.text}`);
+        });
+        speechSynthesis.addEventListener('boundary', (event) => {
+          console.log("33333333333333333333333333")
+        });
+      });
+      audioChunks.push(audioChunk);
+
+    }
+    
+    // const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
+    // const audioUrl = URL.createObjectURL(audioBlob);
+    // const downloadLink = document.createElement('a');
+    // downloadLink.href = audioUrl;
+    // downloadLink.download = 'synthesizedAudio.mp3';
+    // downloadLink.click();
+
+    // if ( 'speechSynthesis' in window ) {
+    //   console.log('supported');
+    //   console.log(pdftext)
+    //   const to_speak = new SpeechSynthesisUtterance();
+    //   var voices = window.speechSynthesis.getVoices();
+    //   to_speak.voice = voices[10];
+    //   to_speak.voiceURI = 'native';
+    //   to_speak.volume = 1; 
+    //   to_speak.rate = 1; 
+    //   to_speak.pitch = 2; 
+    //   to_speak.text = pdftext;
+    //   to_speak.lang = 'en-US';
+    //   window.speechSynthesis.cancel();
+    //   window.speechSynthesis.speak(to_speak);
+    // } else {
+    //   console.log('not supported');
+    // }
+  };
+
+  function getAudioBuffer(synth) {
+    return new Promise((resolve) => {    
+      const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      const offlineContext = new OfflineAudioContext(1, 44100, 44100);
+       const utterance = new SpeechSynthesisUtterance(synth.text);
+      utterance.voice = synth.getVoices()[0];
+      utterance.rate = 1;
+      utterance.pitch = 1;
+       const source = offlineContext.createBufferSource();
+      source.buffer = synth.speak(utterance);
+      source.connect(offlineContext.destination);
+      source.start(0);
+       offlineContext.startRendering().then((buffer) => {
+        resolve(buffer);
+      });
+    });
+  }
+
+  const splitTextIntoChunks = (text, chunkLength) => {
+    var chunks = text.split('. ');
+    return chunks;
+  };
+
+  const synthesizeTextToAudio = async (textChunk) => {
+    return new Promise((resolve, reject) => {
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(textChunk);
+      const audioChunks = [];
+      utterance.addEventListener("end", () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/mpeg" });
+        resolve(audioBlob);
+      });
+      utterance.addEventListener("error", () => {
+        reject(`Error synthesizing speech: ${utterance.text}`);
+      });
+      speechSynthesis.speak(utterance);
+      synth.addEventListener("boundary", (event) => {
+        const audioChunk = event.target
+          .getVoices()
+          .find((voice) => voice.default)
+          .synthesize(event.target, event.charIndex, event.charLength);
+        audioChunks.push(audioChunk);
+      });
+    });
   };
 
   const onRefresh = () => {
@@ -629,7 +745,9 @@ const SingleProduct = ({ match }) => {
               )}
               <div className="book-introduction">{introduction}</div>
               <div className="buybook-area">
-                <span className="bookprice-tag">{Number(book_price)} {current_symbol}</span>
+                <span className="bookprice-tag">
+                  {Number(book_price)} {current_symbol}
+                </span>
                 <button
                   type="button"
                   className="btn btn-buybook"
@@ -639,7 +757,9 @@ const SingleProduct = ({ match }) => {
                 </button>
               </div>
               <div className="buybook-area">
-                <span className="bookprice-tag">{(Number(book_price) / dexrate).toFixed(4)} CC</span>
+                <span className="bookprice-tag">
+                  {(Number(book_price) / dexrate).toFixed(4)} CC
+                </span>
                 <button
                   type="button"
                   className="btn btn-buybook"
@@ -672,15 +792,14 @@ const SingleProduct = ({ match }) => {
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img
-                      src={image_url}
-                      alt="bookmark brand"
-                    ></img>
+                    <img src={image_url} alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Book</h4>
                   <p className="item-description">{book_description}</p>
                   <div className="buyaction-area">
-                    <span className="price-area">{Number(book_price)} {current_symbol}</span>
+                    <span className="price-area">
+                      {Number(book_price)} {current_symbol}
+                    </span>
                     <button
                       className="btn btn-item"
                       onClick={() => onBuyBook()}
@@ -689,7 +808,9 @@ const SingleProduct = ({ match }) => {
                     </button>
                   </div>
                   <div className="buyaction-area">
-                    <span className="price-area">{(Number(book_price) / dexrate).toFixed(4)} CC</span>
+                    <span className="price-area">
+                      {(Number(book_price) / dexrate).toFixed(4)} CC
+                    </span>
                     <button
                       type="button"
                       className="btn btn-item"
@@ -703,10 +824,7 @@ const SingleProduct = ({ match }) => {
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img
-                      src={image_url}
-                      alt="bookmark brand"
-                    ></img>
+                    <img src={image_url} alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Hardbound</h4>
                   <p className="item-description">{hardbound_description}</p>
@@ -714,23 +832,30 @@ const SingleProduct = ({ match }) => {
                     <span className="price-area">
                       {Number(hardbound_price)} {current_symbol}
                     </span>
-                    <button className="btn btn-item" onClick={() => onBuyHardbound()}>Buy Now</button>
+                    <button
+                      className="btn btn-item"
+                      onClick={() => onBuyHardbound()}
+                    >
+                      Buy Now
+                    </button>
                   </div>
                   <div className="buyaction-area">
                     <span className="price-area">
                       {(Number(hardbound_price) / dexrate).toFixed(4)} CC
                     </span>
-                    <button className="btn btn-item" onClick={() => onBuyHardboundCC()}>Buy with CC</button>
+                    <button
+                      className="btn btn-item"
+                      onClick={() => onBuyHardboundCC()}
+                    >
+                      Buy with CC
+                    </button>
                   </div>
                 </div>
               </div>
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img
-                      src={image_url}
-                      alt="bookmark brand"
-                    ></img>
+                    <img src={image_url} alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">
@@ -742,13 +867,26 @@ const SingleProduct = ({ match }) => {
                     <span className="price-area">
                       {bm_listdata[0]["bookmarkprice"]} {current_symbol}
                     </span>
-                    <button className="btn btn-item" onClick={() => onBuyBookmark()}>Buy Now</button>
+                    <button
+                      className="btn btn-item"
+                      onClick={() => onBuyBookmark()}
+                    >
+                      Buy Now
+                    </button>
                   </div>
                   <div className="buyaction-area">
                     <span className="price-area">
-                      {(Number(bm_listdata[0]["bookmarkprice"]) / dexrate).toFixed(4)} CC
+                      {(
+                        Number(bm_listdata[0]["bookmarkprice"]) / dexrate
+                      ).toFixed(4)}{" "}
+                      CC
                     </span>
-                    <button className="btn btn-item" onClick={() => onBuyBookmarkCC()}>Buy with CC</button>
+                    <button
+                      className="btn btn-item"
+                      onClick={() => onBuyBookmarkCC()}
+                    >
+                      Buy with CC
+                    </button>
                   </div>
                 </div>
               </div>
@@ -873,7 +1011,11 @@ const SingleProduct = ({ match }) => {
                 className="pdf-image"
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
               /> */}
-              <div className="pdf-content" id="reader-body"  dangerouslySetInnerHTML={{ __html: pdftext }}>
+              <div
+                className="pdf-content"
+                id="reader-body"
+                dangerouslySetInnerHTML={{ __html: pdftext }}
+              >
                 {/* {paragraph &&
                   paragraph.map((item, i) => {
                     return item;
@@ -890,9 +1032,11 @@ const SingleProduct = ({ match }) => {
         id={id}
         curserial_num={curserialnum}
       />
-      <SavebookModal 
+      <SavebookModal
         show={sbmodalshow}
-        onHide={() => {setSbmodalshow(false)}}
+        onHide={() => {
+          setSbmodalshow(false);
+        }}
         pagecontent={pagecontent}
         title={title}
         id={id}
