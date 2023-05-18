@@ -13,14 +13,14 @@ import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
 import SavebookModal from "../SBmodal";
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
-import cc_abi from "../../utils/contract/CultureCoin.json";
+import CC_abi from "../../utils/contract/CultureCoin.json";
 import NBT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
 
 LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
-  const { account } = useWeb3React();
+  const { account, chainId } = useWeb3React();
   const { speak } = useSpeechSynthesis();
   const { ethereum } = window;
 
@@ -28,6 +28,7 @@ const SingleProduct = ({ match }) => {
 
   const printpress_abi = printingpress_abi;
   const bt_abi = NBT_abi;
+  const cc_abi = CC_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
@@ -88,12 +89,16 @@ const SingleProduct = ({ match }) => {
           cc_abi,
           cc_address
         );
-        const curdexrate = await ccoin_contract.methods.dexCCRate().call();
-        setDexrate(web3.utils.fromWei(curdexrate));
+        try {
+          const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+          setDexrate(web3.utils.fromWei(curdexrate));
+        } catch (error) {
+          console.log(error)
+        }
       }
     }
     getDexrate();
-  }, [])
+  }, [chainId])
 
   useEffect(() => {
     const handleValueChange = () => {
