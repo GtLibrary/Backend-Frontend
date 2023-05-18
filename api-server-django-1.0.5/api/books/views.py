@@ -43,6 +43,8 @@ secureHost = os.environ['secureHost']
 cCAPrivateKey = os.environ['cCAPrivateKey']
 openai.api_key = os.environ["OPENAI_API_KEY"]
 marketPlaceAddress = os.environ['marketPlaceAddress']
+cc_address = os.environ['cultureCoinAddress']
+
 if not marketPlaceAddress:
     #marketPlaceAddress = "0x0000000000000000000000000000000000000000"
     print("I dont have a marketPlaceAddress")
@@ -64,6 +66,17 @@ def getbookdatabyId(request, pk):
     data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 
+@api_view(['GET'])
+def getCCRate(request):
+    
+    cwd = os.getcwd()
+    path = (cwd + '/static/CultureCoin.json')
+    contract_abi = json.load(open(path))
+    ccoin_address = Web3.toChecksumAddress(cc_address)
+    CC_Contract = web3.eth.contract(address=ccoin_address, abi=contract_abi)
+    cc_rate = CC_Contract.functions.getDexCCRate().call()
+    return Response({"cc_rate": cc_rate})
+    
 @api_view(['POST'])
 def getdownloadfile(request, pk):
     req_data = request.body.decode('utf-8')
