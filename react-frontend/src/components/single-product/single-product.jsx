@@ -83,18 +83,16 @@ const SingleProduct = ({ match }) => {
 
   useEffect(() => {
     const getDexrate = async () => {
-      if (ethereum) {
-        const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
-        try {
-          const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
-          setDexrate(web3.utils.fromWei(curdexrate));
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      const ccrateurl = {
+        method: "get",
+        url: process.env.REACT_APP_API + "getccrate",
+      };
+      await axios(ccrateurl).then((res) => {
+        setDexrate(web3.utils.fromWei(String(res.data.cc_rate)))
+      });
     };
     getDexrate();
-  }, [chainId]);
+  }, []);
 
   useEffect(() => {
     const handleValueChange = () => {
