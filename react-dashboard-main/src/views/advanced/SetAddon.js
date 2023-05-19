@@ -55,7 +55,8 @@ const SetAddon = (props) => {
             const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
             try {
                 await CCportal.setAddon(Printpress_address, true);
-                toast.success("Changed CC rate.", {
+                setLoading(false)
+                toast.success("Successfuly set addon.", {
                     position: "top-right",
                     autoClose: 3000,
                     closeOnClick: true,
@@ -63,8 +64,8 @@ const SetAddon = (props) => {
                     draggable: true,
                 });
             } catch (error) {
-                console.log(error)
-                toast.error('failed save data', {
+                setLoading(false)
+                toast.error('failed set addon', {
                     position: 'top-right',
                     autoClose: 3000,
                     closeOnClick: true,
@@ -73,24 +74,37 @@ const SetAddon = (props) => {
                 });
             }
         }
-        setLoading(false)
     }
 
     const setAddonMinimart = async () => {
         const { ethereum } = window;
-
         setLoading(true)
+
         if (ethereum) {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const CCportal = new ethers.Contract(CC_address, CC_abi, signer);
             try {
                 await CCportal.setAddon(Minimart_address, true);
+                setLoading(false)
+                toast.success("Successfuly set addon.", {
+                    position: "top-right",
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                });
             } catch (error) {
-                console.log(error)
+                setLoading(false)
+                toast.error('failed set addon', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                });
             }
         }
-        setLoading(false)
     }
 
     return (
