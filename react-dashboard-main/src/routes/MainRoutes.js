@@ -29,6 +29,7 @@ const SetAddon = Loadable(lazy(() => import('../views/advanced/SetAddon')));
 const SetDexPrice = Loadable(lazy(() => import('../views/advanced/SetDexprice')));
 const SetOutamount = Loadable(lazy(() => import('../views/advanced/SetOutamount')));
 const SetReward = Loadable(lazy(() => import('../views/advanced/SetReward')));
+const AddonRevocation = Loadable(lazy(() => import('../views/advanced/AddonRevocation')));
 
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography')));
@@ -68,6 +69,7 @@ const MainRoutes = () => {
                 '/advanced/setdexprice',
                 '/advanced/setoutamount',
                 '/advanced/setreward',
+                '/advanced/addonrevocation',
 
                 '/profile/setting',
                 '/profile/changepassword',
@@ -142,6 +144,7 @@ const MainRoutes = () => {
                         <Route path="/advanced/setdexprice" component={SetDexPrice} />
                         <Route path="/advanced/setoutamount" component={SetOutamount} />
                         <Route path="/advanced/setreward" component={SetReward} />
+                        <Route path="/advanced/addonrevocation" component={AddonRevocation} />
 
                         <Route path="/profile/setting" component={ProfileSetting} />
                         <Route path="/profile/changepassword" component={ChangePass} />

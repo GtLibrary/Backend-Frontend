@@ -37,5 +37,13 @@ export const ccasetting = {
             icon: icons['IconSettings'],
             breadcrumbs: false
         },
+        {
+            id: 'advanced-addonrevocate',
+            title: 'Addon Revocation',
+            type: 'item',
+            url: '/advanced/addonrevocation',
+            icon: icons['IconSettings'],
+            breadcrumbs: false
+        },
     ]
 };
