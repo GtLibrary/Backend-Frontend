@@ -105,6 +105,12 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     "default": {
+        #"ENGINE": "django.db.backends.postgresql_psycopg2",
+        #"NAME": "new_db",
+        #"USER" : "john",
+        #"PASSWORD" : "5gttt989jdlvbbHbr$g",
+        #"HOST" : "localhost",
+        #"PORT" : "",
         "ENGINE"  : env("DB_ENGINE"  , default="django.db.backends.sqlite3"),
         "NAME"    : env("DB_DATABASE", default=os.path.join(BASE_DIR, "db.sqlite3")),
         "USER"    : env("DB_USER"    , default=None),
@@ -150,9 +156,11 @@ USE_TZ = True
 
 
 STATIC_URL = "/static/"
+STATIC_ROOT = "/root/Backend-Frontend/api-server-django-1.0.5/static/"
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field

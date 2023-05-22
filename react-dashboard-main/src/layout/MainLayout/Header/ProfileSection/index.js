@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import configData from '../../../../config';
 import { useHistory } from 'react-router';
@@ -125,9 +125,27 @@ const ProfileSection = () => {
     const account = useSelector((state) => state.account);
     const dispatcher = useDispatch();
 
-    const [sdm, setSdm] = React.useState(true);
-    const [value, setValue] = React.useState('');
-    const [notification, setNotification] = React.useState(false);
+    const [previosImg, setPreviosImg] = useState('/images/no-image.png');
+    const getauthorinfo = async () => {
+        await axios
+            .get(
+                configData.API_SERVER + 'authorinfo/get',
+                { headers: { Authorization: `${account.token}` } }
+            )
+            .then((response) => {
+                setPreviosImg(configData.API_URL + response.data.author_imageurl)
+            });
+    };
+
+    useEffect(() => {
+        if(account.isLoggedIn) {
+            getauthorinfo();
+        }
+    }, []);
+
+    // const [sdm, setSdm] = React.useState(true);
+    // const [value, setValue] = React.useState('');
+    // const [notification, setNotification] = React.useState(false);
     const [selectedIndex, setSelectedIndex] = React.useState(1);
 
     const [open, setOpen] = React.useState(false);
@@ -146,11 +164,11 @@ const ProfileSection = () => {
                 //}
             })
             .catch(function (error) {
-                console.log('error - ', error);
+                dispatcher({ type: LOGOUT });
             });
     };
     const gosetting = () => {
-        history.push("/basic/profilesetting")
+        history.push("/profile/setting")
     }
     const handleToggle = () => {
         setOpen((prevOpen) => !prevOpen);
@@ -177,7 +195,7 @@ const ProfileSection = () => {
                 className={classes.profileChip}
                 icon={
                     <Avatar
-                        src={User1}
+                        src={previosImg}
                         className={classes.headerAvatar}
                         ref={anchorRef}
                         aria-controls={open ? 'menu-list-grow' : undefined}

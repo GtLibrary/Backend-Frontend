@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
 import configData from '../../../../config';
@@ -19,7 +19,8 @@ import {
     OutlinedInput,
     TextField,
     Typography,
-    useMediaQuery
+    useMediaQuery,
+    Modal
 } from '@material-ui/core';
 
 // third party
@@ -72,9 +73,31 @@ const useStyles = makeStyles((theme) => ({
     },
     loginInput: {
         ...theme.typography.customInput
+    },
+    modalcontent: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 400,
+        bgcolor: 'background.paper',
+        border: '2px solid #000',
+        boxShadow: 24,
+        p: 4,
     }
 }));
 
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 800,
+    bgcolor: 'background.paper',
+    border: '1px solid #000',
+    boxShadow: 24,
+    p: 6,
+  };
 //===========================|| API JWT - REGISTER ||===========================//
 
 const RestRegister = ({ ...others }) => {
@@ -106,6 +129,10 @@ const RestRegister = ({ ...others }) => {
         changePassword('123456');
     }, []);
 
+    const [open, setOpen] = useState(false);
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     return (
         <React.Fragment>
             <Formik
@@ -123,7 +150,7 @@ const RestRegister = ({ ...others }) => {
                 onSubmit={(values, { setErrors, setStatus, setSubmitting }) => {
                     try {
                         axios
-                            .post( configData.API_SERVER + 'users/register', {
+                            .post(configData.API_SERVER + 'users/register', {
                                 username: values.username,
                                 password: values.password,
                                 email: values.email
@@ -279,7 +306,7 @@ const RestRegister = ({ ...others }) => {
                                     label={
                                         <Typography variant="subtitle1">
                                             Agree with &nbsp;
-                                            <Typography variant="subtitle1" component={Link} to="#">
+                                            <Typography variant="subtitle1" component={Link} to="#" onClick={handleOpen}>
                                                 Terms & Condition.
                                             </Typography>
                                         </Typography>
@@ -305,7 +332,7 @@ const RestRegister = ({ ...others }) => {
                             <AnimateButton>
                                 <Button
                                     disableElevation
-                                    disabled={isSubmitting}
+                                    disabled={isSubmitting || !checked}
                                     fullWidth
                                     size="large"
                                     type="submit"
@@ -319,6 +346,40 @@ const RestRegister = ({ ...others }) => {
                     </form>
                 )}
             </Formik>
+            <Modal open={open} onClose={handleClose} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
+                <Box sx={style}>
+                    <Typography id="modal-modal-title" variant="h3" component="h2">
+                        Terms and Condition
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        By accessing and using this website, you agree to comply with all the rules and regulations set forth by the site.
+                        The Great Library reserves the right to remove any content that violates these rules or is deemed inappropriate by
+                        The Great Library. The Great Library also reserves the right to modify or discontinue the website at any time
+                        without notice.
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        You acknowledge and agree that The Great Library has no liability for any content or materials posted on the website
+                        by users or third parties. The Great Library does not endorse or guarantee the accuracy, completeness, or usefulness
+                        of any content or materials posted on the website.
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        You understand and agree that the use of NFTs and ERC20s on the website involves risks, including but not limited to
+                        market volatility, loss of value, and regulatory uncertainty. You acknowledge that you are solely responsible for
+                        your use of NFTs and ERC20s on the website and that The Great Library is not responsible for any losses or damages
+                        that may result from such use.
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        You agree that any dispute arising from or related to your use of the website will be governed by the laws of South
+                        Carolina, without regard to its conflict of law provisions. You further agree that any legal action or proceeding
+                        arising from or related to your use of the website will be brought exclusively in the state or federal courts
+                        located in South Carolina.
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        By using this website, you acknowledge that you have read and understood this disclaimer and agree to be bound by
+                        its terms and conditions.
+                    </Typography>
+                </Box>
+            </Modal>
         </React.Fragment>
     );
 };

@@ -20,6 +20,7 @@ class DynamicFieldsModelSerializer(serializers.ModelSerializer):
 class BooksSerializer(DynamicFieldsModelSerializer):
     pub_date = serializers.DateTimeField(read_only=True)
     image_url = serializers.ImageField(required=False)
+    epubfile = serializers.FileField(required=False)
 
     class Meta:
         model = Books

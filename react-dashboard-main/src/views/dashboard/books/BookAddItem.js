@@ -1,9 +1,21 @@
-import React, { useState } from "react";
+import React from "react";
 import { IconTrash, IconPlus } from '@tabler/icons';
 // material-ui
 import { Button, TextField, Divider } from '@material-ui/core';
  
-function BookAddItem({ inputList, setInputList }) {
+const generateRandomString = (length) => {
+    let result = '';
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+       result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+}
+
+function BookAddItem({ inputList, setInputList, avaxprice }) {
+    const onlythreedecimal = /^([0-9]{0,3}(\.[0-9]{0,3})?|\s*)$/
+    const onlyinteger = /^\d+(,\d{0,3})?$/
     // handle input change
     const handleInputChange = (e, index) => {
         const { name, value } = e.target;
@@ -21,7 +33,7 @@ function BookAddItem({ inputList, setInputList }) {
     
     // handle click event of the Add button
     const handleAddClick = () => {
-        setInputList([...inputList, { tokenname: "", bookmarkprice: 0, maxbookmarksupply: 0, bookmarkstartpoint: 0, item_bmcontract_address: "" }]);
+        setInputList([...inputList, { tokenname: generateRandomString(8), bookmarkprice: '60', maxbookmarksupply: '390', bookmarkstartpoint: '10', item_bmcontract_address: "" }]);
     };
 
     return (
@@ -53,7 +65,7 @@ function BookAddItem({ inputList, setInputList }) {
                                         style={{ margin: 8 }}
                                         name="bookmarkprice"
                                         placeholder="Please input the bookmark price"
-                                        helperText="Bookmark Price"
+                                        helperText={`Bookmark Price (~ ${(avaxprice * Number(item.bookmarkprice)).toFixed(3)}) USD`}
                                         fullWidth
                                         className='input-item'
                                         type="number"
@@ -62,7 +74,15 @@ function BookAddItem({ inputList, setInputList }) {
                                         }}
                                         variant="filled"
                                         value={item.bookmarkprice}
-                                        onChange={e => handleInputChange(e, i)}
+                                        onChange={e => {
+                                            if(onlythreedecimal.test(e.target.value)) {
+                                                if(e.target.value > 0) {
+                                                    handleInputChange(e, i)
+                                                } else {
+                                                    return;
+                                                }
+                                            }
+                                        }}
                                     />
                                     <TextField
                                         id="maxbookmarksupply"
@@ -78,7 +98,15 @@ function BookAddItem({ inputList, setInputList }) {
                                         }}
                                         variant="filled"
                                         value={item.maxbookmarksupply}
-                                        onChange={e => handleInputChange(e, i)}
+                                        onChange={e => {
+                                            if(onlyinteger.test(e.target.value)) {
+                                                if(e.target.value > 0) {
+                                                    handleInputChange(e, i)
+                                                } else {
+                                                    return;
+                                                }
+                                            }
+                                        }}
                                     />
                                     <TextField
                                         id="bookmarkstartpoint"
@@ -94,7 +122,15 @@ function BookAddItem({ inputList, setInputList }) {
                                         }}
                                         variant="filled"
                                         value={item.bookmarkstartpoint}
-                                        onChange={e => handleInputChange(e, i)}
+                                        onChange={e => {
+                                            if(onlyinteger.test(e.target.value)) {
+                                                if(e.target.value > 0) {
+                                                    handleInputChange(e, i)
+                                                } else {
+                                                    return;
+                                                }
+                                            }
+                                        }}
                                     />
                                     { inputList.length !== 1 && 
                                         <Button

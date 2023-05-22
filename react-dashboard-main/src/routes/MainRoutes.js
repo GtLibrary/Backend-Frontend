@@ -24,6 +24,13 @@ const SetAIPrice = Loadable(lazy(() => import('../views/basic/SetAIPrice')));
 // profile setting
 const ProfileSetting = Loadable(lazy(() => import('../views/profile/setting')));
 const ChangePass = Loadable(lazy(() => import('../views/profile/changepassword')));
+// advanced setting
+const SetAddon = Loadable(lazy(() => import('../views/advanced/SetAddon')));
+const SetDexPrice = Loadable(lazy(() => import('../views/advanced/SetDexprice')));
+const SetOutamount = Loadable(lazy(() => import('../views/advanced/SetOutamount')));
+const SetReward = Loadable(lazy(() => import('../views/advanced/SetReward')));
+const AddonRevocation = Loadable(lazy(() => import('../views/advanced/AddonRevocation')));
+
 // utilities routing
 const UtilsTypography = Loadable(lazy(() => import('../views/utilities/Typography')));
 const UtilsColor = Loadable(lazy(() => import('../views/utilities/Color')));
@@ -58,6 +65,11 @@ const MainRoutes = () => {
                 '/basic/setaiprice',
                 // 'books/edit/:id',
                 // 'books/add',
+                '/advanced/setaddon',
+                '/advanced/setdexprice',
+                '/advanced/setoutamount',
+                '/advanced/setreward',
+                '/advanced/addonrevocation',
 
                 '/profile/setting',
                 '/profile/changepassword',
@@ -127,6 +139,12 @@ const MainRoutes = () => {
                         )
                         }  />
                         <Route path="/basic/setaiprice" component={SetAIPrice} />
+                        
+                        <Route path="/advanced/setaddon" component={SetAddon} />
+                        <Route path="/advanced/setdexprice" component={SetDexPrice} />
+                        <Route path="/advanced/setoutamount" component={SetOutamount} />
+                        <Route path="/advanced/setreward" component={SetReward} />
+                        <Route path="/advanced/addonrevocation" component={AddonRevocation} />
 
                         <Route path="/profile/setting" component={ProfileSetting} />
                         <Route path="/profile/changepassword" component={ChangePass} />

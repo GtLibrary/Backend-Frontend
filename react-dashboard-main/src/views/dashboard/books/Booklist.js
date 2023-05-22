@@ -65,17 +65,20 @@ const Booklist = () => {
     }
 
     const deleteBooklist = (Booklist_id) => {
-        axios.delete( configData.API_SERVER + 'books/delete/' + Booklist_id, { headers: { Authorization: `${accountinfo.token}` } })
-            .then(function (response) {
-                if (response.status === 204) {
-                    getBooklists()
-                } else {
-                    getBooklists()
-                }
-            })
-            .catch(function (error) {
-                
-            });
+        const confirmed = window.confirm("Are you sure you want to delete this Book?");
+        if (confirmed) {
+            axios.delete( configData.API_SERVER + 'books/delete/' + Booklist_id, { headers: { Authorization: `${accountinfo.token}` } })
+                .then(function (response) {
+                    if (response.status === 204) {
+                        getBooklists()
+                    } else {
+                        getBooklists()
+                    }
+                })
+                .catch(function (error) {
+                    
+                });
+        }
     }
 
     return (
@@ -84,7 +87,7 @@ const Booklist = () => {
                 <Box display="flex" flexDirection="row-reverse" p={1} m={1} bgcolor="background.paper">
                     <Button variant="contained" onClick={() => {newBookadd()}}>Add New Book</Button>
                 </Box>
-                <TableContainer sx={{ maxHeight: 440 }}>
+                <TableContainer sx={{ maxHeight: 520 }}>
                     <Table stickyHeader aria-label="sticky table">
                         <TableHead>
                             <TableRow>

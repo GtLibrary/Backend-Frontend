@@ -3,7 +3,6 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useWeb3React } from "@web3-react/core";
 import Web3 from "web3";
-import axios from "axios";
 import { ethers } from "ethers";
 import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
@@ -18,23 +17,29 @@ function BMdetailModal(props) {
   const { account } = useWeb3React();
 
   const web3 = new Web3(window.ethereum);
-  const { id, curserial_num, bookmarkinfo } = props;
+  const { id, curserial_num, bookmarkinfo, show } = props;
+  const curpricesymbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
   let _token_id, _class, _price
-
+  let bm_id;
   let token_id;
   let tokenname;
   let tokenprice;
   let contract_address;
+  let curdexrate;
   if (bookmarkinfo) {
+    bm_id = bookmarkinfo.bm_id;
     token_id = bookmarkinfo.token_id;
     tokenname = bookmarkinfo.tokenname;
     tokenprice = bookmarkinfo.tokenprice;
     contract_address = bookmarkinfo.contract_address;
+    curdexrate = bookmarkinfo.curdexrate;
   } else {
+    bm_id = 0;
     token_id = "";
     tokenname = "";
-    tokenprice = "";
+    tokenprice = 0;
     contract_address = "";
+    curdexrate = 0;
   }
   const printpress_abi = printingpress_abi;
   const marketplace_abi = Marketplace_abi;
@@ -102,7 +107,7 @@ function BMdetailModal(props) {
         }
     };
     loadcontractdata();
-  }, []);
+  }, [show]);
 
   let user_wallet;
   if (account) {
@@ -116,18 +121,28 @@ function BMdetailModal(props) {
       printpress_abi,
       printpress_address
     );
-
-    await printpress_contract.methods.buyBook(contract_address).send({
-      from: user_wallet,
-      value: web3.utils.toWei(String(tokenprice)),
-      gas: await web3.eth.getGasPrice(),
-    });
     
-    // await printpress_contract.methods.buyBook(contract_address, web3.utils.toWei(String(tokenprice))).send({
-    //   from: user_wallet,
-    //   value: web3.utils.toWei(String(tokenprice)),
-    //   gas: await web3.eth.getGasPrice(),
-    // });
+    const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+    await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(tokenprice))).send({ from: account });
+
+    await printpress_contract.methods.buyBookCC(contract_address, web3.utils.toWei(String(tokenprice))).send({
+      from: user_wallet
+    });
+  };
+
+  const buyBookMarkCC = async () => {
+    const printpress_contract = new web3.eth.Contract(
+      printpress_abi,
+      printpress_address
+    );
+    
+    var price = tokenprice / curdexrate + 0.00001;
+    const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+    await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(price))).send({ from: account });
+
+    await printpress_contract.methods.buyBookCC(contract_address, web3.utils.toWei(String(price))).send({
+      from: user_wallet
+    });
   };
 
   const sellBookMark = async () => {
@@ -237,17 +252,26 @@ function BMdetailModal(props) {
         >
           <Tab eventKey="bookmark" title="Bookmark">
             <div>
-                <p>Bookmark Token ID: {tokenname} #{token_id}</p>
-                <p>Token Contract Address: {contract_address}</p>
-                <p>Current Owner: { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
-                <p>Current Price: {tokenprice} CCoin</p>
+                <p>Bookmark ID: {tokenname} #{bm_id}</p>
+                <p>Bookmark Token Contract Address: {contract_address}</p>
+                <p>Current Token Owner: { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
+                <p>Current Token Price: {tokenprice} {curpricesymbol}</p>
+                <p>Current Token Price By CCoin: {(tokenprice / curdexrate).toFixed(3)} CC</p>
                 <p>Your Account: {account}</p>
                 <button
                     type="button"
                     className="btn btn-primary btn-sm"
                     onClick={() => buyBookMark()}
                 >
-                    Buy {tokenname} Bookmark Now
+                    Buy "{tokenname}" Bookmark Now
+                </button>
+                &nbsp;
+                <button
+                    type="button"
+                    className="btn btn-primary btn-sm"
+                    onClick={() => buyBookMarkCC()}
+                >
+                    Buy "{tokenname}" Bookmark with CC
                 </button>
                 { account === NFTOwner ? (
                     <>
@@ -257,7 +281,7 @@ function BMdetailModal(props) {
                           className="btn btn-danger btn-sm"
                           onClick={() => sellBookMark()}
                           >
-                          Sell {tokenname} Bookmark Now
+                          Sell "{tokenname}" Bookmark Now
                       </button>
                     </>
                 ) : (

@@ -12,7 +12,7 @@ const Footer = () => {
       <div className='footer'>
         <div className="container footer-content">
           <div className="copyright">
-            Copyright greatlibrary.io 2021-2022. <br/>
+            Copyright greatlibrary.io 2021-{year} <br/>
             All rights reserved.
           </div>
           <div className="social-area">

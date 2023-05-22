@@ -3,44 +3,48 @@ import { useParams } from "react-router-dom";
 import { useWeb3React } from "@web3-react/core";
 import { useNavigate } from "react-router-dom";
 import Web3 from "web3";
+import { ethers } from "ethers";
 import LoadingOverlay from "react-loading-overlay";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useSpeechSynthesis } from "react-speech-kit";
 import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
+import SavebookModal from "../SBmodal";
 import printingpress_abi from "../../utils/contract/PrintingPress.json";
-import cc_abi from "../../utils/contract/CultureCoin.json";
-import BT_abi from "../../utils/contract/BookTradable.json";
+import CC_abi from "../../utils/contract/CultureCoin.json";
+import NBT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
 
 LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
-  const { account } = useWeb3React();
-  const { speak } = useSpeechSynthesis();
+  const { account, chainId } = useWeb3React();
+  const [audioBlob, setAudioBlob] = useState(null);
+  const { ethereum } = window;
 
   const web3 = new Web3(window.ethereum);
 
   const printpress_abi = printingpress_abi;
-  const bt_abi = BT_abi;
+  const bt_abi = NBT_abi;
+  const cc_abi = CC_abi;
   const printpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
-  const cCAPrivateKey = process.env.REACT_APP_CCAPRIVATEKEY;
+  const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
+  const _cCA = process.env.REACT_APP_CCA;
 
   const navigate = useNavigate();
-  const [pdfcontent, setPdfcontent] = useState([]);
-  const [bmcontent, setBmcontent] = useState([]);
   const [bookmarkinfo, setBookmarkinfo] = useState(null);
   const [booktypes, setBooktypes] = useState([]);
   const [pdftext, setPdftext] = useState("");
-  const [pdfimage, setPdfimage] = useState("");
+  const [dexrate, setDexrate] = useState(0);
   const { id } = useParams();
   const [product, setProduct] = useState(null);
   const [modalShow, setModalShow] = useState(false);
+  const [sbmodalshow, setSbmodalshow] = useState(false);
   const [curserialnum, setCurserialnum] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [pagecontent, setPagecontent] = useState(null);
 
   useEffect(() => {
     const bookurl = process.env.REACT_APP_API + `bookdata/${id}`;
@@ -68,28 +72,97 @@ const SingleProduct = ({ match }) => {
             return navigate("/books");
           } else {
             setProduct(res.data[0]);
+            window.product = res.data[0];
           }
         })
         .catch((error) => console.log(error));
-    }
-    
+    };
+
     getBook();
   }, [id, navigate]);
+
+  useEffect(() => {
+    const getDexrate = async () => {
+      const ccrateurl = {
+        method: "get",
+        url: process.env.REACT_APP_API + "getccrate",
+      };
+      await axios(ccrateurl).then((res) => {
+        setDexrate(web3.utils.fromWei(String(res.data.cc_rate)))
+      });
+    };
+    getDexrate();
+  }, []);
+
+  useEffect(() => {
+    const handleValueChange = () => {
+      myReaction();
+    };
+
+    window.addEventListener("myValueChange", handleValueChange);
+    return () => {
+      window.removeEventListener("myValueChange", handleValueChange);
+    };
+
+    async function myReaction() {
+      var index = window.myValue;
+      var product = window.product;
+
+      const provider = new ethers.providers.Web3Provider(ethereum);
+      const signer = provider.getSigner();
+      const bookTradable = new ethers.Contract(
+        product.bm_listdata[0].item_bmcontract_address,
+        bt_abi,
+        signer
+      );
+      const curtotalsupply = await bookTradable.totalSupply();
+
+      var bmcontent = {};
+      if (Number(curtotalsupply) > index) {
+        bmcontent.bm_id = index;
+        bmcontent.token_id = index;
+        bmcontent.tokenname = product.title;
+        bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
+        bmcontent.contract_address =
+          product.bm_listdata[0].item_bmcontract_address;
+        bmcontent.product = product;
+        bmcontent.curdexrate = dexrate;
+      } else {
+        bmcontent.bm_id = index;
+        bmcontent.token_id = Number(curtotalsupply);
+        bmcontent.tokenname = product.title;
+        bmcontent.tokenprice = product.bm_listdata[0].bookmarkprice; // "Caluclate this inside the modal.";//getPriceOfToken(); // product.bm_listdata.
+        bmcontent.contract_address =
+          product.bm_listdata[0].item_bmcontract_address;
+        bmcontent.product = product;
+        bmcontent.curdexrate = dexrate;
+      }
+
+      setCurserialnum(index);
+      setBookmarkinfo(bmcontent);
+      setModalShow(true);
+    }
+  }, []);
 
   // while we check for product
   if (!product) {
     return false;
   }
-  
+
   const {
     image_url,
     title,
+    datamine,
     author_name,
     book_price,
+    hardbound_price,
     introduction,
     bt_contract_address,
+    hb_contract_address,
     book_type_id,
-    bm_listdata
+    bm_listdata,
+    book_description,
+    hardbound_description,
   } = product;
 
   const onBuyBook = async () => {
@@ -97,7 +170,7 @@ const SingleProduct = ({ match }) => {
       return;
     }
     setLoading(true);
-    if(!bt_contract_address) {
+    if (!bt_contract_address) {
       return;
     }
     try {
@@ -105,35 +178,11 @@ const SingleProduct = ({ match }) => {
         printpress_abi,
         printpress_address
       );
-      
-      const ccoin_contract = new web3.eth.Contract(
-        cc_abi,
-        cc_address
-      );
-      console.log("ccoin_contract", ccoin_contract)
 
-      const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-      const ccaaccount = web3.eth.accounts.privateKeyToAccount(cCAPrivateKey).address;   
-      const transaction = await bt_contract.methods.setAddon(printpress_address, true);
-      const options = {
-        from    : ccaaccount,
-        to      : transaction._parent._address,
-        data    : transaction.encodeABI(),
-        gas     : await transaction.estimateGas({from: ccaaccount}),
-        gasPrice: await web3.eth.getGasPrice()
-      };
-      
-      const signed  = await web3.eth.accounts.signTransaction(options, cCAPrivateKey);
-      const result = await web3.eth.sendSignedTransaction(signed.rawTransaction);
-      
       await printpress_contract.methods
         .buyBook(bt_contract_address)
         .send({ from: account, value: web3.utils.toWei(String(book_price)) });
-      
-      // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
-      // await printpress_contract.methods
-      //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
-      //   .send({ from: account });
+
       setLoading(false);
       toast.success("successfully buy book!", {
         position: "top-right",
@@ -144,7 +193,6 @@ const SingleProduct = ({ match }) => {
       });
     } catch (error) {
       setLoading(false);
-      console.log("error => ", error)
       toast.error("failed buy book!", {
         position: "top-right",
         autoClose: 3000,
@@ -155,81 +203,357 @@ const SingleProduct = ({ match }) => {
     }
   };
 
-  const getPdfData = async (testurl) => {
-    const config = {
-      method: "get",
-      url: testurl,
-    };
-    await axios(config).then((res) => {
-      setPdfimage(res.data.book_image);
-      setPdftext(res.data.content);
-      let bmcount = 0;
-      if (bm_listdata.length > 0) {
-        
-        bm_listdata.map((item) => {
-          bmcount += item.maxbookmarksupply;
-          return bmcount;
-        })
-      } else {
-        bmcount = 1;
-      }
-      var bookcontent = [];
-      var bookmarks = [];
-      
-      if (bm_listdata.length > 0) {
-        bm_listdata.map((item, index) => {
-          for (let i = 0; i < item.maxbookmarksupply; i++) {
-            bookmarks.push({
-              tokenname: item.tokenname,
-              tokenprice: item.bookmarkprice,
-              contract_address: item.item_bmcontract_address,
-              token_id: i
-            })
-          }
-          // return bookmarks;
-        });
-        setBmcontent(bookmarks)
-      } else {
-        
-      }
-
-      for (
-        let i = 0, charsLength = res.data.content?.length;
-        i < charsLength;
-        i += charsLength / bmcount
-      ) {
-        bookcontent.push(res.data.content.substring(i, i + charsLength / bmcount));
-      }
-      setPdfcontent(bookcontent);
-    });
-  };
-
-  const onReadBook = async () => {
+  const onBuyBookCC = async () => {
     if (!account) {
       return;
     }
-    if(!bt_contract_address) {
+    setLoading(true);
+    if (!bt_contract_address) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+      const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
+
+      var price = book_price / dexrate + 0.00001;
+
+      await ccoin_contract.methods
+        .approve(printpress_address, web3.utils.toWei(String(price)))
+        .send({ from: account });
+      await printpress_contract.methods
+        .buyBookCC(bt_contract_address, web3.utils.toWei(String(price)))
+        .send({ from: account });
+
+      setLoading(false);
+      toast.success("successfully buy book!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy book!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onBuyHardbound = async () => {
+    if (!account) {
       return;
     }
     setLoading(true);
+    if (!hb_contract_address) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+
+      await printpress_contract.methods.buyBook(hb_contract_address).send({
+        from: account,
+        value: web3.utils.toWei(String(hardbound_price)),
+      });
+
+      // await ccoin_contract.methods.approve(printpress_address, web3.utils.toWei(String(book_price))).send({ from: account });
+      // await printpress_contract.methods
+      //   .buyBook(bt_contract_address, web3.utils.toWei(String(book_price)))
+      //   .send({ from: account });
+
+      setLoading(false);
+      toast.success("successfully buy Hardbound!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy hardbound!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onBuyHardboundCC = async () => {
+    if (!account) {
+      return;
+    }
+    setLoading(true);
+    if (!hb_contract_address) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+
+      const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
+
+      var price = hardbound_price / dexrate + 0.00001;
+
+      await ccoin_contract.methods
+        .approve(printpress_address, web3.utils.toWei(String(price)))
+        .send({ from: account });
+      await printpress_contract.methods
+        .buyBookCC(hb_contract_address, web3.utils.toWei(String(price)))
+        .send({ from: account });
+
+      setLoading(false);
+      toast.success("successfully buy Hardbound!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy hardbound!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onBuyBookmark = async () => {
+    if (!account) {
+      return;
+    }
+    setLoading(true);
+    if (!bm_listdata[0]["item_bmcontract_address"]) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+
+      await printpress_contract.methods
+        .buyBook(bm_listdata[0]["item_bmcontract_address"])
+        .send({
+          from: account,
+          value: web3.utils.toWei(String(bm_listdata[0]["bookmarkprice"])),
+        });
+
+      setLoading(false);
+      toast.success("successfully buy bookmark!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy bookmark!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const onBuyBookmarkCC = async () => {
+    if (!account) {
+      return;
+    }
+    setLoading(true);
+    if (!bm_listdata[0]["item_bmcontract_address"]) {
+      return;
+    }
+    try {
+      const printpress_contract = new web3.eth.Contract(
+        printpress_abi,
+        printpress_address
+      );
+      const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
+
+      var price = bm_listdata[0]["bookmarkprice"] / dexrate + 0.00001;
+
+      await ccoin_contract.methods
+        .approve(printpress_address, web3.utils.toWei(String(price)))
+        .send({ from: account });
+      await printpress_contract.methods
+        .buyBookCC(
+          bm_listdata[0]["item_bmcontract_address"],
+          web3.utils.toWei(String(price))
+        )
+        .send({ from: account });
+
+      setLoading(false);
+      toast.success("successfully buy bookmark!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } catch (error) {
+      setLoading(false);
+      toast.error("failed buy bookmark!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    }
+  };
+
+  const getPdfData = async () => {
     const cur_address = account;
-    const bt_contract = new web3.eth.Contract(bt_abi, bt_contract_address);
-    const booktoken_cnt = await bt_contract.methods.balanceOf(account).call();
 
-    let testurl;
-    var sender;
-    if (account) {
-      sender = cur_address;
-    } else {
-      sender = "";
+    const libraryNonce = await web3.eth.getTransactionCount(_cCA);
+    const signingMessage =
+      "" +
+      libraryNonce +
+      " Great Library \n" +
+      datamine +
+      ": Connect to begin your journey";
+    const signature = await web3.eth.personal.sign(signingMessage, cur_address);
+    const testurl = process.env.REACT_APP_API + `art/${id}`;
+
+    const config = {
+      method: "post",
+      url: testurl,
+      data: {
+        msg: signingMessage,
+        signature: signature,
+      },
+    };
+
+    try {
+      await axios(config).then((res) => {
+        if (res.data.content === "You are not token owner!!") {
+          toast.error(res.data.content, {
+            position: "top-right",
+            autoClose: 3000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        }
+
+        const parser = new DOMParser();
+        const htmlDoc = parser.parseFromString(res.data.content, "text/html");
+        const html = htmlDoc.body.innerHTML;
+
+        if (html === "You are not token owner!!") {
+          setPdftext(html);
+        } else {
+          var bookHtml = addOnClicks(html);
+          setPdftext(htmlDoc.body.innerText);
+          document.getElementById("reader-body").innerHTML = bookHtml;
+        }
+      });
+    } catch (error) {
+      console.log(error);
     }
-    if (booktoken_cnt === 0) {
-      testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
-    } else {
-      testurl = process.env.REACT_APP_API + `art/${id}?sender=` + sender;
+  };
+
+  function addOnClicks(html) {
+    var tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    var spans = [];
+    var pTags = tempDiv.getElementsByTagName("p");
+    for (var i = 0; i < pTags.length; i++) {
+      var spanTags = pTags[i].getElementsByTagName("span");
+      for (var j = 0; j < spanTags.length; j++) {
+        spans.push(spanTags[j]);
+      }
+    }
+    var spanAmount =
+      Number(product.byteperbookmark) > 0
+        ? Number(product.byteperbookmark)
+        : 2048;
+    var bookmarkId = 0;
+    var currentIndex = 0;
+    while (currentIndex < spans.length) {
+      var span = spans[currentIndex];
+      var text = span.innerText;
+      var start = 0;
+
+      var newSpans = [];
+      while (start < text.length) {
+        var end = Math.min(start + spanAmount, text.length);
+        var remainingChars = spanAmount - (end - start);
+
+        var newSpan = document.createElement("span");
+        newSpan.innerText = text.substring(start, end);
+
+        var nextStyle = span.getAttribute("style");
+        newSpan.setAttribute("style", nextStyle);
+
+        newSpan.setAttribute(
+          "onclick",
+          "window.myValue =" +
+            bookmarkId +
+            '; window.dispatchEvent(new Event("myValueChange"));'
+        );
+
+        newSpans.push(newSpan);
+        start = end;
+        if (remainingChars === 0) {
+          bookmarkId++;
+        }
+      }
+
+      for (let j = newSpans.length - 1; j >= 0; j--) {
+        let newSpan = newSpans[j];
+        span.parentNode.insertBefore(newSpan, span.nextSibling);
+      }
+
+      currentIndex++;
     }
 
-    getPdfData(testurl);
+    for (let i = 0; i < spans.length; i++) {
+      let span = spans[i];
+      span.parentNode.removeChild(span);
+    }
+
+    return tempDiv.innerHTML;
+  }
+
+  const onReadBook = async () => {
+    if (!account) {
+      toast.error("Please Connect Wallet!", {
+        position: "top-right",
+        autoClose: 3000,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+      return;
+    }
+    if (!bt_contract_address) {
+      return;
+    }
+    setLoading(true);
+    await getPdfData();
     setLoading(false);
   };
 
@@ -238,37 +562,128 @@ const SingleProduct = ({ match }) => {
       return;
     }
     const pageHTML = document.querySelector(".pdf-content").outerHTML;
-    const blob = new Blob([pageHTML], { type: "text/html" });
-    const url = URL.createObjectURL(blob);
-    const tempEl = document.createElement("a");
-    document.body.appendChild(tempEl);
-    tempEl.href = url;
-    tempEl.download = title + ".download.html";
-    tempEl.click();
-    setTimeout(() => {
-      URL.revokeObjectURL(url);
-      tempEl.parentNode.removeChild(tempEl);
-    }, 2000);
+    setPagecontent(pageHTML);
+    setSbmodalshow(true);
   };
 
-  const onAudioBook = () => {
+  const onAudioBook = async () => {
     if (!account) {
       return;
     }
-    speak({ text: pdftext });
+    const { SpeechSynthesisUtterance, speechSynthesis } = window;
+    const text = "Create an asynchronous function that splits the input text into chunks, synthesizes each chunk as speech output, and waits for the speech synthesis to complete before moving on to the next chunk. You can use the  await  keyword to pause the execution of the function until the  end  event is emitted by the  SpeechSynthesisUtterance  object."
+
+    const textChunks = splitTextIntoChunks(text, 100);
+    const audioChunks = [];
+    for (const textChunk of textChunks) {
+      const audioChunk = await new Promise((resolve, reject) => {
+        // const synth = window.speechSynthesis;
+        // const utterance = new SpeechSynthesisUtterance(textChunk);
+        const utterance = new SpeechSynthesisUtterance();
+        var voices = speechSynthesis.getVoices();
+        utterance.voice = voices[10];
+        utterance.voiceURI = 'native';
+        utterance.volume = 1;
+        utterance.rate = 1;
+        utterance.pitch = 2;
+        utterance.text = textChunk;
+        utterance.lang = 'en-US';
+        speechSynthesis.cancel();
+        speechSynthesis.speak(utterance);
+
+        utterance.addEventListener('end', async () => {
+          
+          // const audioBuffer = await getAudioBuffer(speechSynthesis);
+          // const audioBlob = new Blob([audioBuffer], { type: "audio/mpeg" });
+          // const audioURL = URL.createObjectURL(audioBlob);
+          // console.log(audioURL)
+          resolve();
+        });
+        utterance.addEventListener('error', () => {
+          reject(`Error synthesizing speech: ${utterance.text}`);
+        });
+        speechSynthesis.addEventListener('boundary', (event) => {
+          console.log("33333333333333333333333333")
+        });
+      });
+      audioChunks.push(audioChunk);
+
+    }
+    
+    // const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
+    // const audioUrl = URL.createObjectURL(audioBlob);
+    // const downloadLink = document.createElement('a');
+    // downloadLink.href = audioUrl;
+    // downloadLink.download = 'synthesizedAudio.mp3';
+    // downloadLink.click();
+
+    // if ( 'speechSynthesis' in window ) {
+    //   console.log('supported');
+    //   console.log(pdftext)
+    //   const to_speak = new SpeechSynthesisUtterance();
+    //   var voices = window.speechSynthesis.getVoices();
+    //   to_speak.voice = voices[10];
+    //   to_speak.voiceURI = 'native';
+    //   to_speak.volume = 1; 
+    //   to_speak.rate = 1; 
+    //   to_speak.pitch = 2; 
+    //   to_speak.text = pdftext;
+    //   to_speak.lang = 'en-US';
+    //   window.speechSynthesis.cancel();
+    //   window.speechSynthesis.speak(to_speak);
+    // } else {
+    //   console.log('not supported');
+    // }
+  };
+
+  function getAudioBuffer(synth) {
+    return new Promise((resolve) => {    
+      const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+      const offlineContext = new OfflineAudioContext(1, 44100, 44100);
+       const utterance = new SpeechSynthesisUtterance(synth.text);
+      utterance.voice = synth.getVoices()[0];
+      utterance.rate = 1;
+      utterance.pitch = 1;
+       const source = offlineContext.createBufferSource();
+      source.buffer = synth.speak(utterance);
+      source.connect(offlineContext.destination);
+      source.start(0);
+       offlineContext.startRendering().then((buffer) => {
+        resolve(buffer);
+      });
+    });
+  }
+
+  const splitTextIntoChunks = (text, chunkLength) => {
+    var chunks = text.split('. ');
+    return chunks;
+  };
+
+  const synthesizeTextToAudio = async (textChunk) => {
+    return new Promise((resolve, reject) => {
+      const synth = window.speechSynthesis;
+      const utterance = new SpeechSynthesisUtterance(textChunk);
+      const audioChunks = [];
+      utterance.addEventListener("end", () => {
+        const audioBlob = new Blob(audioChunks, { type: "audio/mpeg" });
+        resolve(audioBlob);
+      });
+      utterance.addEventListener("error", () => {
+        reject(`Error synthesizing speech: ${utterance.text}`);
+      });
+      speechSynthesis.speak(utterance);
+      synth.addEventListener("boundary", (event) => {
+        const audioChunk = event.target
+          .getVoices()
+          .find((voice) => voice.default)
+          .synthesize(event.target, event.charIndex, event.charLength);
+        audioChunks.push(audioChunk);
+      });
+    });
   };
 
   const onRefresh = () => {
     window.location.reload();
-  };
-
-  const showBMModal = (index) => {
-    if (!account) {
-      return;
-    }
-    setCurserialnum(index);
-    setBookmarkinfo(bmcontent[index])
-    setModalShow(true);
   };
 
   return (
@@ -321,16 +736,34 @@ const SingleProduct = ({ match }) => {
             <div className="product-detailinfo">
               <h4 className="book-title">{title}</h4>
               <h6 className="book-authorname">By {author_name}</h6>
-              <span className="book-category">{booktypes[book_type_id]}</span>
+              {book_type_id ? (
+                <span className="book-category">{booktypes[book_type_id]}</span>
+              ) : (
+                <></>
+              )}
               <div className="book-introduction">{introduction}</div>
               <div className="buybook-area">
-                <span className="bookprice-tag">{book_price}</span>
+                <span className="bookprice-tag">
+                  {Number(book_price)} {current_symbol}
+                </span>
                 <button
                   type="button"
                   className="btn btn-buybook"
                   onClick={() => onBuyBook()}
                 >
                   Buy Now
+                </button>
+              </div>
+              <div className="buybook-area">
+                <span className="bookprice-tag">
+                  {(Number(book_price) / dexrate).toFixed(4)} CC
+                </span>
+                <button
+                  type="button"
+                  className="btn btn-buybook"
+                  onClick={() => onBuyBookCC()}
+                >
+                  Buy with CC
                 </button>
               </div>
             </div>
@@ -357,18 +790,14 @@ const SingleProduct = ({ match }) => {
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img
-                      src="/assets/img/bookmark.png"
-                      alt="bookmark brand"
-                    ></img>
+                    <img src={image_url} alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Book</h4>
-                  <p className="item-description">
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem{" "}
-                  </p>
+                  <p className="item-description">{book_description}</p>
                   <div className="buyaction-area">
-                    <span className="price-area">0.0</span>
+                    <span className="price-area">
+                      {Number(book_price)} {current_symbol}
+                    </span>
                     <button
                       className="btn btn-item"
                       onClick={() => onBuyBook()}
@@ -376,43 +805,86 @@ const SingleProduct = ({ match }) => {
                       Buy Now
                     </button>
                   </div>
+                  <div className="buyaction-area">
+                    <span className="price-area">
+                      {(Number(book_price) / dexrate).toFixed(4)} CC
+                    </span>
+                    <button
+                      type="button"
+                      className="btn btn-item"
+                      onClick={() => onBuyBookCC()}
+                    >
+                      Buy with CC
+                    </button>
+                  </div>
                 </div>
               </div>
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img
-                      src="/assets/img/bookmark.png"
-                      alt="bookmark brand"
-                    ></img>
+                    <img src={image_url} alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Hardbound</h4>
-                  <p className="item-description">
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem{" "}
-                  </p>
+                  <p className="item-description">{hardbound_description}</p>
                   <div className="buyaction-area">
-                    <span className="price-area">0.0</span>
-                    <button className="btn btn-item">Buy Now</button>
+                    <span className="price-area">
+                      {Number(hardbound_price)} {current_symbol}
+                    </span>
+                    <button
+                      className="btn btn-item"
+                      onClick={() => onBuyHardbound()}
+                    >
+                      Buy Now
+                    </button>
+                  </div>
+                  <div className="buyaction-area">
+                    <span className="price-area">
+                      {(Number(hardbound_price) / dexrate).toFixed(4)} CC
+                    </span>
+                    <button
+                      className="btn btn-item"
+                      onClick={() => onBuyHardboundCC()}
+                    >
+                      Buy with CC
+                    </button>
                   </div>
                 </div>
               </div>
               <div className="col-md-4">
                 <div className="addtional-item">
                   <div className="img-area">
-                    <img
-                      src="/assets/img/bookmark.png"
-                      alt="bookmark brand"
-                    ></img>
+                    <img src={image_url} alt="bookmark brand"></img>
                   </div>
                   <h4 className="item-title">Bookmark</h4>
                   <p className="item-description">
-                    Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                    Lorem ipsum Lorem ipsum Lorem{" "}
+                    {
+                      "By owning a bookmark, you not only gain special access and control over a piece of the book, but you also gain access to special parts of the book's game(s). As a bookmark owner, you can participate in the book's success and share in the rewards. Don't miss out on this unique opportunity to own a piece of your favorite book!"
+                    }
                   </p>
                   <div className="buyaction-area">
-                    <span className="price-area">0.0</span>
-                    <button className="btn btn-item">Buy Now</button>
+                    <span className="price-area">
+                      {bm_listdata[0]["bookmarkprice"]} {current_symbol}
+                    </span>
+                    <button
+                      className="btn btn-item"
+                      onClick={() => onBuyBookmark()}
+                    >
+                      Buy Now
+                    </button>
+                  </div>
+                  <div className="buyaction-area">
+                    <span className="price-area">
+                      {(
+                        Number(bm_listdata[0]["bookmarkprice"]) / dexrate
+                      ).toFixed(4)}{" "}
+                      CC
+                    </span>
+                    <button
+                      className="btn btn-item"
+                      onClick={() => onBuyBookmarkCC()}
+                    >
+                      Buy with CC
+                    </button>
                   </div>
                 </div>
               </div>
@@ -441,11 +913,7 @@ const SingleProduct = ({ match }) => {
           <div className="col-md-3"></div>
           <div className="col-md-2"></div>
           <div className="col-md-8">
-            <p className="include-content">
-              Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem
-              ipsum Lorem ipsum Lorem Lorem ipsum Lorem ipsum Lorem ipsum Lorem
-              ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem{" "}
-            </p>
+            <p className="include-content">{introduction}</p>
           </div>
           <div className="col-md-2"></div>
         </div>
@@ -461,10 +929,7 @@ const SingleProduct = ({ match }) => {
               </div>
               <div className="content-area">
                 <div className="detail-title">Free Audio Book Code</div>
-                <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
-                </div>
+                <div className="detail-content"></div>
               </div>
             </div>
           </div>
@@ -480,8 +945,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Ticket for the Movie</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+                  Each book is also a one time movie ticket.
                 </div>
               </div>
             </div>
@@ -496,10 +960,9 @@ const SingleProduct = ({ match }) => {
                 ></img>
               </div>
               <div className="content-area">
-                <div className="detail-title">BEN, the AI cat</div>
+                <div className="detail-title">BENJI, the AI cat</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+                  Chat about the book with Benji, the AI cat!
                 </div>
               </div>
             </div>
@@ -516,8 +979,7 @@ const SingleProduct = ({ match }) => {
               <div className="content-area">
                 <div className="detail-title">Author's Brain-In-A-Jar</div>
                 <div className="detail-content">
-                  Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum Lorem ipsum
-                  Lorem ipsum Lorem ipsum Lorem Lorem ipsum
+                  Propose changes to the author even if they are dead!
                 </div>
               </div>
             </div>
@@ -543,18 +1005,19 @@ const SingleProduct = ({ match }) => {
               </button>
             </div>
             <div className="pdf-maincontent">
-              <div
+              {/* <div
                 className="pdf-image"
                 dangerouslySetInnerHTML={{ __html: pdfimage }}
-              />
-              <div className="pdf-content">
-                {pdfcontent.map((item, i) => {
-                  return (
-                    <span className="" key={i} onClick={() => showBMModal(i)}>
-                      {item}
-                    </span>
-                  );
-                })}
+              /> */}
+              <div
+                className="pdf-content"
+                id="reader-body"
+                dangerouslySetInnerHTML={{ __html: pdftext }}
+              >
+                {/* {paragraph &&
+                  paragraph.map((item, i) => {
+                    return item;
+                  })} */}
               </div>
             </div>
           </div>
@@ -567,6 +1030,15 @@ const SingleProduct = ({ match }) => {
         id={id}
         curserial_num={curserialnum}
       />
+      <SavebookModal
+        show={sbmodalshow}
+        onHide={() => {
+          setSbmodalshow(false);
+        }}
+        pagecontent={pagecontent}
+        title={title}
+        id={id}
+      ></SavebookModal>
     </Layout>
   );
 };

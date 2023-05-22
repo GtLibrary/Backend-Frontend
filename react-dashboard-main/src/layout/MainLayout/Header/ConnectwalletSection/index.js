@@ -4,6 +4,7 @@ import { injected } from "./connector";
 import { Flex } from "./CommonComponents";
 
 import { Button } from '@material-ui/core';
+import { IconLogout } from '@tabler/icons';
 import './walletconnect.styles.scss';
 
 
@@ -11,6 +12,7 @@ var isConfirm = false
 
 const WalletConnect = () => {
   const { account, activate, deactivate, error, active, chainId } = useWeb3React();
+  
   const handleLogin = () => {
       isConfirm = true
       localStorage.setItem("accountStatus", "1");
@@ -36,7 +38,7 @@ const WalletConnect = () => {
               try {
                   await ethereum.request({
                       method: "wallet_switchEthereumChain",
-                      params: [{ chainId: "0xA869" }],
+                      params: [{ chainId: "0xa869" }],
                   });
               } catch (switchError) {
                   if (switchError.code === 4902) {
@@ -45,7 +47,7 @@ const WalletConnect = () => {
                               method: "wallet_addEthereumChain",
                               params: [
                                   {
-                                      chainId: "0xA869",
+                                      chainId: "0xa869",
                                       chainName: "Avalanche Testnet C-Chain",
                                       nativeCurrency: {
                                           name: "Avalanche",
@@ -84,7 +86,9 @@ const WalletConnect = () => {
                   navigator.clipboard.writeText(account)
                   copyToClipBoard()
               }}>{account.slice(0, 5)}...{account.slice(-5)}</Button>
-              <Button variant="contained" className="animateButton" onClick={handleLogout}>disconnect</Button>
+              <Button variant="contained" className="animateButton w-logout" onClick={handleLogout}>
+                <IconLogout></IconLogout>
+              </Button>
               <span id="snackbar">Copied Wallet Address!</span>
           </Flex>
       )}

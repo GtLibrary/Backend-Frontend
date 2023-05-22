@@ -62,7 +62,8 @@
         "start": "react-scripts start",
         "build": "react-scripts build",
         "test": "react-scripts test --passWithNoTests",
-        "eject": "react-scripts eject"
+        "eject": "react-scripts eject",
+        "deploy-production": "react-scripts build && cp -r ./build/* /var/www/author.greatlibrary.io/html && systemctl reload nginx"
     },
     "eslintConfig": {
         "extends": "react-app"

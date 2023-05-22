@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import Web3 from 'web3';
 import Layout from '../../shared/layout';
 import FeaturedProduct from '../../shared/featured-product';
 import './books.styles.scss';
@@ -7,19 +8,35 @@ import './books.styles.scss';
 const Books = () => {
   
   const [products, setProducts] = useState([])
+  const [dexrate, setDexrate] = useState(0);
+  const web3 = new Web3(window.ethereum);
 
   const getBooklists = async () => {
     const { data } = await axios
-        .get('http://localhost:5000/api/getbooklist')
+        .get(process.env.REACT_APP_API + 'getbooklist')
     setProducts(data)
   }
+
+  
+  useEffect(() => {
+    const getDexrate = async () => {
+      const ccrateurl = {
+        method: "get",
+        url: process.env.REACT_APP_API + "getccrate",
+      };
+      await axios(ccrateurl).then((res) => {
+        setDexrate(web3.utils.fromWei(String(res.data.cc_rate)))
+      });
+    };
+    getDexrate();
+  }, [])
 
   useEffect(() => {
       getBooklists()
   }, [])
 
   const allProducts = products.map(product => (
-    <FeaturedProduct { ...product } key={product.id} />
+    <FeaturedProduct { ...product } cc_rate={dexrate} key={product.id} />
   ));
 
   return (

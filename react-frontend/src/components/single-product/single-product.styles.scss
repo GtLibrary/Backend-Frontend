@@ -154,8 +154,13 @@
       padding: 16px;
       border-radius: 16px;
       .img-area {
+        // max-height: 180px;
+        // /* width: auto; */
+        // overflow: hidden;
+        // border-radius: 10px;
         img {
           border-radius: 12px;
+          aspect-ratio: 1.5;
         }
       }
       .buyaction-area {
@@ -168,7 +173,7 @@
         .price-area {
           margin: 0 10px 0 20px;
           color: black;
-          font-size: 1.5rem;
+          font-size: 1rem;
           font-weight: 700;
         }
         .btn-item {
@@ -180,6 +185,33 @@
           border-radius: 20px;
           padding: 8px 25px;
           font-family: "Leander";
+        }
+      }
+      @media only screen and (min-width: 768px) and (max-width: 1023px) {
+        .buyaction-area {
+          margin-top: 20px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          background-color: white;
+          border-radius: 20px;
+          width: max-content;
+          .price-area {
+            margin: 0 10px 0 20px;
+            color: black;
+            font-size: 1.5rem;
+            font-weight: 700;
+          }
+          .btn-item {
+            // background-color: #F9D963;
+            background-image: url("../../assets/img/button.png");
+            background-repeat: no-repeat;
+            background-size: 100% 100%;
+            color: black;
+            border-radius: 20px;
+            padding: 8px 25px;
+            font-family: "Leander";
+          }
         }
       }
     }
@@ -198,6 +230,11 @@
       background-size: 100% 100%;
       .addtional-item {
         margin-top: 20px;
+        .item-description {
+          // white-space: nowrap;
+          // overflow: hidden;
+          // text-overflow: ellipsis;
+        }
       }
       .item-title {
         margin-top: 24px;
@@ -235,7 +272,6 @@
       display: flex;
       flex-direction: row;
       align-items: center;
-      justify-content: center;
       margin-top: 30px;
     }
     .icon-area {

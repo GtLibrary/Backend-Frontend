@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
+import { toast } from 'react-toastify';
 
 import configData from '../../../../config';
 
@@ -91,6 +92,16 @@ const RestLogin = (props, { ...others }) => {
     const handleMouseDownPassword = (event) => {
         event.preventDefault();
     };
+
+    const forgetpass = (e) => {
+        toast.warning('For a password change, you need to email info@greatlibrary.io from your email address.', '<a href="@mailto:info@greatlibrary.io">info@greatlibrary.io</a>', {
+            position: 'top-right',
+            autoClose: 6000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true
+        });
+    }
 
     return (
         <React.Fragment>
@@ -221,6 +232,7 @@ const RestLogin = (props, { ...others }) => {
                                 to={props.login ? '/pages/forgot-password/forgot-password' + props.login : '#'}
                                 color="secondary"
                                 sx={{ textDecoration: 'none' }}
+                                onClick={() => forgetpass()}
                             >
                                 Forgot Password?
                             </Typography>

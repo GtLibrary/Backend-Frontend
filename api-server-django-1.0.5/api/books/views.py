@@ -9,21 +9,30 @@ from api.books.serializers import BooksSerializer
 from api.books.models import Books
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from rest_framework import status
 from django.http import JsonResponse
 from api.books.moralis import Moralis
-from dotenv import load_dotenv
 # from api.books.minter import MyFirstMinter
 # from api.books.minter import MySecondMinter
 # from api.books.minter import Minter
 from web3 import Web3, HTTPProvider
+from eth_account.messages import encode_defunct
 from api.openaikey.models import Apikey
 from api.wallet.models import Wallet, WalletTransaction
 from api.aiprice.models import AIpricemodel
 from django.db.models import Q
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
+#import dotenv
+#dotenv.read_dotenv(os.path.join(os.path.join(os.path.dirname(os.path.dirname(__file__)), "."), '.env'))
 
+from dotenv import load_dotenv
 load_dotenv()
+
+# CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
+
+
+#load_dotenv()
 
 moralis = Moralis()
 
@@ -34,6 +43,8 @@ secureHost = os.environ['secureHost']
 cCAPrivateKey = os.environ['cCAPrivateKey']
 openai.api_key = os.environ["OPENAI_API_KEY"]
 marketPlaceAddress = os.environ['marketPlaceAddress']
+cc_address = os.environ['cultureCoinAddress']
+
 if not marketPlaceAddress:
     #marketPlaceAddress = "0x0000000000000000000000000000000000000000"
     print("I dont have a marketPlaceAddress")
@@ -43,17 +54,50 @@ moralisdir = "/home/john/bakerydemo/moralis/"
 # Create your views here.
 @api_view(['GET'])
 def getbooklist(request):
-    fields = ('id', 'author_name', 'book_price', 'title','image_url')
-    books = Books.objects.filter(Q(user__is_verify=True)).only('id', 'author_name', 'book_price', 'title','image_url')
+    fields = ('id', 'author_name', 'book_price', 'title','image_url', 'bt_contract_address')
+    books = Books.objects.filter(Q(user__is_verify=True)).only('id', 'author_name', 'book_price', 'title','image_url', 'bt_contract_address')
     data = BooksSerializer(books, context={"request": request}, many=True, fields = fields).data
     return Response(data)
 
 @api_view(['GET'])
 def getbookdatabyId(request, pk):
-    fields = ('id', 'title','image_url', 'author_name', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads', 'hardbound_price')
-    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads', 'hardbound_price')
+    fields = ('id', 'title','image_url', 'author_name', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads', 'hardbound_price', 'book_description', 'hardbound_description', 'byteperbookmark')
+    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'book_type_id', 'bm_listdata', 'is_ads', 'hardbound_price', 'book_description', 'hardbound_description', 'byteperbookmark')
     data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
     return Response(data)
+
+@api_view(['GET'])
+def getCCRate(request):
+    
+    cwd = os.getcwd()
+    path = (cwd + '/static/CultureCoin.json')
+    contract_abi = json.load(open(path))
+    ccoin_address = Web3.toChecksumAddress(cc_address)
+    CC_Contract = web3.eth.contract(address=ccoin_address, abi=contract_abi)
+    cc_rate = CC_Contract.functions.getDexCCRate().call()
+    return Response({"cc_rate": cc_rate})
+    
+@api_view(['POST'])
+def getdownloadfile(request, pk):
+    req_data = request.body.decode('utf-8')
+    body = json.loads(req_data)
+    bookdata = Books.objects.get(pk=pk)
+    sender = body['account']
+
+    # bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
+    cwd = os.getcwd()
+    path = (cwd + '/static/BookTradable.json')
+    contract_abi = json.load(open(path))
+    bt_address = Web3.toChecksumAddress(bookdata.bt_contract_address)
+    bt_Contract = web3.eth.contract(address=bt_address, abi=contract_abi)
+    token_cnt = bt_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
+    if (token_cnt > 0): 
+        fields = ('id', 'epub_file')
+        book = Books.objects.filter(pk=pk).only('id', 'epub_file')
+        data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
+        return Response(data)
+    else:
+        return Response({'error': 'Object not found'}, status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
 def getadslist(request):
@@ -73,7 +117,7 @@ def getBookAdContentbyId(request, pk):
     content = adcontent.adcontent
     if(content.find("<figure") > 0):
         figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
-        temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
+        temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '\n')
     else:
         figure_content = ''
         temp_content = content.replace('<p>', '').replace('</p>', '')
@@ -125,21 +169,23 @@ def getBookmarkTotalSupply(bookmarkcontractid):
 
 # Create your views here.
 
-@api_view(['GET'])
+@api_view(['POST'])
 def art(request, pk):
 
+    req_data = request.body.decode('utf-8')
+    body = json.loads(req_data)
     bookcontent = Books.objects.get(pk=pk)
     curserial_num = bookcontent.curserial_number
-    curserial_num = re.sub(r'[^a-zA-Z0-9\.]', '', curserial_num)
     datamine = bookcontent.datamine
-    datamine = re.sub(r'[^a-zA-Z0-9\.]', '', datamine)
-
+    # curserial_num = re.sub(r'[^a-zA-Z0-9\.]', '', curserial_num)
+    # datamine = re.sub(r'[^a-zA-Z0-9\.]', '', datamine)
+    
     daedalusToken = request.GET.get('daedalusToken', '0')
     daedalusToken = re.sub(r'[^a-zA-Z0-9\.]', '', daedalusToken)
 
-    msg = request.GET.get('msg', '')
-    signature = request.GET.get('sig', 'default')
-    sender = request.GET.get('sender', '')
+    msg = encode_defunct(text=body['msg'])
+    signature = body['signature']
+    sender = Web3.toChecksumAddress(web3.eth.account.recover_message(msg, signature=signature))
 
     # bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
     cwd = os.getcwd()
@@ -149,16 +195,19 @@ def art(request, pk):
     bt_Contract = web3.eth.contract(address=bt_address, abi=contract_abi)
     token_cnt = bt_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
 
-    if (token_cnt > 0) & (sender != ''):
+    if ((token_cnt > 0) & (sender != '')):
         # cur_num = bmsupply - 1
         content = bookcontent.content
-        if(content.find("<figure") > 0):
-            figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
-            temp_content = content.replace(figure_content, '').replace('<p>', '').replace('</p>', '')
-        else:
-            figure_content = ''
-            temp_content = content.replace('<p>', '').replace('</p>', '')
-        return Response({"content": temp_content, "book_image": figure_content, "curserial_num": curserial_num})
+        figure_content = ''
+        # if(content.find("<figure") > 0):
+        #     figure_content = content[content.index("<figure"): content.index("</figure>") + 9]
+        #     content = content.replace('</p>', '\n')
+        #     # temp_content = re.sub(CLEANR, '', content)
+        # else:
+        #     content = content.replace('</p>', '\n')
+        #     # temp_content = re.sub(CLEANR, '', content)
+        
+        return Response({"content": content, "book_image": figure_content, "curserial_num": curserial_num})
     else:
         return Response({"content":"You are not token owner!!"})
 
