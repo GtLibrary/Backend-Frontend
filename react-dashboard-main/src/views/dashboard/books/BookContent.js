@@ -20,6 +20,7 @@ const BookContent = (props) => {
     const [bookcontent, setBookcontent] = useState('<p>Hello from CKEditor 5!</p>');
     const [title, setTitle] = useState('Book Content Edit');
     const [epubfile, setEpubfile] = useState(null);
+    const [audiofile, setAudiofile] = useState(null);
     const [bookfile, setBookfile] = useState(null);
     const accountinfo = useSelector((state) => state.account);
     const contentEditable = useRef();
@@ -37,6 +38,9 @@ const BookContent = (props) => {
         let form_data = new FormData();
         if (epubfile) {
             form_data.append('epub_file', epubfile);
+        }
+        if (audiofile) {
+            form_data.append('audio_file', audiofile);
         }
         form_data.append('content', bookcontent);
 
@@ -72,6 +76,10 @@ const BookContent = (props) => {
         setEpubfile(e.target.files[0]);
     }
 
+    const uploadAudio = (e) => {
+        setAudiofile(e.target.files[0]);
+    }
+
     const handlePaste = (event) => {
         const copytext = event.clipboardData.getData('text/html');
         event.preventDefault();
@@ -102,6 +110,19 @@ const BookContent = (props) => {
                         />
                         <span>select the epub file</span>
                         {bookfile !== null? (<a href={bookfile}>current epub file</a>):(<></>)}
+                    </Box>
+                    <p style={{fontFamily: 'Crimson Text'}}>Save Book Audio file for user download.</p>
+                    <Box display="flex" flexDirection="column" className="upload-content" p={1} m={1} bgcolor="background.paper">
+                        <input
+                            accept=".mp3,.wav"
+                            className="hidden"
+                            type="file"
+                            onChange={(e) => {
+                                uploadAudio(e);
+                            }}
+                        />
+                        <span>select the Book Audio file</span>
+                        {bookfile !== null? (<a href={bookfile}>current Book Audio file</a>):(<></>)}
                     </Box>
                     <p style={{fontFamily: 'Crimson Text'}}>Paste your manuscript from Google Docs in the box below. Then click Save.</p>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">

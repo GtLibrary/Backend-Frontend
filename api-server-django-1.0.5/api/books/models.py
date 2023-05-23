@@ -36,6 +36,7 @@ class Books(models.Model):
     bm_listdata = models.JSONField(default=list)
     is_ads = models.BooleanField(default=False)
     epub_file = models.FileField(upload_to='epub/', blank=True, null=True)
+    audio_file = models.FileField(upload_to='audio/', blank=True, null=True)
     pub_date = models.DateTimeField('date published',auto_now=True, null=False, blank=False)
     class Meta:
         ordering = ['title']

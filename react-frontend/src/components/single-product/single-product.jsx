@@ -7,6 +7,7 @@ import { ethers } from "ethers";
 import LoadingOverlay from "react-loading-overlay";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
@@ -20,7 +21,6 @@ LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
   const { account, chainId } = useWeb3React();
-  const [audioBlob, setAudioBlob] = useState(null);
   const { ethereum } = window;
 
   const web3 = new Web3(window.ethereum);
@@ -570,115 +570,28 @@ const SingleProduct = ({ match }) => {
     if (!account) {
       return;
     }
-    const { SpeechSynthesisUtterance, speechSynthesis } = window;
-    const text = "Create an asynchronous function that splits the input text into chunks, synthesizes each chunk as speech output, and waits for the speech synthesis to complete before moving on to the next chunk. You can use the  await  keyword to pause the execution of the function until the  end  event is emitted by the  SpeechSynthesisUtterance  object."
+    console.log("client")
+    const apiKey = ''
+    const client = new TextToSpeechClient({apiKey});
 
-    const textChunks = splitTextIntoChunks(text, 100);
-    const audioChunks = [];
-    for (const textChunk of textChunks) {
-      const audioChunk = await new Promise((resolve, reject) => {
-        // const synth = window.speechSynthesis;
-        // const utterance = new SpeechSynthesisUtterance(textChunk);
-        const utterance = new SpeechSynthesisUtterance();
-        var voices = speechSynthesis.getVoices();
-        utterance.voice = voices[10];
-        utterance.voiceURI = 'native';
-        utterance.volume = 1;
-        utterance.rate = 1;
-        utterance.pitch = 2;
-        utterance.text = textChunk;
-        utterance.lang = 'en-US';
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utterance);
+    const request = {
+      input: { text: 'Hello, how are you?' },
+      voice: { languageCode: 'en-US', name: 'en-US-Wavenet-D' },
+      audioConfig: { audioEncoding: 'LINEAR16', sampleRateHertz: 16000 },
+    };
 
-        utterance.addEventListener('end', async () => {
-          
-          // const audioBuffer = await getAudioBuffer(speechSynthesis);
-          // const audioBlob = new Blob([audioBuffer], { type: "audio/mpeg" });
-          // const audioURL = URL.createObjectURL(audioBlob);
-          // console.log(audioURL)
-          resolve();
-        });
-        utterance.addEventListener('error', () => {
-          reject(`Error synthesizing speech: ${utterance.text}`);
-        });
-        speechSynthesis.addEventListener('boundary', (event) => {
-          console.log("33333333333333333333333333")
-        });
-      });
-      audioChunks.push(audioChunk);
-
-    }
-    
-    // const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
-    // const audioUrl = URL.createObjectURL(audioBlob);
-    // const downloadLink = document.createElement('a');
-    // downloadLink.href = audioUrl;
-    // downloadLink.download = 'synthesizedAudio.mp3';
-    // downloadLink.click();
-
-    // if ( 'speechSynthesis' in window ) {
-    //   console.log('supported');
-    //   console.log(pdftext)
-    //   const to_speak = new SpeechSynthesisUtterance();
-    //   var voices = window.speechSynthesis.getVoices();
-    //   to_speak.voice = voices[10];
-    //   to_speak.voiceURI = 'native';
-    //   to_speak.volume = 1; 
-    //   to_speak.rate = 1; 
-    //   to_speak.pitch = 2; 
-    //   to_speak.text = pdftext;
-    //   to_speak.lang = 'en-US';
-    //   window.speechSynthesis.cancel();
-    //   window.speechSynthesis.speak(to_speak);
-    // } else {
-    //   console.log('not supported');
-    // }
-  };
-
-  function getAudioBuffer(synth) {
-    return new Promise((resolve) => {    
-      const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-      const offlineContext = new OfflineAudioContext(1, 44100, 44100);
-       const utterance = new SpeechSynthesisUtterance(synth.text);
-      utterance.voice = synth.getVoices()[0];
-      utterance.rate = 1;
-      utterance.pitch = 1;
-       const source = offlineContext.createBufferSource();
-      source.buffer = synth.speak(utterance);
-      source.connect(offlineContext.destination);
-      source.start(0);
-       offlineContext.startRendering().then((buffer) => {
-        resolve(buffer);
-      });
-    });
-  }
-
-  const splitTextIntoChunks = (text, chunkLength) => {
-    var chunks = text.split('. ');
-    return chunks;
-  };
-
-  const synthesizeTextToAudio = async (textChunk) => {
-    return new Promise((resolve, reject) => {
-      const synth = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance(textChunk);
-      const audioChunks = [];
-      utterance.addEventListener("end", () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/mpeg" });
-        resolve(audioBlob);
-      });
-      utterance.addEventListener("error", () => {
-        reject(`Error synthesizing speech: ${utterance.text}`);
-      });
-      speechSynthesis.speak(utterance);
-      synth.addEventListener("boundary", (event) => {
-        const audioChunk = event.target
-          .getVoices()
-          .find((voice) => voice.default)
-          .synthesize(event.target, event.charIndex, event.charLength);
-        audioChunks.push(audioChunk);
-      });
+    client.synthesizeSpeech(request)
+    .then((response) => {
+      const audioContent = response[0].audioContent;
+      const url = URL.createObjectURL(new Blob([audioContent], { type: 'audio/mp3' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'text-to-speech.mp3');
+      document.body.appendChild(link);
+      link.click();
+    })
+    .catch((err) => {
+      console.error(err);
     });
   };
 
