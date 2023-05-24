@@ -277,7 +277,7 @@ const AddonRevocation = (props) => {
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={6} sm={6}>
                         <Button variant="contained" style={{ margin: 8 }} onClick={() => revokeMinimartAddon()}>
-                            Set Addon Minimart
+                            Revoke Minimart Addon
                         </Button>
                     </Grid>
                 </Grid>
@@ -285,7 +285,7 @@ const AddonRevocation = (props) => {
                 <Grid container spacing={gridSpacing}>
                     <Grid item xs={6} sm={6}>
                         <Button variant="contained" style={{ margin: 8 }} onClick={() => revokePirntpressAddon()}>
-                            Set Addon Printing Press
+                            Revoke Printing Press Addon
                         </Button>
                     </Grid>
                 </Grid>

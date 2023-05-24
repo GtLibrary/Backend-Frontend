@@ -1,0 +1,559 @@
+[33mcommit 6769244d6a564f30309a21f489166613d9d4e220[m[33m ([m[1;36mHEAD -> [m[1;32mleon_new[m[33m, [m[1;31morigin/leon_new[m[33m)[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Tue May 23 16:13:19 2023 +0900
+
+    update for download audio
+
+[33mcommit ee5baf8bcebec050e9da09d2de849ce2078cd7cc[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Sat May 20 01:48:47 2023 +0900
+
+    add revoke page on advanced setting
+
+[33mcommit 0a1a34700ac9ddcad67344e99cdfcb645b49bc47[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Fri May 19 06:10:10 2023 +0900
+
+    move getccrate function to backend
+
+[33mcommit eb0cf6c07d64e71a02747e07c866f16c91dca122[m
+Merge: 90d6054 27ea1f0
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Fri May 19 03:59:27 2023 +0900
+
+    Merge branch 'main' of https://github.com/GtLibrary/Backend-Frontend into leon_new
+
+[33mcommit 90d60545ddcc3c43c14114eb7efd0f0c3f18c58e[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Fri May 19 03:58:42 2023 +0900
+
+    update text to speech function
+
+[33mcommit 27ea1f0dd90bf53d24550a2a921a5f20bcd7eb41[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: fa92523 3067ac7
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Thu May 18 15:03:07 2023 +0900
+
+    Merge pull request #133 from GtLibrary/leon_new
+    
+    fix infinity error on testnet
+
+[33mcommit 3067ac7d9946ca39cb5f4f522041886e4aaa6a5e[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Thu May 18 14:59:04 2023 +0900
+
+    infinity error on testnet
+
+[33mcommit fa92523a98fc0efd6c9e5bd96f40d9a093c2c4aa[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Wed May 17 10:45:05 2023 -0700
+
+    remove debugging
+
+[33mcommit 9372c0b452c6b079c81f7307f79f8805b99a22e9[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Wed May 17 10:33:01 2023 -0700
+
+    Remove suprious verbiage
+
+[33mcommit 11fb742877c809e8062682a8d8ffc0656ea23007[m
+Merge: e97241a 4ef0103
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Wed May 17 19:01:06 2023 +0900
+
+    Merge pull request #132 from GtLibrary/leon_new
+    
+    move isourcontract function to backend
+
+[33mcommit 4ef010345d18bac35417019b56a6cca176257ade[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Wed May 17 18:56:14 2023 +0900
+
+    remove typograph
+
+[33mcommit c6b11f7673647b5b7ac35492cd9e693b1eb17b41[m
+Merge: 38395c0 e97241a
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Wed May 17 18:54:02 2023 +0900
+
+    merge to main branch
+
+[33mcommit 38395c091114f1e1a3ff90bf01eb08291a96465f[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Wed May 17 18:51:16 2023 +0900
+
+    move isourcontract function to backend
+
+[33mcommit e97241ab72b530f5e1dc1b71a4a59ebaae19376f[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Tue May 16 18:21:18 2023 -0700
+
+    set the bt contract in the returned values from getbooklist
+
+[33mcommit 833bce883f960665f9d17aae468a4368637c3241[m
+Merge: febcbd4 fda215e
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Tue May 16 16:25:09 2023 -0700
+
+    Merge branch 'main' of https://github.com/GtLibrary/Backend-Frontend into main
+
+[33mcommit febcbd4314e950eb8bbe4b87cbc75c2954af64d3[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Tue May 16 16:24:12 2023 -0700
+
+    Turning off all the isOUrContract() checks. They need to be done in the
+    backend.
+
+[33mcommit fda215e124b63685bb4ef552dbfe5c1699286edc[m
+Author: John R Raymond <johnrrraymond@yahoo.com>
+Date:   Tue May 16 23:07:57 2023 +0000
+
+    and restart nginix
+
+[33mcommit 99204773c1135bbc6cccbf45e290e2132f580e16[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Tue May 16 16:04:16 2023 -0700
+
+    make the default start for bookmarks 10.
+
+[33mcommit 20778e644e983a9da80926e5edbb350c2d5549d2[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Tue May 16 14:32:45 2023 -0700
+
+    disable the smart book dl button
+
+[33mcommit 7272d492fb0dc6d58aa90c94044d8fedc72ba92d[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Tue May 16 12:54:43 2023 -0700
+
+     epub download is working as expected for now.
+
+[33mcommit bd97b4818035f402eb6b5f13e1fc55491a2491bd[m
+Merge: 65847b8 99b79af
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Tue May 16 10:20:42 2023 +0900
+
+    Merge pull request #131 from GtLibrary/leon_new
+    
+    add download epub file function
+
+[33mcommit 99b79af12a1ed5cb17d2e7ed8c4f034b7dae0ec1[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Tue May 16 10:15:55 2023 +0900
+
+    add download epub file function
+
+[33mcommit 65847b899105c99005b83a82eda330eabd3bf1ac[m
+Merge: 3eeaf8a b10f98c
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Tue May 16 07:28:15 2023 +0900
+
+    Merge pull request #130 from GtLibrary/leon_new
+    
+    Leon new
+
+[33mcommit b10f98c0d441dd5d9d267d067da22fcb32fcdb3d[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Tue May 16 07:24:52 2023 +0900
+
+    fix trello issues
+
+[33mcommit 3eeaf8a84ef9e94618e385465c8ab2b04ae029c9[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Mon May 15 15:18:33 2023 -0700
+
+    protected toWei form js by wrapping all prices with a String()
+
+[33mcommit 6c24ba64c312510a47eef51e3a79064ea4ff43e3[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Tue May 16 07:07:06 2023 +0900
+
+    fix trello issues
+
+[33mcommit b2416febe0b7e6c8048098fa81bc1fc94b51389e[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Mon May 15 14:52:05 2023 -0700
+
+    Uplaod photo button made a little clearer
+
+[33mcommit 86a0ed0c3078b0eed807b2ffc2d346225c284bd0[m
+Merge: 3d2bf23 81ef62b
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Tue May 16 03:14:18 2023 +0900
+
+    Merge pull request #129 from GtLibrary/leon_new
+    
+    change save book function
+
+[33mcommit 81ef62b290dc3214b7e6be0a2da317ec1ea293ba[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Tue May 16 03:09:54 2023 +0900
+
+    change save book function
+
+[33mcommit 3d2bf23d2551edef1eab6ca894c3c3996172af43[m
+Merge: 6eb8ad9 b7e9125
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Mon May 15 16:08:25 2023 +0900
+
+    Merge pull request #128 from GtLibrary/leon_new
+    
+    fix trello issue
+
+[33mcommit b7e9125626b21230d0e00a67259209fa18868340[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Mon May 15 16:00:43 2023 +0900
+
+    fix trello issue
+
+[33mcommit 6eb8ad9b1ea7f0f4f3b99e1dcf64e6bd72698ce5[m
+Merge: c936fca 12f5f23
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Mon May 15 06:25:25 2023 +0900
+
+    Merge pull request #127 from GtLibrary/leon_new
+    
+    update for .env
+
+[33mcommit 12f5f233ecffda687e8c6bf43ad8bf93f67fc116[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Mon May 15 06:03:44 2023 +0900
+
+    update for .env
+
+[33mcommit c936fcacaa415910620d33e34898cc1de0ef51b0[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Sun May 14 13:59:03 2023 -0700
+
+    Remove .env file from Git index
+
+[33mcommit 43a1f35cf82451feb446635fca3d39e38b3efa8e[m
+Merge: fef5194 470c3c0
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Mon May 15 05:42:31 2023 +0900
+
+    Merge pull request #126 from GtLibrary/leon_new
+    
+    Leon new
+
+[33mcommit 470c3c0b3ee6f4ab7eb5aa6754b29a6132585558[m
+Merge: 432bfa6 fef5194
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Mon May 15 05:36:19 2023 +0900
+
+    Merge branch 'main' of https://github.com/GtLibrary/Backend-Frontend into leon_new
+
+[33mcommit 432bfa629c0bb623fae52d4429da1dc375ac0982[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Mon May 15 05:36:12 2023 +0900
+
+    remove curserial on book add page
+
+[33mcommit fef51943f06fa92fb9ca05f767c4652cc8e05f54[m
+Merge: 2c9912d 8012a59
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Mon May 15 00:28:41 2023 +0900
+
+    Merge pull request #125 from GtLibrary/leon_new
+    
+    Leon new
+
+[33mcommit 8012a598da906d0ace26f34a23f395f0531208c3[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Mon May 15 00:25:23 2023 +0900
+
+    fix trello issue for byteperbook
+
+[33mcommit 29b8835d38ca8bb8875a8df06e514a64b42e4ef4[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Mon May 15 00:23:53 2023 +0900
+
+    fix trello issue for byteperbook
+
+[33mcommit 2c9912d2dc0e41c2555bc79a5b742b45c3d9f813[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Sat May 13 13:23:00 2023 -0700
+
+    i200->2048 for default bookmark.
+
+[33mcommit 07e62a46dc7782cc213332cdd6df02411d139e38[m
+Merge: 9a7ba57 55faacd
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Sat May 13 12:28:06 2023 -0700
+
+    Merge branch 'main' of https://github.com/GtLibrary/Backend-Frontend into main
+
+[33mcommit 9a7ba57b4ad8490e8512d98e76a2d4f0b0b3f31d[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Sat May 13 12:27:15 2023 -0700
+
+    new press
+
+[33mcommit 55faacd9cd6ddcd5239b2f9d3d96624cf71420f7[m
+Merge: 2554d57 c209ba5
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Sun May 14 04:22:04 2023 +0900
+
+    Merge pull request #124 from GtLibrary/leon_new
+    
+    Leon new
+
+[33mcommit c209ba50b6640c2ea8108328c18f2b256440e783[m
+Merge: 5f18dea 2554d57
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Sun May 14 04:16:46 2023 +0900
+
+    Merge branch 'main' of https://github.com/GtLibrary/Backend-Frontend into leon_new
+
+[33mcommit 5f18dea287d103282825fa0f6ac8a1d9a7d92c5d[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Sun May 14 04:16:37 2023 +0900
+
+    update for new printingpress contract
+
+[33mcommit 2554d57974e7389872240668d94041828d61e7ed[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Sat May 13 12:06:04 2023 -0700
+
+    new verbiage
+
+[33mcommit 20086960c994b88a047cb6ddecb337c754d39452[m
+Merge: 81bfd9d 149c951
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Sat May 13 17:37:31 2023 +0900
+
+    Merge pull request #123 from GtLibrary/leon_new
+    
+    update for token image on single page
+
+[33mcommit 149c951d4d350cf4edd906efd5f3b19662a5a921[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Sat May 13 17:34:05 2023 +0900
+
+    update for token image on single page
+
+[33mcommit 81bfd9df59e69c8cc8d891a4b7b09f64c7dc5a2b[m
+Merge: 9bf95c6 cdb0dfd
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Sat May 13 11:20:23 2023 +0900
+
+    Merge pull request #122 from GtLibrary/leon_new
+    
+    Leon new
+
+[33mcommit cdb0dfd19a7b9522544f79249057bf81afbc14bf[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Sat May 13 11:13:48 2023 +0900
+
+    add warning for book mint
+
+[33mcommit 5d8ccc6bf76e54b516e988dd8742888335cc1a9c[m
+Merge: 56938ee 9bf95c6
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Sat May 13 11:12:55 2023 +0900
+
+    Merge branch 'main' of https://github.com/GtLibrary/Backend-Frontend into leon_new
+
+[33mcommit 9bf95c66b5421e8d3839649f7a4d3529c5b5dba9[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Fri May 12 17:53:27 2023 -0700
+
+    change the theme to oamge and orange
+
+[33mcommit 1beb4f3f38c0e91cf983dbdf1f72edfba1159438[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Fri May 12 13:25:02 2023 -0700
+
+    change bookmark description
+
+[33mcommit 9afa785341d2ac68521504915134a4289bbbb5fe[m
+Merge: 97f8d43 d9a9dd2
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Sat May 13 04:07:21 2023 +0900
+
+    Merge pull request #121 from GtLibrary/leon_new
+    
+    fix trello issue
+
+[33mcommit 56938ee529fc9f63a33e9b603defd80c081fe542[m
+Merge: d9a9dd2 97f8d43
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Sat May 13 01:53:01 2023 +0900
+
+    Merge branch 'main' of https://github.com/GtLibrary/Backend-Frontend into leon_new
+
+[33mcommit d9a9dd251f798a5a012ed0b3864dabc5728eb2a4[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Sat May 13 01:52:23 2023 +0900
+
+    fix trello issue
+
+[33mcommit 97f8d4345c5a78bf45101ce6078fd2cc9225fee5[m
+Merge: 335d9fb 7af4f34
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Fri May 12 11:11:36 2023 +0900
+
+    Merge pull request #120 from GtLibrary/leon_new
+    
+    update for add byteperbookmark on frontend page and backend page
+
+[33mcommit 7af4f34bd73295bf083303c8d9d11e112f3bf341[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Fri May 12 11:07:22 2023 +0900
+
+    update for add byteperbookmark on frontend page and backend page
+
+[33mcommit 335d9fbcd2420b64219d9babc1562d92f51538d6[m
+Merge: bf7530c 37c0843
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Fri May 12 10:30:23 2023 +0900
+
+    Merge pull request #119 from GtLibrary/leon_new
+    
+    fix the issue on print page
+
+[33mcommit 37c0843fe74461122ef95a5bdbf4723505b7f1ea[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Fri May 12 10:25:50 2023 +0900
+
+    fix the issue on print page
+
+[33mcommit bf7530cffdce04fc0ea79131e6913f20fec57224[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Thu May 11 15:49:31 2023 -0700
+
+    officially setting the price of one Dracula to 1 AVAX. The testnet will
+    actually be less but this is the price we are shooting for per dracula
+    book once we go live.
+
+[33mcommit b22aad24dfdf9966e17e18a994dd67db25f6d832[m
+Merge: db092db 7e22725
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Fri May 12 07:19:27 2023 +0900
+
+    Merge pull request #118 from GtLibrary/leon_new
+    
+    update mint page
+
+[33mcommit 7e22725c27aaef7c5454e24d4e0fded2eb9de9c7[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Fri May 12 07:15:49 2023 +0900
+
+    update mint page
+
+[33mcommit db092db9e54b74b48cd86fa8ddcbe6f7a38f9ccc[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Thu May 11 14:03:13 2023 -0700
+
+    stupid typo..
+
+[33mcommit 196acdb49f197af1cccda88b55f59d93760b76bd[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Thu May 11 13:57:46 2023 -0700
+
+    point main link to landing page.
+
+[33mcommit 890c6e24a3d2c206652090117719c1a779bea9e3[m
+Merge: 0aa85ba ffb72f3
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Thu May 11 14:47:33 2023 +0900
+
+    Merge pull request #117 from GtLibrary/leon_new
+    
+    Leon new
+
+[33mcommit ffb72f374bda75b6e5382a71989d07934d14975c[m
+Merge: 230d301 0aa85ba
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Thu May 11 14:43:52 2023 +0900
+
+    Merge branch 'main' of https://github.com/GtLibrary/Backend-Frontend into leon_new
+
+[33mcommit 230d3018bcb3bac949c497442f4302296e37c625[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Thu May 11 14:43:39 2023 +0900
+
+    remove footer on login page
+
+[33mcommit 0aa85ba5da96606e3ba827da699693a518c3de93[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Wed May 10 21:36:14 2023 -0700
+
+    Recomend login out and back in again if there is an error with the
+    backend.
+
+[33mcommit 297fa309119b19ed4ec0ce9797673c22fba8eb21[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Wed May 10 21:32:09 2023 -0700
+
+    Add link to the listing doc.
+
+[33mcommit 61b790c6002f9040d3021063e81757002d512825[m
+Merge: c18541b 18a08a0
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Thu May 11 06:59:15 2023 +0900
+
+    Merge pull request #116 from GtLibrary/leon_new
+    
+    fix forgot pass issue
+
+[33mcommit 18a08a049de56688530115885d7d635d3e35f0a3[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Thu May 11 06:55:52 2023 +0900
+
+    fix forgot pass issue
+
+[33mcommit c18541b4203004769a49f35c8b13e6be89a3efe1[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Wed May 10 14:14:42 2023 -0700
+
+    changed the welcome message and the new account link
+
+[33mcommit a5f22be9e650f1924665ed0af9873b9b2a642fae[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Wed May 10 13:35:35 2023 -0700
+
+    fixed a missplling
+
+[33mcommit c51c27a6120346ad3c3526f0191551afa9b8477c[m
+Merge: 0204f7d db06467
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Thu May 11 05:29:59 2023 +0900
+
+    Merge pull request #115 from GtLibrary/leon_new
+    
+    update balance UI
+
+[33mcommit db064671b18c684949fd0978a643603f3b6af74a[m
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Thu May 11 05:25:47 2023 +0900
+
+    update balance UI
+
+[33mcommit 0204f7dd23fd05bcfdf957e871618138dc0e48c9[m
+Merge: be17659 a856e63
+Author: FullStack <yunayamda3@gmail.com>
+Date:   Thu May 11 04:52:52 2023 +0900
+
+    Merge pull request #114 from GtLibrary/leon_new
+    
+    Leon new
+
+[33mcommit a856e633c421201319aee2cc3bb0a75c01f6d439[m
+Merge: f9922cb be17659
+Author: alzmob <yunayamda3@gmail.com>
+Date:   Thu May 11 04:48:55 2023 +0900
+
+    fix trello issue
+
+[33mcommit be17659baa9575a7318702e6e382283a81ea997f[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Wed May 10 12:41:41 2023 -0700
+
+    new press 0x9AEC2ed24Ad8BCD3b275BA58F9AB7228cC4EFF7c
+
+[33mcommit 8cd8de935a70b592b4173722673b7e972a6b554d[m
+Author: john r raymond <johnrraymomd@yahoo.com>
+Date:   Wed May 10 12:05:32 2023 -0700
+
+    Fixes in the ui.
