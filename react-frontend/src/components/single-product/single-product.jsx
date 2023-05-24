@@ -570,29 +570,62 @@ const SingleProduct = ({ match }) => {
     if (!account) {
       return;
     }
-    console.log("client")
-    const apiKey = ''
-    const client = new TextToSpeechClient({apiKey});
+    
+    const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
 
-    const request = {
-      input: { text: 'Hello, how are you?' },
-      voice: { languageCode: 'en-US', name: 'en-US-Wavenet-D' },
-      audioConfig: { audioEncoding: 'LINEAR16', sampleRateHertz: 16000 },
+    const config = {
+      method: "post",
+      url: downloadurl,
+      data: {
+        account: account
+      }
     };
+    
+    try {
+      await axios(config).then((res) => {
+        if (res.data.status === 404) {
+          toast.error("You are not token owner!", {
+            position: "top-right",
+            autoClose: 3000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        } else {
+          const link = document.createElement('a');
+          link.href = res.data[0].epub_file;
+          link.setAttribute('download', true);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      });
+    } catch (error) {
+      console.log(error)
+    }
+    // console.log("client")
+    // const apiKey = ''
+    // const client = new TextToSpeechClient({apiKey});
 
-    client.synthesizeSpeech(request)
-    .then((response) => {
-      const audioContent = response[0].audioContent;
-      const url = URL.createObjectURL(new Blob([audioContent], { type: 'audio/mp3' }));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', 'text-to-speech.mp3');
-      document.body.appendChild(link);
-      link.click();
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+    // const request = {
+    //   input: { text: 'Hello, how are you?' },
+    //   voice: { languageCode: 'en-US', name: 'en-US-Wavenet-D' },
+    //   audioConfig: { audioEncoding: 'LINEAR16', sampleRateHertz: 16000 },
+    // };
+
+    // client.synthesizeSpeech(request)
+    // .then((response) => {
+    //   const audioContent = response[0].audioContent;
+    //   const url = URL.createObjectURL(new Blob([audioContent], { type: 'audio/mp3' }));
+    //   const link = document.createElement('a');
+    //   link.href = url;
+    //   link.setAttribute('download', 'text-to-speech.mp3');
+    //   document.body.appendChild(link);
+    //   link.click();
+    // })
+    // .catch((err) => {
+    //   console.error(err);
+    // });
   };
 
   const onRefresh = () => {
