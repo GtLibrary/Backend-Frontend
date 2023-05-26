@@ -8,6 +8,7 @@ import LoadingOverlay from "react-loading-overlay";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { TextToSpeechClient } from '@google-cloud/text-to-speech';
+import { OAuth2Client, JWT } from 'google-auth-library';
 import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
@@ -16,6 +17,7 @@ import printingpress_abi from "../../utils/contract/PrintingPress.json";
 import CC_abi from "../../utils/contract/CultureCoin.json";
 import NBT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
+// import keyfile from './../../utils/cloudgoogle-api/audiobook.json';
 
 LoadingOverlay.propTypes = undefined;
 
@@ -566,11 +568,43 @@ const SingleProduct = ({ match }) => {
     setSbmodalshow(true);
   };
 
+  const synthesizeText = async (text, keyfile) => {
+    const jwtClient = new JWT({
+      email: keyfile.client_email,
+      key: keyfile.private_key,
+      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    });
+    const auth = await jwtClient.authorize();
+    console.log("auth: ", auth)
+    const client = new TextToSpeechClient({ auth });
+    console.log("client: ",client)
+    const request = {
+      input: { text },
+      voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
+      audioConfig: { audioEncoding: 'MP3' },
+    };
+    const [response] = await client.synthesizeSpeech(request, { auth });
+    const audioContent = response.audioContent;
+    const audioBlob = new Blob([audioContent], { type: 'audio/mp3' });
+    return URL.createObjectURL(audioBlob);
+  }
+
   const onAudioBook = async () => {
     if (!account) {
       return;
     }
+    // const text = "Hello, How are you?";
+    // const apikeyfile = keyfile;
+    // console.log("apikeyfile:", apikeyfile)
+    // const url = await synthesizeText(text, apikeyfile);
     
+    // const link = document.createElement('a');
+    // link.href = url;
+    // link.setAttribute('download', 'text-to-speech.mp3');
+    // document.body.appendChild(link);
+    // link.click();
+
+
     const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
 
     const config = {
@@ -603,29 +637,7 @@ const SingleProduct = ({ match }) => {
     } catch (error) {
       console.log(error)
     }
-    // console.log("client")
-    // const apiKey = ''
-    // const client = new TextToSpeechClient({apiKey});
-
-    // const request = {
-    //   input: { text: 'Hello, how are you?' },
-    //   voice: { languageCode: 'en-US', name: 'en-US-Wavenet-D' },
-    //   audioConfig: { audioEncoding: 'LINEAR16', sampleRateHertz: 16000 },
-    // };
-
-    // client.synthesizeSpeech(request)
-    // .then((response) => {
-    //   const audioContent = response[0].audioContent;
-    //   const url = URL.createObjectURL(new Blob([audioContent], { type: 'audio/mp3' }));
-    //   const link = document.createElement('a');
-    //   link.href = url;
-    //   link.setAttribute('download', 'text-to-speech.mp3');
-    //   document.body.appendChild(link);
-    //   link.click();
-    // })
-    // .catch((err) => {
-    //   console.error(err);
-    // });
+      
   };
 
   const onRefresh = () => {
