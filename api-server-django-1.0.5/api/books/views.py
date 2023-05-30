@@ -67,6 +67,13 @@ def getbookdatabyId(request, pk):
     return Response(data)
 
 @api_view(['GET'])
+def getnftitemdatabyId(request, pk):
+    fields = ('id', 'title','image_url', 'author_name', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'bm_listdata', 'hardbound_price', 'book_description', 'hardbound_description', 'max_book_supply', 'max_hardbound_supply')
+    book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'bm_listdata', 'hardbound_price', 'book_description', 'hardbound_description', 'max_book_supply', 'max_hardbound_supply')
+    data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
+    return Response(data)
+
+@api_view(['GET'])
 def getCCRate(request):
     
     cwd = os.getcwd()

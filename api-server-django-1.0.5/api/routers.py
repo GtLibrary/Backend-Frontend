@@ -14,7 +14,7 @@ from api.user.viewsets import UserViewSet
 from api.user.views import changepassword
 from django.urls import path, include
 from django.conf.urls import url
-from api.books.views import getbooklist, getbookdatabyId, getBookContentbyId, getBookAdContentbyId, art, myopenai, getadslist, getdownloadepubfile, getdownloadaudiofile, getCCRate
+from api.books.views import getbooklist, getbookdatabyId, getnftitemdatabyId, getBookContentbyId, getBookAdContentbyId, art, myopenai, getadslist, getdownloadepubfile, getdownloadaudiofile, getCCRate
 from api.wallet.views import WalletInfo, transaction_detail, deposit_funds, transfer, wallet_transactions, getwalletinfo
 from api.nft import views as nft_views
 from api.openaikey.views import save_openaikey, get_openaikey
@@ -50,6 +50,7 @@ urlpatterns = [
     path("uploadimage", UploadimageCreateApi.as_view()),
     path("getbooklist", getbooklist),
     path("bookdata/<int:pk>", getbookdatabyId),
+    path("nftitem/<int:pk>", getnftitemdatabyId),
     path("downloadepub/<int:pk>", getdownloadepubfile),
     path("downloadaudio/<int:pk>", getdownloadaudiofile),
     path("bookcontent/<int:pk>", getBookContentbyId),
