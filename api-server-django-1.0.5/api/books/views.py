@@ -128,6 +128,29 @@ def getdownloadaudiofile(request, pk):
     else:
         return Response({'error': 'Object not found'}, status=status.HTTP_404_NOT_FOUND)
 
+
+@api_view(['POST'])
+def getttsaudiofile(request, pk):
+    req_data = request.body.decode('utf-8')
+    body = json.loads(req_data)
+    bookdata = Books.objects.get(pk=pk)
+    sender = body['account']
+
+    # bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
+    cwd = os.getcwd()
+    path = (cwd + '/static/BookTradable.json')
+    contract_abi = json.load(open(path))
+    bt_address = Web3.toChecksumAddress(bookdata.bt_contract_address)
+    bt_Contract = web3.eth.contract(address=bt_address, abi=contract_abi)
+    token_cnt = bt_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
+    if (token_cnt > 0): 
+        fields = ('id', 'audio_file')
+        book = Books.objects.filter(pk=pk).only('id', 'audio_file')
+        data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
+        return Response(data)
+    else:
+        return Response({'error': 'Object not found'}, status=status.HTTP_404_NOT_FOUND)
+
 @api_view(['GET'])
 def getadslist(request):
     fields = ('id', 'adcontent')

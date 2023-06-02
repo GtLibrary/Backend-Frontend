@@ -568,42 +568,10 @@ const SingleProduct = ({ match }) => {
     setSbmodalshow(true);
   };
 
-  const synthesizeText = async (text, keyfile) => {
-    const jwtClient = new JWT({
-      email: keyfile.client_email,
-      key: keyfile.private_key,
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-    });
-    const auth = await jwtClient.authorize();
-    console.log("auth: ", auth)
-    const client = new TextToSpeechClient({ auth });
-    console.log("client: ",client)
-    const request = {
-      input: { text },
-      voice: { languageCode: 'en-US', ssmlGender: 'NEUTRAL' },
-      audioConfig: { audioEncoding: 'MP3' },
-    };
-    const [response] = await client.synthesizeSpeech(request, { auth });
-    const audioContent = response.audioContent;
-    const audioBlob = new Blob([audioContent], { type: 'audio/mp3' });
-    return URL.createObjectURL(audioBlob);
-  }
-
   const onAudioBook = async () => {
     if (!account) {
       return;
     }
-    // const text = "Hello, How are you?";
-    // const apikeyfile = keyfile;
-    // console.log("apikeyfile:", apikeyfile)
-    // const url = await synthesizeText(text, apikeyfile);
-    
-    // const link = document.createElement('a');
-    // link.href = url;
-    // link.setAttribute('download', 'text-to-speech.mp3');
-    // document.body.appendChild(link);
-    // link.click();
-
 
     const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
 
