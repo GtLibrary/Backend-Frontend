@@ -7,8 +7,6 @@ import { ethers } from "ethers";
 import LoadingOverlay from "react-loading-overlay";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { TextToSpeechClient } from '@google-cloud/text-to-speech';
-import { OAuth2Client, JWT } from 'google-auth-library';
 import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
@@ -22,7 +20,7 @@ import "./single-product.styles.scss";
 LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
-  const { account, chainId } = useWeb3React();
+  const { account } = useWeb3React();
   const { ethereum } = window;
 
   const web3 = new Web3(window.ethereum);
@@ -573,8 +571,9 @@ const SingleProduct = ({ match }) => {
       return;
     }
 
-    const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
-
+    // const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
+    const downloadurl = process.env.REACT_APP_API + `getttsaudiofile/${id}`;
+    console.log("asdfasdf")
     const config = {
       method: "post",
       url: downloadurl,

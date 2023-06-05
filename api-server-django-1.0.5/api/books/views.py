@@ -10,7 +10,8 @@ from api.books.models import Books
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
+from django.utils.html import strip_tags
 from api.books.moralis import Moralis
 # from api.books.minter import MyFirstMinter
 # from api.books.minter import MySecondMinter
@@ -23,11 +24,16 @@ from api.aiprice.models import AIpricemodel
 from django.db.models import Q
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
+from google.cloud import texttospeech
 #import dotenv
 #dotenv.read_dotenv(os.path.join(os.path.join(os.path.dirname(os.path.dirname(__file__)), "."), '.env'))
 
 from dotenv import load_dotenv
 load_dotenv()
+
+ttscwd = os.getcwd()
+ttspath = (ttscwd + '/static/google_secret_key.json')
+os.environ['GOOGLE_APPLICATION_CREDENTIALS']= ttspath
 
 # CLEANR = re.compile('<.*?>|&([a-z0-9]+|#[0-9]{1,6}|#x[0-9a-f]{1,6});')
 
@@ -134,9 +140,10 @@ def getttsaudiofile(request, pk):
     req_data = request.body.decode('utf-8')
     body = json.loads(req_data)
     bookdata = Books.objects.get(pk=pk)
+    text = strip_tags(bookdata.content)
+    text = text.encode('utf-8')
     sender = body['account']
 
-    # bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
     cwd = os.getcwd()
     path = (cwd + '/static/BookTradable.json')
     contract_abi = json.load(open(path))
@@ -144,10 +151,24 @@ def getttsaudiofile(request, pk):
     bt_Contract = web3.eth.contract(address=bt_address, abi=contract_abi)
     token_cnt = bt_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
     if (token_cnt > 0): 
-        fields = ('id', 'audio_file')
-        book = Books.objects.filter(pk=pk).only('id', 'audio_file')
-        data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
-        return Response(data)
+        client = texttospeech.TextToSpeechClient()
+
+        synthesis_input = texttospeech.SynthesisInput(text=text)
+        voice = texttospeech.VoiceSelectionParams(
+            language_code='en-US',
+            ssml_gender=texttospeech.SsmlVoiceGender.NEUTRAL
+        )
+        audio_config = texttospeech.AudioConfig(
+            audio_encoding=texttospeech.AudioEncoding.MP3
+        )
+
+        response = client.synthesize_speech(
+            input=synthesis_input,
+            voice=voice,
+            audio_config=audio_config
+        )
+
+        return HttpResponse(response.audio_content, content_type='audio/mp3')
     else:
         return Response({'error': 'Object not found'}, status=status.HTTP_404_NOT_FOUND)
 
