@@ -5,11 +5,18 @@ const NotFound = () => {
   const style = {
     fontWeight: 'bold',
     textAlign: 'center',
+    fontSize: '24px',
+    paddingTop: '150px'
+  }
+  const maindivstyle = {
+    minHeight: 'calc(100vh - 154px)',
   }
 
   return (
     <Layout>
-      <p style={style}>Unfortunately we can't find that page</p>
+      <div style={maindivstyle}>
+        <p style={style}>Unfortunately we can't find that page</p>
+      </div>
     </Layout>
   );
 }

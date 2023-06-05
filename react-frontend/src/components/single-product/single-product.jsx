@@ -7,7 +7,6 @@ import { ethers } from "ethers";
 import LoadingOverlay from "react-loading-overlay";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { TextToSpeechClient } from '@google-cloud/text-to-speech';
 import withRouter from "../../withRouter";
 import Layout from "../shared/layout";
 import BMdetailModal from "../BMmodal";
@@ -16,11 +15,12 @@ import printingpress_abi from "../../utils/contract/PrintingPress.json";
 import CC_abi from "../../utils/contract/CultureCoin.json";
 import NBT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
+// import keyfile from './../../utils/cloudgoogle-api/audiobook.json';
 
 LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
-  const { account, chainId } = useWeb3React();
+  const { account } = useWeb3React();
   const { ethereum } = window;
 
   const web3 = new Web3(window.ethereum);
@@ -570,9 +570,10 @@ const SingleProduct = ({ match }) => {
     if (!account) {
       return;
     }
-    
-    const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
 
+    // const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
+    const downloadurl = process.env.REACT_APP_API + `getttsaudiofile/${id}`;
+    console.log("asdfasdf")
     const config = {
       method: "post",
       url: downloadurl,
@@ -603,29 +604,7 @@ const SingleProduct = ({ match }) => {
     } catch (error) {
       console.log(error)
     }
-    // console.log("client")
-    // const apiKey = ''
-    // const client = new TextToSpeechClient({apiKey});
-
-    // const request = {
-    //   input: { text: 'Hello, how are you?' },
-    //   voice: { languageCode: 'en-US', name: 'en-US-Wavenet-D' },
-    //   audioConfig: { audioEncoding: 'LINEAR16', sampleRateHertz: 16000 },
-    // };
-
-    // client.synthesizeSpeech(request)
-    // .then((response) => {
-    //   const audioContent = response[0].audioContent;
-    //   const url = URL.createObjectURL(new Blob([audioContent], { type: 'audio/mp3' }));
-    //   const link = document.createElement('a');
-    //   link.href = url;
-    //   link.setAttribute('download', 'text-to-speech.mp3');
-    //   document.body.appendChild(link);
-    //   link.click();
-    // })
-    // .catch((err) => {
-    //   console.error(err);
-    // });
+      
   };
 
   const onRefresh = () => {

@@ -6,6 +6,7 @@ import Swap from "./components/pages/swap/swap";
 import Marketplace from "./components/pages/marketplace/marketplace";
 import Terms from "./components/pages/terms/terms";
 import SingleProduct from "./components/single-product/single-product";
+import CollectionItem from "./components/pages/collection/collectionItem";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,6 +23,7 @@ function App() {
           <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/product/:id" element={<SingleProduct />} />
+          <Route path="/marketplace/collection/:id" element={<CollectionItem />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
