@@ -168,7 +168,11 @@ def getttsaudiofile(request, pk):
             audio_config=audio_config
         )
 
-        return HttpResponse(response.audio_content, content_type='audio/mp3')
+        # return HttpResponse(response.audio_content, content_type='audio/mp3')
+    
+        response = HttpResponse(response.audio_content, content_type='audio/mp3')
+        response['Content-Disposition'] = 'attachment; filename="audio.mp3"'
+        return response
     else:
         return Response({'error': 'Object not found'}, status=status.HTTP_404_NOT_FOUND)
 
