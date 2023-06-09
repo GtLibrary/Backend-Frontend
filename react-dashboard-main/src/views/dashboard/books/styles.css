@@ -19,6 +19,10 @@
     border: 1px solid #ddd;
     border-radius: 5px;
 }
+
+.upload-content a {
+    width: fit-content;
+}
 .contenteditable-area {
     width: 100%;
     height: 500px;

@@ -571,9 +571,9 @@ const SingleProduct = ({ match }) => {
       return;
     }
 
-    // const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
-    const downloadurl = process.env.REACT_APP_API + `getttsaudiofile/${id}`;
-    console.log("asdfasdf")
+    const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
+    // const downloadurl = process.env.REACT_APP_API + `getttsaudiofile/${id}`;
+    
     const config = {
       method: "post",
       url: downloadurl,
@@ -594,7 +594,10 @@ const SingleProduct = ({ match }) => {
           });
         } else {
           const link = document.createElement('a');
-          link.href = res.data[0].epub_file;
+          link.href = res.data[0].audio_file;
+          if(link.href === '' || link.href === null) {
+            return;
+          }
           link.setAttribute('download', true);
           document.body.appendChild(link);
           link.click();

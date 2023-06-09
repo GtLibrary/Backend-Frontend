@@ -31,6 +31,7 @@ const BookContent = (props) => {
         });
         setBookcontent(data.content);
         setBookfile(data.epub_file);
+        setAudiofile(data.audio_file);
     };
 
     const updateBookcontent = async () => {
@@ -50,6 +51,7 @@ const BookContent = (props) => {
             { headers: { Authorization: `${accountinfo.token}` } }
         );
         
+        getBookcontentById();
         toast.success('successfully save data', {
             position: 'top-right',
             autoClose: 3000,
@@ -88,6 +90,25 @@ const BookContent = (props) => {
         setBookcontent(copytext);
     }
 
+    const downloadFile = (url, fileName) => {
+        fetch(url, {
+          headers: new Headers({
+            'Origin': window.location.origin
+          }),
+          mode: 'cors'
+        })
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.setAttribute('download', "audio.mp3");
+          document.body.appendChild(link);
+          link.click();
+        })
+        .catch(error => console.error(error));
+      }
+
     return (
         <MainCard title={title}>
             <Grid container spacing={gridSpacing}>
@@ -122,7 +143,7 @@ const BookContent = (props) => {
                             }}
                         />
                         <span>select the Book Audio file</span>
-                        {bookfile !== null? (<a href={bookfile}>current Book Audio file</a>):(<></>)}
+                        {audiofile !== null? (<a href="#" onClick={()=>downloadFile(audiofile)}>current Book Audio file</a>):(<></>)}
                     </Box>
                     <p style={{fontFamily: 'Crimson Text'}}>Paste your manuscript from Google Docs in the box below. Then click Save.</p>
                     <Box display="flex" p={1} m={1} bgcolor="background.paper">
