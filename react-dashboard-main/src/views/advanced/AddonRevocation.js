@@ -170,7 +170,7 @@ const AddonRevocation = (props) => {
 
     return (
         <>
-            {loading && (
+            {/* {loading && (
                 <div
                     style={{
                         background: '#00000055',
@@ -199,97 +199,97 @@ const AddonRevocation = (props) => {
                     ></LoadingOverlay>
                 </div>
             )}
-            <MainCard title="Addon Revocation">
-                <Divider>Revoke CC Addon Wizard</Divider>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item xs={6} sm={6}>
-                        <TextField
-                            id="input-ccaddress"
-                            className="input-ccaddress"
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                            style={{ margin: 8 }}
-                            variant="filled"
-                            placeholder="Input old addon address"
-                            helperText="Input old addon address"
-                            fullWidth
-                            type="text"
-                            value={oldaddon}
-                            onChange={(e) => {
-                                setOldaddon(e.target.value);
-                            }}
-                        />
+            <MainCard title="Addon Revocation"> */}
+                    <Divider>Revoke CC Addon Wizard</Divider>
+                    <Grid container spacing={gridSpacing}>
+                        <Grid item xs={6} sm={6}>
+                            <TextField
+                                id="input-ccaddress"
+                                className="input-ccaddress"
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                style={{ margin: 8 }}
+                                variant="filled"
+                                placeholder="Input old addon address"
+                                helperText="Input old addon address"
+                                fullWidth
+                                type="text"
+                                value={oldaddon}
+                                onChange={(e) => {
+                                    setOldaddon(e.target.value);
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={6} sm={6}>
+                            <Button variant="contained" style={{ margin: 8 }} onClick={() => revokeCC()}>
+                                Revoke CC Addon
+                            </Button>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={6} sm={6}>
-                        <Button variant="contained" style={{ margin: 8 }} onClick={() => revokeCC()}>
-                            Revoke CC Addon
-                        </Button>
+                    <Divider>Revoke Book Addon Wizard</Divider>
+                    <Grid container spacing={gridSpacing}>
+                        <Grid item xs={4} sm={4}>
+                            <TextField
+                                id="input-paddress"
+                                className="input-paddress"
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                style={{ margin: 8 }}
+                                variant="filled"
+                                placeholder="Input Book address"
+                                helperText="Input Book address"
+                                fullWidth
+                                type="text"
+                                value={bookaddress}
+                                onChange={(e) => {
+                                    setBookaddress(e.target.value);
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={4} sm={4}>
+                            <TextField
+                                id="input-caddress"
+                                className="input-caddress"
+                                InputLabelProps={{
+                                    shrink: true
+                                }}
+                                style={{ margin: 8 }}
+                                variant="filled"
+                                placeholder="Input Addon address"
+                                helperText="Input Addon address"
+                                fullWidth
+                                type="text"
+                                value={bookaddonaddress}
+                                onChange={(e) => {
+                                    setBookaddonaddress(e.target.value);
+                                }}
+                            />
+                        </Grid>
+                        <Grid item xs={4} sm={4}>
+                            <Button variant="contained" style={{ margin: 8 }} onClick={() => revokeBookAddon()}>
+                                Revoke Book Addon
+                            </Button>
+                        </Grid>
                     </Grid>
-                </Grid>
-                <Divider>Revoke Book Addon Wizard</Divider>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item xs={4} sm={4}>
-                        <TextField
-                            id="input-paddress"
-                            className="input-paddress"
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                            style={{ margin: 8 }}
-                            variant="filled"
-                            placeholder="Input Book address"
-                            helperText="Input Book address"
-                            fullWidth
-                            type="text"
-                            value={bookaddress}
-                            onChange={(e) => {
-                                setBookaddress(e.target.value);
-                            }}
-                        />
+                    <Divider>Revoke Minimart Addon Wizard</Divider>
+                    <Grid container spacing={gridSpacing}>
+                        <Grid item xs={6} sm={6}>
+                            <Button variant="contained" style={{ margin: 8 }} onClick={() => revokeMinimartAddon()}>
+                                Revoke Minimart Addon
+                            </Button>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={4} sm={4}>
-                        <TextField
-                            id="input-caddress"
-                            className="input-caddress"
-                            InputLabelProps={{
-                                shrink: true
-                            }}
-                            style={{ margin: 8 }}
-                            variant="filled"
-                            placeholder="Input Addon address"
-                            helperText="Input Addon address"
-                            fullWidth
-                            type="text"
-                            value={bookaddonaddress}
-                            onChange={(e) => {
-                                setBookaddonaddress(e.target.value);
-                            }}
-                        />
+                    <Divider>Revoke PrintPress Addon Wizard</Divider>
+                    <Grid container spacing={gridSpacing}>
+                        <Grid item xs={6} sm={6}>
+                            <Button variant="contained" style={{ margin: 8 }} onClick={() => revokePirntpressAddon()}>
+                                Revoke Printing Press Addon
+                            </Button>
+                        </Grid>
                     </Grid>
-                    <Grid item xs={4} sm={4}>
-                        <Button variant="contained" style={{ margin: 8 }} onClick={() => revokeBookAddon()}>
-                            Revoke Book Addon
-                        </Button>
-                    </Grid>
-                </Grid>
-                <Divider>Revoke Minimart Addon Wizard</Divider>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item xs={6} sm={6}>
-                        <Button variant="contained" style={{ margin: 8 }} onClick={() => revokeMinimartAddon()}>
-                            Revoke Minimart Addon
-                        </Button>
-                    </Grid>
-                </Grid>
-                <Divider>Revoke PrintPress Addon Wizard</Divider>
-                <Grid container spacing={gridSpacing}>
-                    <Grid item xs={6} sm={6}>
-                        <Button variant="contained" style={{ margin: 8 }} onClick={() => revokePirntpressAddon()}>
-                            Revoke Printing Press Addon
-                        </Button>
-                    </Grid>
-                </Grid>
-            </MainCard>
+            {/* </MainCard> */}
         </>
     );
 };
