@@ -12,6 +12,7 @@ import { Button, Box, FormControl, InputLabel, Select, MenuItem, Fab, Divider, G
 // project imports
 import MainCard from '../../../ui-component/cards/MainCard';
 import InputTextField from '../../../ui-component/extended/InputTextField';
+import AddonRevocation from '../../advanced/AddonRevocation';
 import BookAddItem from './BookAddItem';
 import configData from '../../../config';
 import './styles.css';
@@ -35,6 +36,7 @@ const BookAdd = (props) => {
     const printingpress_address = process.env.REACT_APP_PRINTINGPRESSADDRESS;
     const minimart_address = process.env.REACT_APP_MINIMARTADDRESS;
     const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
+    const cca_address = process.env.REACT_APP_CCA;
     const baseuri = process.env.REACT_APP_API + 'nft/';
     const burnable = true;
 
@@ -86,6 +88,15 @@ const BookAdd = (props) => {
         hbprice: false,
         maxhbsupply: false
     });
+    const [showrevocation, setShowrevocation] = useState(false);
+
+    useEffect(() => {
+        if (String(account) === String(cca_address)) {
+            setShowrevocation(true);
+        } else {
+            setShowrevocation(false);
+        }
+    }, [account]);
 
     const providerUrl = process.env.REACT_APP_PROVIDERURL;
 
@@ -575,7 +586,7 @@ const BookAdd = (props) => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             
-            const printpress = new ethers.Contract(printingpress_address, printpress_abi, signer);
+            // const printpress = new ethers.Contract(printingpress_address, printpress_abi, signer);
 
             let form_data = new FormData();
             if (brandimage) {
@@ -618,11 +629,11 @@ const BookAdd = (props) => {
                             ethers.utils.parseEther(String(startpoint)),
                             account
                         );
-                        const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
-                        //await BookTradable.setRewardContract(BTcontract);
+                        // const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
+                        // //await BookTradable.setRewardContract(BTcontract);
                         
-                        await BookTradableBT.setAddon(printingpress_address, true);
-                        await BookTradableBT.setAddon(minimart_address, true);
+                        // await BookTradableBT.setAddon(printingpress_address, true);
+                        // await BookTradableBT.setAddon(minimart_address, true);
 
                         const HBcontract = await getnewBookcontractdata(
                             'HB' + datamine,
@@ -638,10 +649,10 @@ const BookAdd = (props) => {
                         
                         const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
                         await BookTradableHB.setRewardContract(BTcontract);
-                        await BookTradableHB.setAddon(printingpress_address, true);
-                        await BookTradableHB.setAddon(minimart_address, true);
+                        // await BookTradableHB.setAddon(printingpress_address, true);
+                        // await BookTradableHB.setAddon(minimart_address, true);
 
-                        await BookTradableBT.setAddon(HBcontract, true);
+                        // await BookTradableBT.setAddon(HBcontract, true);
 
                         for (let index = 0; index < inputList.length; index++) {
                             let item = inputList[index];
@@ -663,10 +674,10 @@ const BookAdd = (props) => {
                             
                             const BookTradableBM = new ethers.Contract(BMcontract, booktradable_abi, signer);
                             await BookTradableBM.setRewardContract(BTcontract);
-                            await BookTradableBM.setAddon(printingpress_address, true);
-                            await BookTradableBM.setAddon(minimart_address, true);
+                            // await BookTradableBM.setAddon(printingpress_address, true);
+                            // await BookTradableBM.setAddon(minimart_address, true);
 
-                            await BookTradableBT.setAddon(BMcontract, true);
+                            // await BookTradableBT.setAddon(BMcontract, true);
 
                             inputList[index]['item_bmcontract_address'] = BMcontract;
                         }
@@ -743,11 +754,11 @@ const BookAdd = (props) => {
                         account
                     );
 
-                    const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
-                    //await BookTradable.setRewardContract(BTcontract);
+                    // const BookTradableBT = new ethers.Contract(BTcontract, booktradable_abi, signer);
+                    // //await BookTradable.setRewardContract(BTcontract);
 
-                    await BookTradableBT.setAddon(printingpress_address, true);
-                    await BookTradableBT.setAddon(minimart_address, true);
+                    // await BookTradableBT.setAddon(printingpress_address, true);
+                    // await BookTradableBT.setAddon(minimart_address, true);
 
                     const HBcontract = await getnewBookcontractdata(
                         'HB' + datamine,
@@ -763,10 +774,10 @@ const BookAdd = (props) => {
                     
                     const BookTradableHB = new ethers.Contract(HBcontract, booktradable_abi, signer);
                     await BookTradableHB.setRewardContract(BTcontract);
-                    await BookTradableHB.setAddon(printingpress_address, true);
-                    await BookTradableHB.setAddon(minimart_address, true);
+                    // await BookTradableHB.setAddon(printingpress_address, true);
+                    // await BookTradableHB.setAddon(minimart_address, true);
 
-                    await BookTradableBT.setAddon(HBcontract, true);
+                    // await BookTradableBT.setAddon(HBcontract, true);
 
                     for (let index = 0; index < inputList.length; index++) {
                         let item = inputList[index];
@@ -788,10 +799,10 @@ const BookAdd = (props) => {
 
                         const BookTradableBM = new ethers.Contract(BMcontract, booktradable_abi, signer);
                         await BookTradableBM.setRewardContract(BTcontract);
-                        await BookTradableBM.setAddon(printingpress_address, true);
-                        await BookTradableBM.setAddon(minimart_address, true);
+                        // await BookTradableBM.setAddon(printingpress_address, true);
+                        // await BookTradableBM.setAddon(minimart_address, true);
 
-                        await BookTradableBT.setAddon(BMcontract, true);
+                        // await BookTradableBT.setAddon(BMcontract, true);
                         inputList[index]['item_bmcontract_address'] = BMcontract;
                     }
                     form_data.append('bm_listdata', JSON.stringify(inputList));
@@ -833,6 +844,74 @@ const BookAdd = (props) => {
         }
         setLoading(false);
     };
+
+    const setAddonBook = async () => {
+
+        setLoading(true);
+        const { ethereum } = window;
+
+        const checkavax = window.confirm(
+            "If you don't have enough AVAX, book mint may fail. Please check your wallet before minting book. No more than 0.5 AVAX will be needed and the price could be far less depending on congestion. Remember, we are taking no cut of the cost to mint your books."
+        );
+        if(!checkavax) {
+            setLoading(false);
+            return;
+        }
+
+        if (ethereum) {
+            const provider = new ethers.providers.Web3Provider(ethereum);
+            const signer = provider.getSigner();
+
+            try {
+                const BookTradableBT = new ethers.Contract(bookcontractaddress, booktradable_abi, signer);
+                
+                await BookTradableBT.setAddon(printingpress_address, true);
+                await BookTradableBT.setAddon(minimart_address, true);
+
+                const BookTradableHB = new ethers.Contract(hardboundcontractaddress, booktradable_abi, signer);
+                await BookTradableHB.setAddon(printingpress_address, true);
+                await BookTradableHB.setAddon(minimart_address, true);
+
+                await BookTradableBT.setAddon(hardboundcontractaddress, true);
+                
+                for (let index = 0; index < inputList.length; index++) {
+                    let bookmarkcontract_address = inputList[index]['item_bmcontract_address'];
+                    if(bookmarkcontract_address === '' || bookmarkcontract_address === null) {
+                        toast.error('Please save data at first.', {
+                            position: 'top-right',
+                            autoClose: 3000,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true
+                        });
+                    }
+                    const BookTradableBM = new ethers.Contract(bookmarkcontract_address, booktradable_abi, signer);
+                    await BookTradableBM.setAddon(printingpress_address, true);
+                    await BookTradableBM.setAddon(minimart_address, true);
+
+                    await BookTradableBT.setAddon(bookmarkcontract_address, true);
+                }
+                toast.success('successfully set addon', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                });
+            } catch (error) {
+                console.log(error);
+                toast.error('failed set addon', {
+                    position: 'top-right',
+                    autoClose: 3000,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true
+                });
+                setLoading(false);
+            }
+        }
+        setLoading(false);
+    }
 
     return (
         <MainCard title={title}>
@@ -1234,6 +1313,10 @@ const BookAdd = (props) => {
                             Update Maxmint Wizard
                         </Button>
                         &nbsp;
+                        <Button variant="contained" onClick={() => setAddonBook()}>
+                            Set Addon Wizard
+                        </Button>
+                        &nbsp;
                     </div>
                 ) : (
                     <div>
@@ -1244,6 +1327,16 @@ const BookAdd = (props) => {
                     </div>
                 )}
             </Box>
+            {showrevocation ? 
+                (
+                    <>
+                        <br />
+                        <AddonRevocation />
+                    </>
+                ): 
+                (<></>)
+            }
+            
         </MainCard>
     );
 };
