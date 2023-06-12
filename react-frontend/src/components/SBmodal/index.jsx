@@ -16,7 +16,7 @@ function SavebookModal(props) {
   }, [show])
   
   const getepubfile = async () => {
-    const downloadurl = process.env.REACT_APP_API + `download/${id}`;
+    const downloadurl = process.env.REACT_APP_API + `downloadepub/${id}`;
 
     const config = {
       method: "post",

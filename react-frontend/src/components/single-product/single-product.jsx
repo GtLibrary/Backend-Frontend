@@ -15,12 +15,12 @@ import printingpress_abi from "../../utils/contract/PrintingPress.json";
 import CC_abi from "../../utils/contract/CultureCoin.json";
 import NBT_abi from "../../utils/contract/BookTradable.json";
 import "./single-product.styles.scss";
+// import keyfile from './../../utils/cloudgoogle-api/audiobook.json';
 
 LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
-  const { account, chainId } = useWeb3React();
-  const [audioBlob, setAudioBlob] = useState(null);
+  const { account } = useWeb3React();
   const { ethereum } = window;
 
   const web3 = new Web3(window.ethereum);
@@ -465,7 +465,8 @@ const SingleProduct = ({ match }) => {
         if (html === "You are not token owner!!") {
           setPdftext(html);
         } else {
-          var bookHtml = addOnClicks(html);
+          var bookmarkSizes = getBookmarkSizes(html);
+          var bookHtml = addOnClicks(html, bookmarkSizes);
           setPdftext(htmlDoc.body.innerText);
           document.getElementById("reader-body").innerHTML = bookHtml;
         }
@@ -475,7 +476,67 @@ const SingleProduct = ({ match }) => {
     }
   };
 
-  function addOnClicks(html) {
+function getBookmarkSizes(html) {
+    var tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    var spans = [];
+    var pTags = tempDiv.getElementsByTagName("p");
+    for (var i = 0; i < pTags.length; i++) {
+        var spanTags = pTags[i].getElementsByTagName("span");
+        for (var j = 0; j < spanTags.length; j++) {
+            spans.push(spanTags[j]);
+        }
+    }
+    
+    // Initialize the first bookmark size
+    var sizeOfBookmarks = [0];
+
+    var currentIndex = 0;
+    while (currentIndex < spans.length) {
+        var span = spans[currentIndex];
+        var text = span.innerText;
+        var start = 0;
+
+        while (start < text.length) {
+            // Find the next bookmark in the text
+            var bookmarkIndex = text.indexOf("🔖", start);
+            
+            // If there is a bookmark, cut there. If not, cut at the end of the text.
+            var end = bookmarkIndex !== -1 ? bookmarkIndex : text.length;
+
+            // Add the size of this chunk to the current bookmark size
+            sizeOfBookmarks[sizeOfBookmarks.length - 1] += end - start;
+
+            start = end;
+
+            // If we found a bookmark, skip it for the next chunk and start a new bookmark size
+            if (bookmarkIndex !== -1) {
+                start++;
+                sizeOfBookmarks.push(0);
+            }
+        }
+
+        currentIndex++;
+    }
+
+    console.log(sizeOfBookmarks);
+    return sizeOfBookmarks;
+  }
+
+  function getSpanAmount (bookmarkId, bookmarkSizes) {
+    if (bookmarkSizes.length > 1) {
+	return bookmarkSizes[bookmarkId];		// From bookmark size discovery.
+    }
+
+    var spanAmount =
+      Number(product.byteperbookmark) > 0
+        ? Number(product.byteperbookmark)
+        : 2048;
+
+    return spanAmount;					// Or use the default values.
+  }
+
+  function addOnClicks(html, bookmarkSizes) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
     var spans = [];
@@ -486,21 +547,43 @@ const SingleProduct = ({ match }) => {
         spans.push(spanTags[j]);
       }
     }
-    var spanAmount =
-      Number(product.byteperbookmark) > 0
-        ? Number(product.byteperbookmark)
-        : 2048;
+    //console.log("spans.length: ", spans.length);
+
+    //console.log("span amount: ", spanAmount);
     var bookmarkId = 0;
     var currentIndex = 0;
+    var start = 0;
+    var total = 0;
+    var curSize = 0;
+    var spanAmount = getSpanAmount(bookmarkId, bookmarkSizes);
+    //console.log("spanAmount: ", spanAmount);
     while (currentIndex < spans.length) {
       var span = spans[currentIndex];
       var text = span.innerText;
-      var start = 0;
+      var endStart;
 
       var newSpans = [];
       while (start < text.length) {
+        //console.log("text.lenght: ", text.length);
+        //console.log("start: ", start);
+
         var end = Math.min(start + spanAmount, text.length);
-        var remainingChars = spanAmount - (end - start);
+        var remainingChars = spanAmount - (end - start) - curSize;
+        if(remainingChars < 0) {
+		//console.log("Negative! ", remainingChars);
+        	//console.log("end: ", end);
+		var fake_end = start + text.length + remainingChars;
+		//console.log("fake end: ", fake_end);
+
+		end = fake_end;
+
+                remainingChars = 0;
+	}
+
+	endStart = end - start;
+	curSize += endStart;
+
+        //console.log("remainingChars: ", remainingChars);
 
         var newSpan = document.createElement("span");
         newSpan.innerText = text.substring(start, end);
@@ -515,12 +598,26 @@ const SingleProduct = ({ match }) => {
             '; window.dispatchEvent(new Event("myValueChange"));'
         );
 
+        total += endStart;
+        //console.log("Total: ", total);
+        //console.log("EndStart: ", endStart);
+
         newSpans.push(newSpan);
         start = end;
         if (remainingChars === 0) {
           bookmarkId++;
+          //console.log("bookmarkId: ", bookmarkId);
+    	  spanAmount = getSpanAmount(bookmarkId, bookmarkSizes);
+          //console.log("span Amount: ", spanAmount);
+
+          curSize = 0;
         }
       }
+
+      //console.log("HERE: ", start);
+      remainingChars -= start;
+      start = 0;
+        
 
       for (let j = newSpans.length - 1; j >= 0; j--) {
         let newSpan = newSpans[j];
@@ -570,116 +667,44 @@ const SingleProduct = ({ match }) => {
     if (!account) {
       return;
     }
-    const { SpeechSynthesisUtterance, speechSynthesis } = window;
-    const text = "Create an asynchronous function that splits the input text into chunks, synthesizes each chunk as speech output, and waits for the speech synthesis to complete before moving on to the next chunk. You can use the  await  keyword to pause the execution of the function until the  end  event is emitted by the  SpeechSynthesisUtterance  object."
 
-    const textChunks = splitTextIntoChunks(text, 100);
-    const audioChunks = [];
-    for (const textChunk of textChunks) {
-      const audioChunk = await new Promise((resolve, reject) => {
-        // const synth = window.speechSynthesis;
-        // const utterance = new SpeechSynthesisUtterance(textChunk);
-        const utterance = new SpeechSynthesisUtterance();
-        var voices = speechSynthesis.getVoices();
-        utterance.voice = voices[10];
-        utterance.voiceURI = 'native';
-        utterance.volume = 1;
-        utterance.rate = 1;
-        utterance.pitch = 2;
-        utterance.text = textChunk;
-        utterance.lang = 'en-US';
-        speechSynthesis.cancel();
-        speechSynthesis.speak(utterance);
-
-        utterance.addEventListener('end', async () => {
-          
-          // const audioBuffer = await getAudioBuffer(speechSynthesis);
-          // const audioBlob = new Blob([audioBuffer], { type: "audio/mpeg" });
-          // const audioURL = URL.createObjectURL(audioBlob);
-          // console.log(audioURL)
-          resolve();
-        });
-        utterance.addEventListener('error', () => {
-          reject(`Error synthesizing speech: ${utterance.text}`);
-        });
-        speechSynthesis.addEventListener('boundary', (event) => {
-          console.log("33333333333333333333333333")
-        });
-      });
-      audioChunks.push(audioChunk);
-
-    }
+    const downloadurl = process.env.REACT_APP_API + `downloadaudio/${id}`;
+    // const downloadurl = process.env.REACT_APP_API + `getttsaudiofile/${id}`;
     
-    // const audioBlob = new Blob(audioChunks, { type: 'audio/mpeg' });
-    // const audioUrl = URL.createObjectURL(audioBlob);
-    // const downloadLink = document.createElement('a');
-    // downloadLink.href = audioUrl;
-    // downloadLink.download = 'synthesizedAudio.mp3';
-    // downloadLink.click();
-
-    // if ( 'speechSynthesis' in window ) {
-    //   console.log('supported');
-    //   console.log(pdftext)
-    //   const to_speak = new SpeechSynthesisUtterance();
-    //   var voices = window.speechSynthesis.getVoices();
-    //   to_speak.voice = voices[10];
-    //   to_speak.voiceURI = 'native';
-    //   to_speak.volume = 1; 
-    //   to_speak.rate = 1; 
-    //   to_speak.pitch = 2; 
-    //   to_speak.text = pdftext;
-    //   to_speak.lang = 'en-US';
-    //   window.speechSynthesis.cancel();
-    //   window.speechSynthesis.speak(to_speak);
-    // } else {
-    //   console.log('not supported');
-    // }
-  };
-
-  function getAudioBuffer(synth) {
-    return new Promise((resolve) => {    
-      const OfflineAudioContext = window.OfflineAudioContext || window.webkitOfflineAudioContext;
-      const offlineContext = new OfflineAudioContext(1, 44100, 44100);
-       const utterance = new SpeechSynthesisUtterance(synth.text);
-      utterance.voice = synth.getVoices()[0];
-      utterance.rate = 1;
-      utterance.pitch = 1;
-       const source = offlineContext.createBufferSource();
-      source.buffer = synth.speak(utterance);
-      source.connect(offlineContext.destination);
-      source.start(0);
-       offlineContext.startRendering().then((buffer) => {
-        resolve(buffer);
+    const config = {
+      method: "post",
+      url: downloadurl,
+      data: {
+        account: account
+      }
+    };
+    
+    try {
+      await axios(config).then((res) => {
+        if (res.data.status === 404) {
+          toast.error("You are not token owner!", {
+            position: "top-right",
+            autoClose: 3000,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          });
+        } else {
+          const link = document.createElement('a');
+          link.href = res.data[0].audio_file;
+          if(link.href === '' || link.href === null) {
+            return;
+          }
+          link.setAttribute('download', true);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
       });
-    });
-  }
-
-  const splitTextIntoChunks = (text, chunkLength) => {
-    var chunks = text.split('. ');
-    return chunks;
-  };
-
-  const synthesizeTextToAudio = async (textChunk) => {
-    return new Promise((resolve, reject) => {
-      const synth = window.speechSynthesis;
-      const utterance = new SpeechSynthesisUtterance(textChunk);
-      const audioChunks = [];
-      utterance.addEventListener("end", () => {
-        const audioBlob = new Blob(audioChunks, { type: "audio/mpeg" });
-        resolve(audioBlob);
-      });
-      utterance.addEventListener("error", () => {
-        reject(`Error synthesizing speech: ${utterance.text}`);
-      });
-      speechSynthesis.speak(utterance);
-      synth.addEventListener("boundary", (event) => {
-        const audioChunk = event.target
-          .getVoices()
-          .find((voice) => voice.default)
-          .synthesize(event.target, event.charIndex, event.charLength);
-        audioChunks.push(audioChunk);
-      });
-    });
+    } catch (error) {
+      console.log(error)
+    }
+      
   };
 
   const onRefresh = () => {
