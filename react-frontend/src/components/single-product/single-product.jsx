@@ -465,7 +465,8 @@ const SingleProduct = ({ match }) => {
         if (html === "You are not token owner!!") {
           setPdftext(html);
         } else {
-          var bookHtml = addOnClicks(html);
+          var bookmarkSizes = getBookmarkSizes(html);
+          var bookHtml = addOnClicks(html, bookmarkSizes);
           setPdftext(htmlDoc.body.innerText);
           document.getElementById("reader-body").innerHTML = bookHtml;
         }
@@ -475,7 +476,67 @@ const SingleProduct = ({ match }) => {
     }
   };
 
-  function addOnClicks(html) {
+function getBookmarkSizes(html) {
+    var tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    var spans = [];
+    var pTags = tempDiv.getElementsByTagName("p");
+    for (var i = 0; i < pTags.length; i++) {
+        var spanTags = pTags[i].getElementsByTagName("span");
+        for (var j = 0; j < spanTags.length; j++) {
+            spans.push(spanTags[j]);
+        }
+    }
+    
+    // Initialize the first bookmark size
+    var sizeOfBookmarks = [0];
+
+    var currentIndex = 0;
+    while (currentIndex < spans.length) {
+        var span = spans[currentIndex];
+        var text = span.innerText;
+        var start = 0;
+
+        while (start < text.length) {
+            // Find the next bookmark in the text
+            var bookmarkIndex = text.indexOf("🔖", start);
+            
+            // If there is a bookmark, cut there. If not, cut at the end of the text.
+            var end = bookmarkIndex !== -1 ? bookmarkIndex : text.length;
+
+            // Add the size of this chunk to the current bookmark size
+            sizeOfBookmarks[sizeOfBookmarks.length - 1] += end - start;
+
+            start = end;
+
+            // If we found a bookmark, skip it for the next chunk and start a new bookmark size
+            if (bookmarkIndex !== -1) {
+                start++;
+                sizeOfBookmarks.push(0);
+            }
+        }
+
+        currentIndex++;
+    }
+
+    console.log(sizeOfBookmarks);
+    return sizeOfBookmarks;
+  }
+
+  function getSpanAmount (bookmarkId, bookmarkSizes) {
+    if (bookmarkSizes.length > 1) {
+	return bookmarkSizes[bookmarkId];		// From bookmark size discovery.
+    }
+
+    var spanAmount =
+      Number(product.byteperbookmark) > 0
+        ? Number(product.byteperbookmark)
+        : 2048;
+
+    return spanAmount;					// Or use the default values.
+  }
+
+  function addOnClicks(html, bookmarkSizes) {
     var tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
     var spans = [];
@@ -486,21 +547,43 @@ const SingleProduct = ({ match }) => {
         spans.push(spanTags[j]);
       }
     }
-    var spanAmount =
-      Number(product.byteperbookmark) > 0
-        ? Number(product.byteperbookmark)
-        : 2048;
+    //console.log("spans.length: ", spans.length);
+
+    //console.log("span amount: ", spanAmount);
     var bookmarkId = 0;
     var currentIndex = 0;
+    var start = 0;
+    var total = 0;
+    var curSize = 0;
+    var spanAmount = getSpanAmount(bookmarkId, bookmarkSizes);
+    //console.log("spanAmount: ", spanAmount);
     while (currentIndex < spans.length) {
       var span = spans[currentIndex];
       var text = span.innerText;
-      var start = 0;
+      var endStart;
 
       var newSpans = [];
       while (start < text.length) {
+        //console.log("text.lenght: ", text.length);
+        //console.log("start: ", start);
+
         var end = Math.min(start + spanAmount, text.length);
-        var remainingChars = spanAmount - (end - start);
+        var remainingChars = spanAmount - (end - start) - curSize;
+        if(remainingChars < 0) {
+		//console.log("Negative! ", remainingChars);
+        	//console.log("end: ", end);
+		var fake_end = start + text.length + remainingChars;
+		//console.log("fake end: ", fake_end);
+
+		end = fake_end;
+
+                remainingChars = 0;
+	}
+
+	endStart = end - start;
+	curSize += endStart;
+
+        //console.log("remainingChars: ", remainingChars);
 
         var newSpan = document.createElement("span");
         newSpan.innerText = text.substring(start, end);
@@ -515,12 +598,26 @@ const SingleProduct = ({ match }) => {
             '; window.dispatchEvent(new Event("myValueChange"));'
         );
 
+        total += endStart;
+        //console.log("Total: ", total);
+        //console.log("EndStart: ", endStart);
+
         newSpans.push(newSpan);
         start = end;
         if (remainingChars === 0) {
           bookmarkId++;
+          //console.log("bookmarkId: ", bookmarkId);
+    	  spanAmount = getSpanAmount(bookmarkId, bookmarkSizes);
+          //console.log("span Amount: ", spanAmount);
+
+          curSize = 0;
         }
       }
+
+      //console.log("HERE: ", start);
+      remainingChars -= start;
+      start = 0;
+        
 
       for (let j = newSpans.length - 1; j >= 0; j--) {
         let newSpan = newSpans[j];
