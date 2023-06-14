@@ -1,6 +1,7 @@
 
 django-api/yarn.lock
 api-server-django-1.0.5/.env
+api-server-django-1.0.5/db.sqlite3
 django-api/.requirements.txt.swp
 django-api/node_modules/.yarn-integrity
 react-dashboard-main/.env
