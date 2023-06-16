@@ -864,11 +864,11 @@ const BookAdd = (props) => {
 
             try {
                 const BookTradableBT = new ethers.Contract(bookcontractaddress, booktradable_abi, signer);
+                const BookTradableHB = new ethers.Contract(hardboundcontractaddress, booktradable_abi, signer);
                 
                 await BookTradableBT.setAddon(printingpress_address, true);
                 await BookTradableBT.setAddon(minimart_address, true);
 
-                const BookTradableHB = new ethers.Contract(hardboundcontractaddress, booktradable_abi, signer);
                 await BookTradableHB.setAddon(printingpress_address, true);
                 await BookTradableHB.setAddon(minimart_address, true);
 
