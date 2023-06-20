@@ -55,11 +55,11 @@ function BMdetailModal(props) {
 	const minimart_address = process.env.REACT_APP_MINIMARTADDRESS
 	// const cc_initial_balance = process.env.REACT_APP_CC_INITIAL_BALANCE;
 	// const ccTotalSupplyStart = process.env.REACT_APP_CCTOTALSUPPLYSTART;
-	console.log("tokenprice", tokenprice)
 
 	const [stakerate, setStakerate] = useState(0);
 	const [NFTOwner, setNFTOwner] = useState('');
 	const [bookmarkprice, setBookmarkprice] = useState(String(tokenprice));
+	const [dexrate, setDexrate] = useState(curdexrate);
 	const [contractowner, setContractowner] = useState('');
 	const [tosendaddress, setTosendaddress] = useState('');
 	// const [tosendaddress, setTosendaddress] = useState('');
@@ -90,6 +90,10 @@ function BMdetailModal(props) {
 					} catch (myerror) {
 						setNFTOwner("");
 					}
+					
+					const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+					const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+					setDexrate(web3.utils.fromWei(curdexrate));
 				} catch (myerror) {
 					setNFTOwner("");
 				}
@@ -175,7 +179,7 @@ function BMdetailModal(props) {
 				bt_abi,
 				signer
 			);
-			const tx = await bookTradable.setDefaultPrice(bookmarkprice);
+			const tx = await bookTradable.setDefaultPrice(web3.utils.toWei(bookmarkprice));
 			await tx.wait();
 			console.log("NFT successfully listed for sale");
 		} catch (error) {
@@ -289,16 +293,16 @@ function BMdetailModal(props) {
 				className="mb-3"
 				>
 				<Tab eventKey="bookmark" title="Bookmark">
-					<div>
-						<p>Bookmark ID: {tokenname} #{bm_id}</p>
-						<p>Bookmark Token Contract Address: {contract_address}</p>
-						<p>Current Token Owner: { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
-						<p>Current Token Price: {tokenprice} {curpricesymbol}</p>
-						<p>Current Token Price By CCoin: {(tokenprice / curdexrate).toFixed(3)} CC</p>
-						<p>Your Account: {account}</p>
+					<div style={{fontFamily: 'Crimson Text', fontSize: '18px'}}>
+						<p><label style={{ fontWeight: '600'}}>Bookmark ID:</label>  {tokenname} #{bm_id}</p>
+						<p><label style={{ fontWeight: '600'}}>Bookmark Token Contract Address:</label> {contract_address}</p>
+						<p><label style={{ fontWeight: '600'}}>Current Token Owner:</label> { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
+						<p><label style={{ fontWeight: '600'}}>Current Token Price:</label> {tokenprice} {curpricesymbol}</p>
+						<p><label style={{ fontWeight: '600'}}>Current Token Price By CCoin:</label> {(tokenprice / dexrate).toFixed(3)} CC</p>
+						<p><label style={{ fontWeight: '600'}}>Your Account:</label> {account}</p>
 						<button
 							type="button"
-							className="btn btn-primary btn-sm"
+							className="btn btn-primary btn-md"
 							onClick={() => buyBookMark()}
 						>
 							Buy "{tokenname}" Bookmark Now
@@ -306,7 +310,7 @@ function BMdetailModal(props) {
 						&nbsp;
 						<button
 							type="button"
-							className="btn btn-primary btn-sm"
+							className="btn btn-primary btn-md"
 							onClick={() => buyBookMarkCC()}
 						>
 							Buy "{tokenname}" Bookmark with CC
@@ -316,30 +320,32 @@ function BMdetailModal(props) {
 								<hr/>
 								<button
 									type="button"
-									className="btn btn-danger btn-sm"
+									className="btn btn-danger btn-md"
 									onClick={() => sellBookMark()}
 									>
 									Sell "{tokenname}" Bookmark Now
 								</button>
 								<br></br>
-								<button
-									type="button"
-									className="btn btn-danger btn-sm"
-									onClick={() => setSellprice()}
-									>
-									Set Bookmark Price
-								</button>&nbsp;&nbsp;&nbsp;
-								<input type="text" value={bookmarkprice} onChange={(e) => {setBookmarkprice(e.target.value)}}></input>
+								<div style={{marginTop: '20px'}}>
+									<button
+										type="button"
+										className="btn btn-danger btn-md"
+										onClick={() => setSellprice()}
+										>
+										Set Bookmark Price
+									</button>&nbsp;&nbsp;&nbsp;
+									<input type="text" value={bookmarkprice} onChange={(e) => {setBookmarkprice(e.target.value)}}></input>
+								</div>
 							</>
 						) : (
 						<></>
 						)}
 						{contractowner === account ? (
-						<>
+						<div style={{display: 'flex', flexDirection: "row", justifyContent: 'flex-start', marginTop: '20px'}}>
 							<hr/>
-							to: <input type="text" id="toaddress" name="fname" size="42" value={tosendaddress} onChange={(e) => setTosendaddress(e.target.value)}/><br/>
-							<button type="button" className="btn btn-primary btn-sm" id="btn-send-bmrk" onClick={() => sendthisbookmark()}>Send bookmark</button>
-						</>
+							<label style={{ fontWeight: '600', fontSize: '18px'}}>To:</label>&nbsp;<input type="text" id="toaddress" name="fname" size="42" value={tosendaddress} onChange={(e) => setTosendaddress(e.target.value)}/>&nbsp;&nbsp;
+							<button type="button" className="btn btn-primary btn-md" id="btn-send-bmrk" onClick={() => sendthisbookmark()}>Send bookmark</button>
+						</div>
 						) : (
 						<></>
 						)}
