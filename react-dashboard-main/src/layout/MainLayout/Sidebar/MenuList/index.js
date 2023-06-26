@@ -17,7 +17,7 @@ import ccamenuItems from '../../../../menu-items/ccapermission';
 const MenuList = () => {
     const userinfo = useSelector((state) => state.account);
     const { account } = useWeb3React();
-    const cca_address = process.env.REACT_APP_CCA
+    const cca_address = process.env.REACT_APP_CCA;
     const nopermnavItems = nopermission.items.map((item) => {
         switch (item.type) {
             case 'group':
