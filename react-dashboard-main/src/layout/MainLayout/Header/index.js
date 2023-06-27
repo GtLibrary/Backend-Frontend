@@ -9,7 +9,7 @@ import { Avatar, Box, ButtonBase } from '@material-ui/core';
 import LogoSection from '../LogoSection';
 import SearchSection from './SearchSection';
 import ProfileSection from './ProfileSection';
-import NotificationSection from './NotificationSection';
+// import NotificationSection from './NotificationSection';
 import ConnectwalletSection from './ConnectwalletSection';
 
 // assets
@@ -65,7 +65,7 @@ const Header = ({ handleLeftDrawerToggle }) => {
             <div className={classes.grow} />
 
             {/* notification & profile */}
-            <NotificationSection />
+            {/* <NotificationSection /> */}
             <ConnectwalletSection />
             <ProfileSection />
         </React.Fragment>

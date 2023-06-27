@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
         }
     },
     boxContainer: {
-        display: 'flex',
+        // display: 'flex',
         padding: '16px',
         marginLeft: 'auto',
         marginRight: 'auto'
@@ -64,6 +64,9 @@ const Sidebar = ({ drawerOpen, drawerToggle, window }) => {
             <BrowserView>
                 <PerfectScrollbar component="div" className={classes.ScrollHeight}>
                     <MenuList />
+                    <div className={classes.boxContainer}>
+                        <a href='https://books.greatlibrary.io' target='__blank'>Go to books.greatlibrary.io</a>
+                    </div>
                 </PerfectScrollbar>
             </BrowserView>
             <MobileView>
