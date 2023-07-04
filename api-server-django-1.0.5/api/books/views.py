@@ -264,6 +264,7 @@ def art(request, pk):
     signature = body['signature']
     sender = Web3.toChecksumAddress(web3.eth.account.recover_message(msg, signature=signature))
 
+    temp = 0
     # bmsupply =  getBookmarkTotalSupply(bookcontent.bm_contract_address)
     cwd = os.getcwd()
     path = (cwd + '/static/BookTradable.json')
@@ -272,7 +273,23 @@ def art(request, pk):
     bt_Contract = web3.eth.contract(address=bt_address, abi=contract_abi)
     token_cnt = bt_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
 
-    if ((token_cnt > 0) & (sender != '')):
+    if (token_cnt > 0):
+        temp += token_cnt
+
+    hb_address = Web3.toChecksumAddress(bookcontent.hb_contract_address)
+    hb_Contract = web3.eth.contract(address=hb_address, abi=contract_abi)
+    htoken_cnt = hb_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
+    
+    if (token_cnt > 0):
+        temp += htoken_cnt
+    
+    for item in bookcontent.bm_listdata:
+        bm_address = Web3.toChecksumAddress(bookcontent.bt_contract_address)
+        bm_Contract = web3.eth.contract(address=bm_address, abi=contract_abi)
+        bmtoken_cnt = bm_Contract.functions.balanceOf(Web3.toChecksumAddress(sender)).call()
+        temp += bmtoken_cnt
+        
+    if ((temp > 0) & (sender != '')):
         # cur_num = bmsupply - 1
         content = bookcontent.content
         figure_content = ''
