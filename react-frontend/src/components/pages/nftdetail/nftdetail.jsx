@@ -2,42 +2,10 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Layout from "../../shared/layout";
-import Nftitem from "../nftitem/nftitem";
-// import Collection from '../../shared/collection';
-import "./auction.styles.scss";
+import "./nftdetail.styles.scss";
 
-const AuctionItem = () => {
+const Nftdetail = () => {
   const { id } = useParams();
-  const nfts = [
-    {
-      uri: "",
-      nftsymbol: "111",
-    },
-    {
-      uri: "",
-      nftsymbol: "aaa",
-    },
-    {
-      uri: "",
-      nftsymbol: "bbb",
-    },
-    {
-      uri: "",
-      nftsymbol: "ccc",
-    },
-    {
-      uri: "",
-      nftsymbol: "ddd",
-    },
-    {
-      uri: "",
-      nftsymbol: "eee",
-    },
-    {
-      uri: "",
-      nftsymbol: "fff",
-    },
-  ];
 
   const getitemlists = async () => {
     if (id < 0) {
@@ -69,13 +37,11 @@ const AuctionItem = () => {
       <div className="product-list-container container">
         <h2 className="product-list-title">Collection</h2>
         <div className="product-list row">
-          {nfts.map((item) => {
-            return <Nftitem uri={item.uri} symbol={item.nftsymbol}></Nftitem>;
-          })}
+          <div className="col-md-6"></div>
         </div>
       </div>
     </Layout>
   );
 };
 
-export default AuctionItem;
+export default Nftdetail;
