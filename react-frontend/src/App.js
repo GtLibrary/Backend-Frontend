@@ -4,6 +4,8 @@ import NotFound from "./components/not-found";
 import Books from "./components/pages/books/books";
 import Swap from "./components/pages/swap/swap";
 import Marketplace from "./components/pages/marketplace/marketplace";
+import Auctionhouse from "./components/pages/auctionhouse/auctionhouse";
+import AuctionItem from "./components/pages/auctionItem/auctionItem";
 import Terms from "./components/pages/terms/terms";
 import SingleProduct from "./components/single-product/single-product";
 import CollectionItem from "./components/pages/collection/collectionItem";
@@ -21,9 +23,11 @@ function App() {
           <Route path="/books" element={<Books />} />
           <Route path="/swap" element={<Swap />} />
           <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/auctionhouse" element={<Auctionhouse />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/product/:id" element={<SingleProduct />} />
           <Route path="/marketplace/collection/:id" element={<CollectionItem />} />
+          <Route path="/auctionhouse/collection/:id" element={<AuctionItem />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

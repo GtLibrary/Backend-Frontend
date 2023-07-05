@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Layout from '../../shared/layout';
-import Collection from '../../shared/collection';
-import './marketplace.styles.scss';
+import AuctionhouseItem from '../../shared/auctionhouseitem';
+import './auctionhouse.styles.scss';
 
-const Marketplace = () => {
+const Auctionhouse = () => {
   
     const [products, setProducts] = useState([])
 
@@ -19,13 +19,13 @@ const Marketplace = () => {
     }, [])
 
     const allProducts = products.map(product => (
-        <Collection { ...product } key={product.id} />
+        <AuctionhouseItem { ...product } key={product.id} />
     ));
 
     return (
         <Layout>
             <div className='product-list-container container'>
-                <h2 className='product-list-title'>Marketplace</h2>
+                <h2 className='product-list-title'>Auction House</h2>
                 <div className='product-list row'>
                 {
                     allProducts
@@ -36,4 +36,4 @@ const Marketplace = () => {
     );
 }
 
-export default Marketplace;
+export default Auctionhouse;
