@@ -1,27 +1,52 @@
-.product-list-container {
-    padding: 3rem 0;
-    min-height: calc(100vh - 154px);
-    .product-list-title {
-      margin-top: 5rem;
-      text-align: center;    
-      font-family: 'Crimson Text';
-      font-size: 48px;
+.nft-item-wrapper {
+  margin-top: 10px;
+  .nft-item {
+    font-size: 14px;
+    line-height: 1.4;
+    border: 1px solid #c7c7c7;
+    border-radius: 5px;
+    background-color: white;
+    .nft-card-button {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 0 5px;
+      margin-bottom: 5px;
+      button {
+        width: 100%;
+        background-color: orange;
+        color: white;
+        padding: 5px 0;
+        border-radius: 5px;
+        &:nth-child(2) {
+          background-color: white;
+          color: orange;
+          border: 1px solid orange;
+        }
+      }
     }
-  
-    .product-list {
-      div {
-        cursor: pointer;
+    .nft-card-img {
+      padding: 15px 15px;
+      aspect-ratio: 1/1;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #c7c7c7;
+    }
+    .nft-card-content {
+      padding: 15px;
+      p {
+        margin: 0;
+        &:nth-child(1) {
+          font-size: 16px;
+          font-weight: 600;
+        }
+        &:nth-child(2) {
+          color: #595959;
+        }
       }
     }
   }
-  
-  @media(min-width: 1024px) {
-    .product-list-container {
-      .product-list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: stretch;
-      }
-    }
+  .nft-item:hover {
+    box-shadow: 2px 3px #cccccc;
   }
+}
