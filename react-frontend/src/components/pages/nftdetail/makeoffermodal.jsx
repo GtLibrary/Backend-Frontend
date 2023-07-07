@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useWeb3React } from "@web3-react/core";
 import Web3 from "web3";
 import { ethers } from "ethers";
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 function MakeOfferModal(props) {
 	const provider_url = process.env.REACT_APP_PROVIDERURL;
+    const priceUnit = process.env.REACT_APP_NATIVECURRENCYNAME;
 	const { account } = useWeb3React();
     const {show} = props;
 
@@ -28,6 +30,10 @@ function MakeOfferModal(props) {
 		loadcontractdata();
 	}, [show]);
 
+    const makeoffer = () => {
+
+    }
+
 	return (
 		<Modal
 			{...props}
@@ -41,7 +47,19 @@ function MakeOfferModal(props) {
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				
+                <div className="modal-content-body">
+                    <Form.Label htmlFor="offer-price">Make an offer</Form.Label>
+                    <InputGroup className="mb-3" size="lg">
+                        <Form.Control
+                            id="offer-price"
+                            placeholder="Price"
+                            aria-label="Price"
+                            aria-describedby="offer_price"
+                        />
+                        <InputGroup.Text id="offer_price">{priceUnit}</InputGroup.Text>
+                    </InputGroup>
+                    <button className="confirm-button" onClick={()=>{makeoffer()}}>Make offer</button>
+                </div>
 			</Modal.Body>
 			{/* <Modal.Footer>
 				<Button onClick={props.onHide}>Close</Button>

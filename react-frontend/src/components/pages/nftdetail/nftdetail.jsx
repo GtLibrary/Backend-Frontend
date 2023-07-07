@@ -107,9 +107,44 @@ const Nftdetail = () => {
             <Accordion
               title="Listings"
               preIcon={<i className="fa fa-list" />}
+              content={
+                <>
+                  {lists.length > 0 ? (
+                      <></>
+                    ):(
+                      <div className="empty-list">
+                        <div style={{display: 'flex'}}>
+                          <span className="empty-img">
+                            <img src="../../../assets/img/empty-asks.svg" alt="empty"></img>
+                          </span>
+                        </div>
+                        <div>No listing yet</div>
+                      </div>
+                    )}
+                </>
+              }
             />
             <br />
-            <Accordion title="Offers" preIcon={<i className="fa fa-tag" />} />
+            <Accordion 
+              title="Offers" 
+              preIcon={<i className="fa fa-tag" />}
+              content={
+                <>
+                  {offers.length > 0 ? (
+                      <></>
+                    ):(
+                      <div className="empty-list">
+                        <div style={{display: 'flex'}}>
+                          <span className="empty-img">
+                            <img src="../../../assets/img/empty-asks.svg" alt="empty"></img>
+                          </span>
+                        </div>
+                        <div>No listing yet</div>
+                      </div>
+                    )}
+                </>
+              }
+            />
           </div>
         </div>
       </div>

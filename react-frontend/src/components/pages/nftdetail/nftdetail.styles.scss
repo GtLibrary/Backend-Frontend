@@ -119,6 +119,50 @@
         }
       }
     }
+    .empty-list {
+      -webkit-box-align: center;
+      align-items: center;
+      display: flex;
+      flex-direction: column;
+      -webkit-box-pack: center;
+      justify-content: center;
+      padding: 12px;
+      .empty-img {
+        box-sizing: border-box;
+        display: block;
+        width: initial;
+        height: initial;
+        background: none;
+        opacity: 1;
+        border: 0px;
+        margin: 0px;
+        padding: 0px;
+        max-width: 100%;
+      }
+    }
+  }
+}
+
+.modal-content-body {
+  padding: 20px 25px;
+  .confirm-button {    
+    display: inline-flex;
+    width: 100%;
+    flex-direction: row;
+    -webkit-box-align: center;
+    align-items: center;
+    border-radius: 12px;
+    -webkit-box-pack: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 22px;
+    font-family: __Inter_6faf11, __Inter_Fallback_6faf11, sans-serif;
+    letter-spacing: 0.01em;
+    padding: 17px 24px;
+    background-color: rgb(235, 158, 81);
+    border: 1px solid rgb(235, 158, 81);
+    color: rgb(4, 17, 29);
   }
 }
 

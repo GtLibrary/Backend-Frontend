@@ -1,12 +1,14 @@
 import { useEffect, useState } from "react";
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import { useWeb3React } from "@web3-react/core";
 import Web3 from "web3";
 import { ethers } from "ethers";
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 function ListModal(props) {
 	const provider_url = process.env.REACT_APP_PROVIDERURL;
+    const priceUnit = process.env.REACT_APP_NATIVECURRENCYNAME;
 	const { account } = useWeb3React();
     const {show} = props;
 
@@ -28,6 +30,10 @@ function ListModal(props) {
 		loadcontractdata();
 	}, [show]);
 
+    const listcomplete = () => {
+
+    }
+
 	return (
 		<Modal
 			{...props}
@@ -37,11 +43,23 @@ function ListModal(props) {
 		>
 			<Modal.Header closeButton>
 				<Modal.Title id="contained-modal-title-vcenter">
-					List NFT
+					List for sale
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
-				
+                <div className="modal-content-body">
+                    <Form.Label htmlFor="list-price">Set Price for listing</Form.Label>
+                    <InputGroup className="mb-3" size="lg">
+                        <Form.Control
+                            id="list-price"
+                            placeholder="Price"
+                            aria-label="Price"
+                            aria-describedby="list_price"
+                        />
+                        <InputGroup.Text id="list_price">{priceUnit}</InputGroup.Text>
+                    </InputGroup>
+                    <button className="confirm-button" onClick={()=>{listcomplete()}}>Complete listing</button>
+                </div>
 			</Modal.Body>
 			{/* <Modal.Footer>
 				<Button onClick={props.onHide}>Close</Button>
