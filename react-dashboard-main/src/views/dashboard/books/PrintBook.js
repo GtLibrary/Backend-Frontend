@@ -136,7 +136,7 @@ const PrintBook = (props) => {
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(printingpress_address, printingpress_abi, signer);
             try {
-                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, Number(mintamount), web3.utils.toWei(String(bookprice)), ethers.utils.parseEther(String(gasrewards)));
+                let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, Number(mintamount), web3.utils.toWei(String(bookprice)), web3.utils.fromWei(String(gasrewards)));
                 await contract.wait();
                 toast.success("successfully Mint Book", {
                     position: "top-right",
