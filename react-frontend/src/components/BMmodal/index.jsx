@@ -14,6 +14,7 @@ import Hero_abi from "../../utils/contract/Hero.json";
 import Minimart_abi from "../../utils/contract/MiniMart.json";
 
 function BMdetailModal(props) {
+	const provider_url = process.env.REACT_APP_PROVIDERURL;
 	const { account } = useWeb3React();
 
 	const web3 = new Web3(window.ethereum);
@@ -26,21 +27,18 @@ function BMdetailModal(props) {
 	let tokenname;
 	let tokenprice;
 	let contract_address;
-	let curdexrate;
 	if (bookmarkinfo) {
 		bm_id = bookmarkinfo.bm_id;
 		token_id = bookmarkinfo.token_id;
 		tokenname = bookmarkinfo.tokenname;
 		tokenprice = bookmarkinfo.tokenprice;
 		contract_address = bookmarkinfo.contract_address;
-		curdexrate = bookmarkinfo.curdexrate;
 	} else {
 		bm_id = 0;
 		token_id = "";
 		tokenname = "";
 		tokenprice = 0;
 		contract_address = "";
-		curdexrate = 0;
 	}
 	const printpress_abi = printingpress_abi;
 	const marketplace_abi = Marketplace_abi;
@@ -59,7 +57,7 @@ function BMdetailModal(props) {
 	const [stakerate, setStakerate] = useState(0);
 	const [NFTOwner, setNFTOwner] = useState('');
 	const [bookmarkprice, setBookmarkprice] = useState(String(tokenprice));
-	const [dexrate, setDexrate] = useState(curdexrate);
+	const [dexrate, setDexrate] = useState(0);
 	const [contractowner, setContractowner] = useState('');
 	const [tosendaddress, setTosendaddress] = useState('');
 	// const [tosendaddress, setTosendaddress] = useState('');
@@ -91,9 +89,10 @@ function BMdetailModal(props) {
 						setNFTOwner("");
 					}
 					
-					const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+					const globalweb3 = new Web3(provider_url);
+					const ccoin_contract = new globalweb3.eth.Contract(CC_abi, cultureCoinAddress);
 					const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
-					setDexrate(web3.utils.fromWei(curdexrate));
+					setDexrate(globalweb3.utils.fromWei(curdexrate));
 				} catch (myerror) {
 					setNFTOwner("");
 				}

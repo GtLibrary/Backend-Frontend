@@ -1,27 +1,58 @@
-.product-list-container {
-    padding: 3rem 0;
-    min-height: calc(100vh - 154px);
-    .product-list-title {
-      margin-top: 5rem;
-      text-align: center;    
-      font-family: 'Crimson Text';
-      font-size: 48px;
+.nftdetail-list-container {
+  padding: 3rem 0;
+  min-height: calc(100vh - 154px);
+  .nftdetail-list-title {
+    margin-top: 3rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    font-family: "Crimson Text";
+    font-size: 48px;
+  }
+
+  .nftdetail-list {
+    div {
+      cursor: pointer;
     }
-  
-    .product-list {
-      div {
-        cursor: pointer;
+    .nft-detail-img {
+      border: 1px solid rgb(180, 180, 180);
+      aspect-ratio: 1/1;
+      border-radius: 10px;
+      background-color: lightgrey;
+    }
+    .detail-header {
+      margin-bottom: 20px;
+      .item-title {
+        font-size: 30px;
+        font-weight: 600;
+        max-width: 100%;
+        margin: 0px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: normal;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 4;
+        word-break: break-word;
+      }
+      .item-owner {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        width: 100%;
+        color: rgb(4, 17, 29);
+        font-weight: 400;
       }
     }
   }
-  
-  @media(min-width: 1024px) {
-    .product-list-container {
-      .product-list {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: flex-start;
-        align-items: stretch;
-      }
+}
+
+@media (min-width: 1024px) {
+  .nftdetail-list-container {
+    .nftdetail-list {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      align-items: stretch;
     }
   }
+}
