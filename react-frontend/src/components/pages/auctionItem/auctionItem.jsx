@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import axios from "axios";
 import Layout from "../../shared/layout";
 import Nftitem from "../nftitem/nftitem";
 import Web3 from "web3";
@@ -13,7 +12,6 @@ const AuctionItem = () => {
   const web3 = new Web3(provider_url);
 
   const [name, setName] = useState('');
-  const [totalsupply, setTotalsupply] = useState(0);
   const [nfts, setNfts] = useState([]);
 
   
@@ -23,7 +21,6 @@ const AuctionItem = () => {
       const tokenname = await hero_contract.methods.name().call();
       const tokensupply = await hero_contract.methods.totalSupply().call();
       setName(tokenname);
-      setTotalsupply(tokensupply);
       let temp = [];
       for (let i = 1; i <= tokensupply; i++) {
         const element = {
