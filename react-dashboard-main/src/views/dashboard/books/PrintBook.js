@@ -135,6 +135,11 @@ const PrintBook = (props) => {
             const provider = new ethers.providers.Web3Provider(ethereum);
             const signer = provider.getSigner();
             const contractPortal = new ethers.Contract(printingpress_address, printingpress_abi, signer);
+            console.log("toaddress", toaddress)
+            console.log("bookcontractaddress", bookcontractaddress)
+            console.log("mintamount", mintamount)
+            console.log("bookprice", web3.utils.toWei(String(bookprice)))
+            console.log("gasreward", web3.utils.fromWei(String(gasrewards)))
             try {
                 let contract = await contractPortal.delegateMinter(toaddress, bookcontractaddress, Number(mintamount), web3.utils.toWei(String(bookprice)), web3.utils.fromWei(String(gasrewards)));
                 await contract.wait();
