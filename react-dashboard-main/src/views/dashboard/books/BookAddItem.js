@@ -75,7 +75,9 @@ function BookAddItem({ inputList, setInputList, avaxprice }) {
                                         variant="filled"
                                         value={item.bookmarkprice}
                                         onChange={e => {
-                                            if(onlythreedecimal.test(e.target.value)) {
+                                            if(e.target.value == '') {
+                                                handleInputChange(e, i)
+                                            } else if(onlythreedecimal.test(e.target.value)) {
                                                 if(e.target.value > 0) {
                                                     handleInputChange(e, i)
                                                 } else {
@@ -99,7 +101,9 @@ function BookAddItem({ inputList, setInputList, avaxprice }) {
                                         variant="filled"
                                         value={item.maxbookmarksupply}
                                         onChange={e => {
-                                            if(onlyinteger.test(e.target.value)) {
+                                            if(e.target.value == '') {
+                                                handleInputChange(e, i)
+                                            } else if(onlyinteger.test(e.target.value)) {
                                                 if(e.target.value > 0) {
                                                     handleInputChange(e, i)
                                                 } else {
@@ -123,8 +127,10 @@ function BookAddItem({ inputList, setInputList, avaxprice }) {
                                         variant="filled"
                                         value={item.bookmarkstartpoint}
                                         onChange={e => {
-                                            if(onlyinteger.test(e.target.value)) {
-                                                if(e.target.value > 0) {
+                                            if(e.target.value == '') {
+                                                handleInputChange(e, i)
+                                            } else if(onlyinteger.test(e.target.value)) {
+                                                if(e.target.value >= 0) {
                                                     handleInputChange(e, i)
                                                 } else {
                                                     return;

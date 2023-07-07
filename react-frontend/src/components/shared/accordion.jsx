@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./accordion.scss";
 
 const Accordion = (props) => {
   const [isOpen, setIsOpen] = useState(false);
-  const { title, content, preIcon } = props;
+  const { title, content, preIcon, isOpened } = props;
+
+  useEffect(() => {
+    if(isOpened) {
+        setIsOpen(isOpened)
+    }
+  }, [])
 
   return (
     <div className="accordion">
