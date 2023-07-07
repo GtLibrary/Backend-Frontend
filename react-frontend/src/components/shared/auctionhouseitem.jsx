@@ -5,22 +5,20 @@ import "./auctionhouse.styles.scss";
 
 const AuctionhouseItem = (props) => {
   const navigate = useNavigate();
-  const draculaHerotoken = process.env.REACT_APP_DRACULAHEROADDRESS;
 
-  const { title, image_url, id } = props;
+  const { tokenname, tokenaddress } = props;
 
   return (
     <div className="col-md-3 col-sm-6 col-xs-12">
-      <div className="featured-product">
+      <div className="auctionhouseitem-product">
         <div
-          className="featured-image"
-          onClick={() => navigate(`/auctionhouse/collection/${draculaHerotoken}`)}
+          className="auctionhouseitem-image"
+          onClick={() => navigate(`/auctionhouse/collection/${tokenaddress}`)}
         >
-          <img src={image_url} alt="product" />
+          <img src="../../assets/img/bookmark.png" alt="product" />
         </div>
-        <div className="featured-body">
-          <div className="item-title">{title}</div>
-          {/* <p className="item-author">By {author_name}</p> */}
+        <div className="auctionhouseitem-body">
+          <div className="item-title">{tokenname}</div>
         </div>
       </div>
     </div>
