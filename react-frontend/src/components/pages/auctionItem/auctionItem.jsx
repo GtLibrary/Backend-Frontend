@@ -3,65 +3,42 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import Layout from "../../shared/layout";
 import Nftitem from "../nftitem/nftitem";
-// import Collection from '../../shared/collection';
+import Web3 from "web3";
+import draculaHero_abi from '../../../utils/contract/DraculaHero.json'
 import "./auction.styles.scss";
 
 const AuctionItem = () => {
-  const { id } = useParams();
-  const nfts = [
-    {
-      uri: "",
-      nftsymbol: "111",
-    },
-    {
-      uri: "",
-      nftsymbol: "aaa",
-    },
-    {
-      uri: "",
-      nftsymbol: "bbb",
-    },
-    {
-      uri: "",
-      nftsymbol: "ccc",
-    },
-    {
-      uri: "",
-      nftsymbol: "ddd",
-    },
-    {
-      uri: "",
-      nftsymbol: "eee",
-    },
-    {
-      uri: "",
-      nftsymbol: "fff",
-    },
-  ];
+  const { tokenaddress } = useParams();
+  const provider_url = process.env.REACT_APP_PROVIDERURL;
+  const web3 = new Web3(provider_url);
 
-  const getitemlists = async () => {
-    if (id < 0) {
-      return;
-    }
-    try {
-      const getitemurl = process.env.REACT_APP_API + `nftitem/${id}`;
-      const { data } = await axios.get(getitemurl);
-      console.log("data:", data);
-      const bookitemcount = data[0]["max_book_supply"];
-      var bookmarkitemcount = 0;
-      const bm_data = Number(data[0]["bm_listdata"]);
-      const hardbounditemcount = Number(data[0]["max_hardbound_supply"]);
-      for (let i = 0; i < bm_data.length; i++) {
-        bookmarkitemcount += Number(bm_data[i]["maxbookmarksupply"]);
+  const [name, setName] = useState('');
+  const [totalsupply, setTotalsupply] = useState(0);
+  const [nfts, setNfts] = useState([]);
+
+  
+  useEffect(() => {
+    const getNftdata = async () => {
+      const hero_contract = new web3.eth.Contract(draculaHero_abi, tokenaddress);
+      const tokenname = await hero_contract.methods.name().call();
+      const tokensupply = await hero_contract.methods.totalSupply().call();
+      setName(tokenname);
+      setTotalsupply(tokensupply);
+      let temp = [];
+      for (let i = 1; i <= tokensupply; i++) {
+        const element = {
+          tokenname: tokenname,
+          tokenid: i,
+          tokenaddress: tokenaddress
+        };
+        temp.push(element)
       }
-    } catch (error) {
-      console.log(error);
-      return;
-    }
-  };
+      setNfts(temp);
+    };
+    getNftdata();
+  }, []);
 
   useEffect(() => {
-    getitemlists();
   }, []);
 
   return (
@@ -70,7 +47,7 @@ const AuctionItem = () => {
         <h2 className="product-list-title">Collection</h2>
         <div className="product-list row">
           {nfts.map((item) => {
-            return <Nftitem uri={item.uri} symbol={item.nftsymbol}></Nftitem>;
+            return <Nftitem data={item}></Nftitem>;
           })}
         </div>
       </div>

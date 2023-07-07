@@ -78,17 +78,6 @@ def getnftitemdatabyId(request, pk):
     book = Books.objects.filter(pk=pk).only('id', 'title','image_url', 'book_price', 'datamine', 'introduction', 'bt_contract_address', 'hb_contract_address', 'bm_listdata', 'hardbound_price', 'book_description', 'hardbound_description', 'max_book_supply', 'max_hardbound_supply')
     data = BooksSerializer(book, context={"request": request}, many=True, fields = fields).data
     return Response(data)
-
-@api_view(['GET'])
-def getCCRate(request):
-    
-    cwd = os.getcwd()
-    path = (cwd + '/static/CultureCoin.json')
-    contract_abi = json.load(open(path))
-    ccoin_address = Web3.toChecksumAddress(cc_address)
-    CC_Contract = web3.eth.contract(address=ccoin_address, abi=contract_abi)
-    cc_rate = CC_Contract.functions.getDexCCRate().call()
-    return Response({"cc_rate": cc_rate})
     
 @api_view(['POST'])
 def getdownloadepubfile(request, pk):

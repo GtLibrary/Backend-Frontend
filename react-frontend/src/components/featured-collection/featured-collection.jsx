@@ -3,24 +3,22 @@ import axios from 'axios';
 import Web3 from "web3";
 import { useNavigate } from "react-router-dom";
 import FeaturedProduct from '../shared/featured-product';
+import CC_abi from "../../utils/contract/CultureCoin.json";
 import './featured-collection.styles.scss'
 
 const FeaturedCollection = (props) => {
+  const provider_url = process.env.REACT_APP_PROVIDERURL;
+	const cultureCoinAddress = process.env.REACT_APP_CULTURECOINADDRESS;
   const navigate = useNavigate();
   const { products } = props;
   const [dexrate, setDexrate] = useState(0);
-  const web3 = new Web3(window.ethereum);
+  const web3 = new Web3(provider_url);
   
   useEffect(() => {
     const getDexrate = async () => {
-      const ccrateurl = {
-        method: "get",
-        url: process.env.REACT_APP_API + "getccrate",
-      };
-      await axios(ccrateurl).then((res) => {
-        console.log(web3.utils.fromWei(String(res.data.cc_rate)))
-        setDexrate(web3.utils.fromWei(String(res.data.cc_rate)))
-      });
+      const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+      const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+      setDexrate(web3.utils.fromWei(String(curdexrate)));
     };
     getDexrate();
   }, [])

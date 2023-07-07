@@ -20,10 +20,6 @@ import "./single-product.styles.scss";
 LoadingOverlay.propTypes = undefined;
 
 const SingleProduct = ({ match }) => {
-  const { account } = useWeb3React();
-  const { ethereum } = window;
-
-  const web3 = new Web3(window.ethereum);
 
   const printpress_abi = printingpress_abi;
   const bt_abi = NBT_abi;
@@ -32,6 +28,11 @@ const SingleProduct = ({ match }) => {
   const cc_address = process.env.REACT_APP_CULTURECOINADDRESS;
   const current_symbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
   const _cCA = process.env.REACT_APP_CCA;
+  const provider_url = process.env.REACT_APP_PROVIDERURL;
+  const { account } = useWeb3React();
+  const { ethereum } = window;
+
+  const web3 = new Web3(window.ethereum);
 
   const navigate = useNavigate();
   const [bookmarkinfo, setBookmarkinfo] = useState(null);
@@ -82,20 +83,11 @@ const SingleProduct = ({ match }) => {
   }, [id, navigate]);
 
   useEffect(() => {
+    const globalWeb3 = new Web3(provider_url);
     const getDexrate = async () => {
-      if(window.ethereum) {
-        const ccoin_contract = new web3.eth.Contract(cc_abi, cc_address);
-        const dexrate = await ccoin_contract.methods.getDexCCRate().call();
-        setDexrate(web3.utils.fromWei(String(dexrate)))
-      } else {
-        const ccrateurl = {
-          method: "get",
-          url: process.env.REACT_APP_API + "getccrate",
-        };
-        await axios(ccrateurl).then((res) => {
-          setDexrate(web3.utils.fromWei(String(res.data.cc_rate)))
-        });
-      }
+      const ccoin_contract = new globalWeb3.eth.Contract(cc_abi, cc_address);
+      const dexrate = await ccoin_contract.methods.getDexCCRate().call();
+      setDexrate(globalWeb3.utils.fromWei(String(dexrate)))
     };
     getDexrate();
   }, []);
@@ -132,7 +124,6 @@ const SingleProduct = ({ match }) => {
         bmcontent.contract_address =
           product.bm_listdata[0].item_bmcontract_address;
         bmcontent.product = product;
-        bmcontent.curdexrate = dexrate;
       } else {
         bmcontent.bm_id = index;
         bmcontent.token_id = Number(curtotalsupply);
@@ -141,7 +132,6 @@ const SingleProduct = ({ match }) => {
         bmcontent.contract_address =
           product.bm_listdata[0].item_bmcontract_address;
         bmcontent.product = product;
-        bmcontent.curdexrate = dexrate;
       }
 
       setCurserialnum(index);
