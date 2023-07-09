@@ -4,29 +4,55 @@ import Modal from "react-bootstrap/Modal";
 import { useWeb3React } from "@web3-react/core";
 import Web3 from "web3";
 import { ethers } from "ethers";
+import { toast } from 'react-toastify';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
+import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
 
 function BuyModal(props) {
 	const provider_url = process.env.REACT_APP_PROVIDERURL;
+    // const priceUnit = process.env.REACT_APP_NATIVECURRENCYNAME;
+    const priceUnit = "CC";
 	const { account } = useWeb3React();
-    const {show} = props;
+	const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
+    const {show, onHide, tokenaddress, tokenid} = props;
 
-	const web3 = new Web3(window.ethereum);
+	const web3 = new Web3(provider_url);
 	
-	const [NFTOwner, setNFTOwner] = useState('');
-	const [dexrate, setDexrate] = useState(0);
-	const [contractowner, setContractowner] = useState('');
+	const [nftprice, setNftprice] = useState(0);
 
 	useEffect(() => {
 		const loadcontractdata = async () => {
-			const { ethereum } = window;
-
-			if (ethereum) {
-				const provider = new ethers.providers.Web3Provider(ethereum);
-				const signer = provider.getSigner();
-			}
+			const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
+			const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
+			setNftprice(price);
 		};
 		loadcontractdata();
 	}, [show]);
+
+	const buyNFT = async () => {
+		try {
+			const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
+			await auctionhouse_contract.methods.buyWithCC(tokenaddress, tokenid, nftprice).send({from: account});
+			toast.success('successfully Buy this NFT.', {
+				position: 'top-right',
+				autoClose: 3000,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true
+			});
+			onHide();
+		} catch (error) {
+			console.log(error)
+			toast.error('failed Buy this NFT', {
+				position: 'top-right',
+				autoClose: 3000,
+				closeOnClick: true,
+				pauseOnHover: true,
+				draggable: true
+			});
+		}
+	}
 
 	return (
 		<Modal
@@ -42,6 +68,21 @@ function BuyModal(props) {
 			</Modal.Header>
 			<Modal.Body>
 				
+			<div className="modal-content-body">
+				<Form.Label htmlFor="list-price">Current Token Price</Form.Label>
+				<InputGroup className="mb-3" size="lg">
+					<Form.Control
+						id="list-price"
+						placeholder="Price"
+						aria-label="Price"
+						aria-describedby="list_price"
+						value={nftprice}
+						disabled={true}
+					/>
+					<InputGroup.Text id="list_price">{priceUnit}</InputGroup.Text>
+				</InputGroup>
+				<button className="confirm-button" onClick={()=>{buyNFT()}}>Buy now</button>
+			</div>
 			</Modal.Body>
 			{/* <Modal.Footer>
 				<Button onClick={props.onHide}>Close</Button>

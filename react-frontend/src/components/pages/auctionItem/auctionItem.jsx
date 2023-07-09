@@ -43,8 +43,8 @@ const AuctionItem = () => {
       <div className="product-list-container container">
         <h2 className="product-list-title">Collection</h2>
         <div className="product-list row">
-          {nfts.map((item) => {
-            return <Nftitem data={item}></Nftitem>;
+          {nfts.map((item, index) => {
+            return <Nftitem data={item} key={index}></Nftitem>;
           })}
         </div>
       </div>

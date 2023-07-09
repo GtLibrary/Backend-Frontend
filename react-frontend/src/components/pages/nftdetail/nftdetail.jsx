@@ -10,6 +10,7 @@ import BuyModal from "./buymodal";
 import draculaHero_abi from '../../../utils/contract/DraculaHero.json'
 import "./nftdetail.styles.scss";
 import ListModal from "./listmodal";
+import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
 
 const Nftdetail = () => {
   const { tokenaddress, tokenid } = useParams();
@@ -17,6 +18,7 @@ const Nftdetail = () => {
 
   const navigate = useNavigate();
   const provider_url = process.env.REACT_APP_PROVIDERURL;
+	const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
 
   const [tokenname, setTokenname] = useState('');
   const [tokenowner, setTokenowner] = useState('');
@@ -26,6 +28,7 @@ const Nftdetail = () => {
   const [isshowlist, setIsshowlist] = useState(false);
   const [lists, setLists] = useState([]);
   const [offers, setoffers] = useState([]);
+	const [nftprice, setNftprice] = useState(0);
   
   const web3 = new Web3(provider_url);
 
@@ -34,6 +37,9 @@ const Nftdetail = () => {
     const token_name = await draculaHero_contract.methods.name().call();
     const contractowner = await draculaHero_contract.methods.owner().call();
     const token_Owner = await draculaHero_contract.methods.ownerOf(tokenid).call();
+    const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
+    const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
+    setNftprice(price);
     setTokenname(token_name);
     setNftowner(contractowner);
     setTokenowner(String(token_Owner));
@@ -89,22 +95,30 @@ const Nftdetail = () => {
             <div className="action-area">
               <div className="action-title">Actions</div>
               <div className="action-content">
+                {nftprice == 0 ? (
+                  <p className="action-price">Current Token is not listed.</p>
+                ): (
+                  <p className="action-price">Current Token Price: {nftprice} CC</p>
+                )}
+                <div className="btn-area">
                 { tokenowner == account ? (
                     <>
                       <button className="list-nft" onClick={() => setIsshowlist(true)}>List Now</button>
                     </> 
                   ): (
                     <>
-                      {lists.length > 0 ? (
+                      {/* {lists.length > 0 ? (
                         <button className="buy-nft" onClick={() => setIsshowbuy(true)}><i className="fa fa-shopping-cart"></i>&nbsp;Buy Now</button>
                       ): null}
-                      <button className="make-offer" onClick={() => setIshowoffer(true)}><i className="fa fa-tag"></i>&nbsp; Make offer</button>
+                      <button className="make-offer" onClick={() => setIshowoffer(true)}><i className="fa fa-tag"></i>&nbsp; Make offer</button> */}
+                        <button className="buy-nft" disabled={nftprice == 0 ? true: false} onClick={() => setIsshowbuy(true)}><i className="fa fa-shopping-cart"></i>&nbsp;Buy Now</button>
                     </>
                   )}
+                </div>
               </div>
             </div>
             <br></br>
-            <Accordion
+            {/* <Accordion
               title="Listings"
               preIcon={<i className="fa fa-list" />}
               content={
@@ -123,8 +137,8 @@ const Nftdetail = () => {
                     )}
                 </>
               }
-            />
-            <br />
+            /> */}
+            {/* <br />
             <Accordion 
               title="Offers" 
               preIcon={<i className="fa fa-tag" />}
@@ -144,7 +158,7 @@ const Nftdetail = () => {
                     )}
                 </>
               }
-            />
+            /> */}
           </div>
         </div>
       </div>
@@ -155,10 +169,14 @@ const Nftdetail = () => {
       <BuyModal
         show={isshowbuy}
         onHide={() => setIsshowbuy(false)}
+        tokenaddress={tokenaddress}
+        tokenid={tokenid}
       ></BuyModal>
       <ListModal
         show={isshowlist}
         onHide={() => setIsshowlist(false)}
+        tokenaddress={tokenaddress}
+        tokenid={tokenid}
       ></ListModal>
     </Layout>
   );
