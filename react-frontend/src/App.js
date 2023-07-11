@@ -3,13 +3,11 @@ import HomePage from "./components/home-page";
 import NotFound from "./components/not-found";
 import Books from "./components/pages/books/books";
 import Swap from "./components/pages/swap/swap";
-import Marketplace from "./components/pages/marketplace/marketplace";
 import Auctionhouse from "./components/pages/auctionhouse/auctionhouse";
 import AuctionItem from "./components/pages/auctionItem/auctionItem";
 import Nftdetail from "./components/pages/nftdetail/nftdetail";
 import Terms from "./components/pages/terms/terms";
 import SingleProduct from "./components/single-product/single-product";
-import CollectionItem from "./components/pages/collection/collectionItem";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,11 +21,9 @@ function App() {
           <Route exact path="/" element={<HomePage />} />
           <Route path="/books" element={<Books />} />
           <Route path="/swap" element={<Swap />} />
-          <Route path="/marketplace" element={<Marketplace />} />
           <Route path="/auctionhouse" element={<Auctionhouse />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/product/:id" element={<SingleProduct />} />
-          <Route path="/marketplace/collection/:id" element={<CollectionItem />} />
           <Route path="/auctionhouse/collection/:tokenaddress" element={<AuctionItem />} />
           <Route path="/auctionhouse/detail/:tokenaddress/:tokenid" element={<Nftdetail />} />
           <Route path="*" element={<NotFound />} />

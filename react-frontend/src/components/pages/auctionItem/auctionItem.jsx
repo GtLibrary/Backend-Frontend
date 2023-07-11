@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import Web3 from "web3";
 import Layout from "../../shared/layout";
 import Nftitem from "../nftitem/nftitem";
-import Web3 from "web3";
+import Accordion from "../../shared/accordion";
 import draculaHero_abi from '../../../utils/contract/DraculaHero.json'
 import "./auction.styles.scss";
 
@@ -40,12 +41,23 @@ const AuctionItem = () => {
 
   return (
     <Layout>
-      <div className="product-list-container container">
+      <div className="product-list-container container-fluid">
         <h2 className="product-list-title">Collection</h2>
-        <div className="product-list row">
-          {nfts.map((item, index) => {
-            return <Nftitem data={item} key={index}></Nftitem>;
-          })}
+        <div className="row">
+          <div className="col-md-3">
+            <h3 style={{fontFamily: "Crimson Text"}}>Filters</h3>
+            <Accordion 
+              title="Owner"
+              content={""}
+            />
+          </div>
+          <div className="col-md-9">
+            <div className="product-list row">
+              {nfts.map((item, index) => {
+                return <Nftitem data={item} key={index}></Nftitem>;
+              })}
+            </div>
+          </div>
         </div>
       </div>
     </Layout>

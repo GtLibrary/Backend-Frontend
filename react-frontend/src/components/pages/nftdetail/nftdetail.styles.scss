@@ -11,19 +11,21 @@
   }
 
   .nftdetail-list {
-    div {
-      cursor: pointer;
-    }
     .nft-detail-img {
+      display: flex;
+      align-items: center;
+      justify-content: center;
       border: 1px solid rgb(180, 180, 180);
       aspect-ratio: 1/1;
       border-radius: 10px;
       background-color: lightgrey;
+      cursor: pointer;
     }
     .detail-header {
       margin-bottom: 20px;
       .item-collection{
         color: rgb(32, 129, 226);
+        cursor: pointer;
       }
       .item-title {
         font-size: 30px;
@@ -60,6 +62,7 @@
         display: flex;
         justify-content: space-between;
         align-items: center;
+        cursor: pointer;
         .icon-title {
           display: flex;
           align-items: center;
@@ -81,10 +84,12 @@
           font-size: 24px;
         }
         .btn-area {
+          cursor: pointer;
           display: flex;
           gap: 5px;
         }
         .buy-nft, .list-nft {
+          cursor: pointer;
           display: inline-flex;
           width: 100%;
           flex-direction: row;
@@ -110,6 +115,7 @@
         }
         .make-offer {
           display: inline-flex;
+          cursor: pointer;
           width: 100%;
           flex-direction: row;
           -webkit-box-align: center;

@@ -10,6 +10,7 @@ import BuyModal from "./buymodal";
 import draculaHero_abi from '../../../utils/contract/DraculaHero.json'
 import "./nftdetail.styles.scss";
 import ListModal from "./listmodal";
+import SendModal from "./sendmodal";
 import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
 
 const Nftdetail = () => {
@@ -26,6 +27,7 @@ const Nftdetail = () => {
   const [isshowoffer, setIshowoffer] = useState(false);
   const [isshowbuy, setIsshowbuy] = useState(false);
   const [isshowlist, setIsshowlist] = useState(false);
+  const [isshowsend, setIsshowsend] = useState(false);
   const [lists, setLists] = useState([]);
   const [offers, setoffers] = useState([]);
 	const [nftprice, setNftprice] = useState(0);
@@ -69,7 +71,9 @@ const Nftdetail = () => {
         <h2 className="nftdetail-list-title">NFT Detail</h2>
         <div className="nftdetail-list row">
           <div className="col-md-5">
-            <div className="nft-detail-img"></div>
+            <div className="nft-detail-img">
+              <img src="./../../../assets/img/bookmark.png" alt="nftimage"></img>
+            </div>
             <br></br>
             <Accordion
               title="Description"
@@ -104,6 +108,7 @@ const Nftdetail = () => {
                 { tokenowner == account ? (
                     <>
                       <button className="list-nft" onClick={() => setIsshowlist(true)}>List Now</button>
+                      <button className="list-nft" onClick={() => setIsshowsend(true)}><i className="fa fa-paper-plane"></i>&nbsp;Send</button>
                     </> 
                   ): (
                     <>
@@ -178,6 +183,12 @@ const Nftdetail = () => {
         tokenaddress={tokenaddress}
         tokenid={tokenid}
       ></ListModal>
+      <SendModal
+        show={isshowsend}
+        onHide={() => setIsshowsend(false)}
+        tokenaddress={tokenaddress}
+        tokenid={tokenid}
+      ></SendModal>
     </Layout>
   );
 };
