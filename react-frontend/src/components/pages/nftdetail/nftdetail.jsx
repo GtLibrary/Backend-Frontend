@@ -7,7 +7,8 @@ import Layout from "../../shared/layout";
 import Accordion from "../../shared/accordion";
 import MakeOfferModal from "./makeoffermodal";
 import BuyModal from "./buymodal";
-import draculaHero_abi from '../../../utils/contract/DraculaHero.json'
+import draculaHero_abi from '../../../utils/contract/DraculaHero.json';
+import draculaRelics_abi from '../../../utils/contract/Relics.json';
 import "./nftdetail.styles.scss";
 import ListModal from "./listmodal";
 import SendModal from "./sendmodal";
@@ -35,10 +36,16 @@ const Nftdetail = () => {
   const web3 = new Web3(provider_url);
 
   const getDetailData = async () => {
-    const draculaHero_contract = new web3.eth.Contract(draculaHero_abi, tokenaddress);
-    const token_name = await draculaHero_contract.methods.name().call();
-    const contractowner = await draculaHero_contract.methods.owner().call();
-    const token_Owner = await draculaHero_contract.methods.ownerOf(tokenid).call();
+    let contract_abi = '';
+    if(tokenaddress == "0x02819086274690fb27b940bec1268deD9D4DCC10"){
+      contract_abi = draculaRelics_abi;
+    } else if(tokenaddress == "0xD83EF3eDb656DB9502eB658dBc5831d2C345edAA") {
+      contract_abi = draculaHero_abi;
+    }
+    const nft_contract = new web3.eth.Contract(contract_abi, tokenaddress);
+    const token_name = await nft_contract.methods.name().call();
+    const contractowner = await nft_contract.methods.owner().call();
+    const token_Owner = await nft_contract.methods.ownerOf(tokenid).call();
     const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
     const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
     setNftprice(price);
@@ -63,7 +70,7 @@ const Nftdetail = () => {
     getDetailData();
     getlistingdata();
     getofferdata();
-  }, []);
+  }, [isshowbuy, isshowlist, isshowsend]);
 
   return (
     <Layout>

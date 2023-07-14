@@ -8,6 +8,13 @@
       font-family: 'Crimson Text';
       font-size: 48px;
     }
+    .owner-filter {
+      font-family: 'Crimson Text';
+      font-size: 22px;
+      .form-check input, .form-check label {
+        cursor: pointer;
+      }
+    }
   
     .product-list {
       div {
