@@ -5,7 +5,7 @@
     font-size: 14px;
     line-height: 1.4;
     border: 1px solid #c7c7c7;
-    border-radius: 5px;
+    border-radius: 15px;
     background-color: white;
     .nft-card-button {
       display: flex;
@@ -49,6 +49,6 @@
     }
   }
   .nft-item:hover {
-    box-shadow: 2px 3px #cccccc;
+    box-shadow: 1px 3px 10px #000000;
   }
 }

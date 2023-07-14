@@ -5,13 +5,11 @@ import Web3 from "web3";
 import { toast } from 'react-toastify';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
-import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
+import draculaHero_abi from '../../../utils/contract/DraculaHero.json';
+import draculaRelics_abi from '../../../utils/contract/Relics.json';
 
 function SendModal(props) {
 	const provider_url = process.env.REACT_APP_PROVIDERURL;
-    // const priceUnit = process.env.REACT_APP_NATIVECURRENCYNAME;
-    const priceUnit = "CC";
-	const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
 	const { account } = useWeb3React();
     const { show, onHide,  tokenaddress, tokenid } = props;
 
@@ -22,8 +20,14 @@ function SendModal(props) {
     const sendnft = async () => {
 		try {
 			if(window.ethereum) {
-				const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
-				// await auctionhouse_contract.methods.transferFrom(tokenaddress, tokenid, sellprice).send({from: account});
+				let contract_abi = '';
+				if(tokenaddress == "0x02819086274690fb27b940bec1268deD9D4DCC10"){
+				  contract_abi = draculaRelics_abi;
+				} else if(tokenaddress == "0xD83EF3eDb656DB9502eB658dBc5831d2C345edAA") {
+				  contract_abi = draculaHero_abi;
+				}
+				const nft_contract = new web3.eth.Contract(contract_abi, tokenaddress);
+				await nft_contract.methods.transferFrom(account, toaddress, tokenid).send({from: account});
 				toast.success('successfully sent.', {
 					position: 'top-right',
 					autoClose: 3000,

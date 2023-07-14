@@ -32,8 +32,9 @@ function BuyModal(props) {
 
 	const buyNFT = async () => {
 		try {
-			const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
-			await auctionhouse_contract.methods.buyWithCC(tokenaddress, tokenid, nftprice).send({from: account});
+			const localweb3 = new Web3(window.ethereum);
+			const auctionhouse_contract = new localweb3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
+			await auctionhouse_contract.methods.buyWithCC(tokenaddress, tokenid, localweb3.utils.toWei(nftprice)).send({from: account});
 			toast.success('successfully Buy this NFT.', {
 				position: 'top-right',
 				autoClose: 3000,
