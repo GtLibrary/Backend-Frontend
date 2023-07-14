@@ -15,8 +15,14 @@ const Nftitem = (props) => {
           <img src="../../../assets/img/bookmark.png" alt=""></img>
         </div>
         <div className="nft-card-content">
-          <p>{data.tokenname}</p>
-          <p>{data.tokenname} #{data.tokenid}</p>
+          {/* <p>{data.tokenname}</p> */}
+          <div className="detail-info">
+            <p>{data.tokenname} #{data.tokenid}</p>
+            <p className="price">{data.token_price} CC</p>
+          </div>
+          <div className="owner-detail">
+            <p>Owner: {data.token_owner}</p>
+          </div>
         </div>
       </div>
     </div>

@@ -38,14 +38,24 @@
       padding: 15px;
       p {
         margin: 0;
-        &:nth-child(1) {
-          font-size: 16px;
-          font-weight: 600;
-        }
-        &:nth-child(2) {
+      }
+      .detail-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 16px;
+        font-size: 16px;
+        font-weight: 600;
+        .price {        
           color: #595959;
         }
       }
+      .owner-detail {
+        font-size: 14px;
+        font-weight: 500;
+        text-overflow: ellipsis;
+        overflow:hidden;
+      } 
     }
   }
   .nft-item:hover {
