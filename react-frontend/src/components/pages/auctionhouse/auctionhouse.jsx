@@ -5,7 +5,6 @@ import AuctionhouseItem from "../../shared/auctionhouseitem";
 import "./auctionhouse.styles.scss";
 
 const Auctionhouse = () => {
-  const [products, setProducts] = useState([]);
   const auctionhouseItems = [
     {
       tokenname: "Dracula's Relics",
@@ -16,15 +15,6 @@ const Auctionhouse = () => {
       tokenaddress: "0xD83EF3eDb656DB9502eB658dBc5831d2C345edAA"
     },
   ]
-
-  const getBooklists = async () => {
-    const { data } = await axios.get(process.env.REACT_APP_API + "getbooklist");
-    setProducts(data);
-  };
-
-  useEffect(() => {
-    getBooklists();
-  }, []);
 
   const allProducts = auctionhouseItems.map((item, index) => (
     <AuctionhouseItem {...item} key={index} />
