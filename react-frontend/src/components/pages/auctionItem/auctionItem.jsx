@@ -39,20 +39,20 @@ const AuctionItem = () => {
         contract_abi = draculaHero_abi;
       }
       const nft_contract = new web3.eth.Contract(contract_abi, tokenaddress);
-			// const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
+			const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
       const tokenname = await nft_contract.methods.name().call();
       const tokensupply = await nft_contract.methods.totalSupply().call();
       setName(tokenname);
       let temp = [];
       for (let i = 1; i <= tokensupply; i++) {
         let token_owner = await nft_contract.methods.ownerOf(i).call();
-        // let token_price = await auctionhouse_contract.methods.price(tokenaddress, i).call();
+        let token_price = await auctionhouse_contract.methods.price(tokenaddress, i).call();
         const element = {
           tokenname: tokenname,
           tokenid: i,
           tokenaddress: tokenaddress,
           token_owner: token_owner,
-          // token_price: token_price,
+          token_price: token_price,
         };
         temp.push(element)
       }
@@ -64,31 +64,31 @@ const AuctionItem = () => {
     getNftdata();
   }, []);
 
-  const fetchPrices = async () => {
-    let contract_abi = '';
-    if(tokenaddress == "0x02819086274690fb27b940bec1268deD9D4DCC10"){
-      contract_abi = draculaRelics_abi;
-    } else if(tokenaddress == "0xD83EF3eDb656DB9502eB658dBc5831d2C345edAA") {
-      contract_abi = draculaHero_abi;
-    }
-    const nft_contract = new web3.eth.Contract(contract_abi, tokenaddress);
-    const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
-    const totalSupply = await nft_contract.methods.totalSupply().call();
+  // const fetchPrices = async () => {
+  //   let contract_abi = '';
+  //   if(tokenaddress == "0x02819086274690fb27b940bec1268deD9D4DCC10"){
+  //     contract_abi = draculaRelics_abi;
+  //   } else if(tokenaddress == "0xD83EF3eDb656DB9502eB658dBc5831d2C345edAA") {
+  //     contract_abi = draculaHero_abi;
+  //   }
+  //   const nft_contract = new web3.eth.Contract(contract_abi, tokenaddress);
+  //   const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
+  //   const totalSupply = await nft_contract.methods.totalSupply().call();
 
-    for (let i = 0; i < totalSupply; i++) {
-      const price = await auctionhouse_contract.methods.price(tokenaddress, i).call();
-      setMyDictionaryOfPrices(prevPrices => ({ ...prevPrices, [i]: price }));
-    }
-  };
+  //   for (let i = 0; i < totalSupply; i++) {
+  //     const price = await auctionhouse_contract.methods.price(tokenaddress, i).call();
+  //     setMyDictionaryOfPrices(prevPrices => ({ ...prevPrices, [i]: price }));
+  //   }
+  // };
 
-  useEffect(() => {
-    fetchPrices();
-  }, []);
+  // useEffect(() => {
+  //   fetchPrices();
+  // }, []);
 
   const showItems = (ownership_type, sale_type) => {
     if(ownership_type == 'owner' && sale_type == 'onsale') {
       const filterdata = nfts.filter((item) => {
-        return item.token_owner == account && myDictionaryOfPrices[item.tokenid] > 0;
+        return item.token_owner == account && item.token_price > 0;
       });
       setList(filterdata)
     } else if(ownership_type == 'owner') {
@@ -98,7 +98,7 @@ const AuctionItem = () => {
       setList(filterdata)
     } else if(sale_type == 'onsale') {
       const filterdata = nfts.filter((item) => {
-        return myDictionaryOfPrices[item.tokenid] > 0;
+        return item.token_price > 0;
       });
       setList(filterdata)
     } else {
