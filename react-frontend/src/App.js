@@ -24,7 +24,7 @@ function App() {
           <Route path="/auctionhouse" element={<Auctionhouse />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/product/:id" element={<SingleProduct />} />
-          <Route path="/auctionhouse/collection/:tokenaddress" element={<AuctionItem />} />
+          <Route path="/auctionhouse/collection/:view/:tokenaddress" element={<AuctionItem />} />
           <Route path="/auctionhouse/detail/:tokenaddress/:tokenid" element={<Nftdetail />} />
           <Route path="*" element={<NotFound />} />
         </Routes>

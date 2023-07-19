@@ -6,14 +6,16 @@ import "./auctionhouse.styles.scss";
 const AuctionhouseItem = (props) => {
   const navigate = useNavigate();
 
-  const { tokenname, tokenaddress } = props;
+  const { tokenname, tokenaddress, view } = props;
+  console.log("view: ", view);
 
   return (
+	   
     <div className="col-md-3 col-sm-6 col-xs-12">
       <div className="auctionhouseitem-product">
         <div
           className="auctionhouseitem-image"
-          onClick={() => navigate(`/auctionhouse/collection/${tokenaddress}`)}
+          onClick={() => navigate(`/auctionhouse/collection/${view}/${tokenaddress}`)}
         >
           <img src="../../assets/img/bookmark.png" alt="product" />
         </div>
