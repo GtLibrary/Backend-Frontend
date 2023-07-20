@@ -44,7 +44,7 @@ const AuctionItem = () => {
 
 useEffect(() => {
   const getIdsAndPriceAll = async (tokenid)  => {
-    console.log("All: ", tokenid);
+    //console.log("All: ", tokenid);
     const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
     return [price, tokenid];
   };
@@ -85,7 +85,7 @@ useEffect(() => {
 
       let j = 0;
       for (let i = start; i < end && i < tokensupply; i++) {
-        console.log("I: ", i);
+        //console.log("I: ", i);
         promises.push(
           nft_contract.methods.ownerOf(i).call(),
           getIdsAndPriceAll(i)
@@ -137,7 +137,7 @@ useEffect(() => {
 
     const results = await Promise.all(promises);
     for (let i = 0; i <results.length; i += 2) {
-      console.log("Item ", i, " is ", results[i + 1][1]);
+      //console.log("Item ", i, " is ", results[i + 1][1]);
       const element = {
         tokenname: tokenname,
         //tokenid: i / 2 + 1 + start,
