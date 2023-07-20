@@ -10,7 +10,9 @@ const Nftitem = (props) => {
     <div className="nft-item-wrapper col-md-3">
       <div className="nft-item" onClick={() => {
         navigate(`/auctionhouse/detail/${data.tokenaddress}/${data.tokenid}`);
-      }}>
+      }}
+         style={{ border: data.token_price > 0 ? '5px solid green' : '' }}
+	  >
         <div className="nft-card-img">
           <img src="../../../assets/img/bookmark.png" alt=""></img>
         </div>
