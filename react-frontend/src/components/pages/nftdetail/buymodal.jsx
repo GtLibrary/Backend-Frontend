@@ -12,7 +12,7 @@ import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
 function BuyModal(props) {
 	const provider_url = process.env.REACT_APP_PROVIDERURL;
     // const priceUnit = process.env.REACT_APP_NATIVECURRENCYNAME;
-    const priceUnit = "CC";
+    const priceUnit = "AVAX";
 	const { account } = useWeb3React();
 	const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
     const {show, onHide, tokenaddress, tokenid} = props;

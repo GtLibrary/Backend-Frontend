@@ -7,6 +7,7 @@ import LoadingOverlay from "react-loading-overlay";
 import Layout from "../../shared/layout";
 import Nftitem from "../nftitem/nftitem";
 import Accordion from "../../shared/accordion";
+import { ethers } from "ethers";
 import draculaHero_abi from '../../../utils/contract/DraculaHero.json';
 import draculaRelics_abi from '../../../utils/contract/Relics.json';
 import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
@@ -45,13 +46,14 @@ const AuctionItem = () => {
 useEffect(() => {
   const getIdsAndPriceAll = async (tokenid)  => {
     //console.log("All: ", tokenid);
-    const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
-    return [price, tokenid];
+    const owner = await nft_contract.methods.ownerOf(tokenid).call();
+    const price = ethers.utils.formatEther(await auctionhouse_contract.methods.price(tokenaddress, tokenid).call());
+    return [price, tokenid, owner];
   };
-  const getOwnerIdsAndPrice = async (indexId) => {
+  const getOwnerIdsAndPrice = async (indexId, owner) => {
     const tokenId = await nft_contract.methods.tokenOfOwnerByIndex(account, indexId).call();
-    const price = await auctionhouse_contract.methods.price(tokenaddress, tokenId).call();
-    return [price, tokenId];
+    const price = ethers.utils.formatEther(await auctionhouse_contract.methods.price(tokenaddress, tokenId).call());
+    return [price, tokenId, owner];
   };
   const getOwnerAsync = async (account) => {
     //console.log("Account: " , account);
@@ -59,8 +61,9 @@ useEffect(() => {
   };
   const getListingIdsAndPrice = async (indexId) => {
     const tokenId = await auctionhouse_contract.methods.tokenOnSaleByIndex(tokenaddress, indexId).call();
-    const price = await auctionhouse_contract.methods.price(tokenaddress, tokenId).call();
-    return [price, tokenId];
+    const owner = await nft_contract.methods.ownerOf(tokenId).call();
+    const price = ethers.utils.formatEther(await auctionhouse_contract.methods.price(tokenaddress, tokenId).call());
+    return [price, tokenId, owner];
   };
 
   const getNftdata = async () => {
@@ -87,7 +90,8 @@ useEffect(() => {
       for (let i = start; i < end && i < tokensupply; i++) {
         //console.log("I: ", i);
         promises.push(
-          nft_contract.methods.ownerOf(i).call(),
+          //nft_contract.methods.ownerOf(i).call(),
+	  getOwnerAsync(account),
           getIdsAndPriceAll(i)
         );
         j = i;
@@ -99,7 +103,8 @@ useEffect(() => {
       if(tokensupply == j + 1) {
         console.log("The end");
         promises.push(
-          nft_contract.methods.ownerOf(j+1).call(),
+          //nft_contract.methods.ownerOf(j+1).call(),
+	  getOwnerAsync(account),
           getIdsAndPriceAll(j+1)
         );
       }
@@ -110,7 +115,7 @@ useEffect(() => {
       for (let i = start - 1; i < end - 1 && i < tokensupply; i++) {
         promises.push(
 	  getOwnerAsync(account),
-          getOwnerIdsAndPrice(i),
+          getOwnerIdsAndPrice(i, account),
         );
       }
       console.log("Viewing owner items.");
@@ -123,7 +128,7 @@ useEffect(() => {
       for (let i = start - 1; i < end - 1 && i < tokensupply; i++) {
         console.log("Promises being made...");
         promises.push(
-          getOwnerAsync(account),
+          getOwnerAsync(i),
           getListingIdsAndPrice(i),
         );
       }
@@ -142,7 +147,7 @@ useEffect(() => {
         tokenname: tokenname,
         //tokenid: i / 2 + 1 + start,
         tokenaddress: tokenaddress,
-        token_owner: results[i],
+        token_owner: results[i + 1][2],
         token_price: results[i + 1][0],
         tokenid: results[i + 1][1],
       };

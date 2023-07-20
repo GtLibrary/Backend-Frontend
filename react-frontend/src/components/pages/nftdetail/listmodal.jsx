@@ -11,7 +11,7 @@ import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
 function ListModal(props) {
 	const provider_url = process.env.REACT_APP_PROVIDERURL;
     // const priceUnit = process.env.REACT_APP_NATIVECURRENCYNAME;
-    const priceUnit = "CC";
+    const priceUnit = "AVAX";
 	const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
 	const { account } = useWeb3React();
     const { show, onHide,  tokenaddress, tokenid } = props;
@@ -24,13 +24,28 @@ function ListModal(props) {
 		const loadcontractdata = async () => {
 			const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
 			const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
+			console.log("The price is: ", price);
 			setSellprice(price);
 		};
 		loadcontractdata();
 	}, [show]);
 
+    const doSetSellprice = (priceInEther) => {
+	    console.log("Setting price: ", priceInEther);
+	    try {
+		    setSellprice(ethers.utils.parseEther(priceInEther));
+	    } catch (e) {
+	    }
+
+    };
+
     const listcomplete = async () => {
 		try {
+			console.log("sellprice: ", sellprice);
+
+			//const actualsellprice = ethers.utils.parseEther(sellprice);
+			//console.log("Actual sellprice:", actualsellprice);
+
 			if(window.ethereum) {
 				const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
 				await auctionhouse_contract.methods.sell(tokenaddress, tokenid, sellprice).send({from: account});
@@ -78,8 +93,11 @@ function ListModal(props) {
                             placeholder="Price"
                             aria-label="Price"
                             aria-describedby="list_price"
-							value={sellprice}
-							onChange={(e) => setSellprice(e.target.value)}
+							value={ethers.utils.formatEther(sellprice)}
+							onChange={(e) => 
+								doSetSellprice(e.target.value)}
+
+			
                         />
                         <InputGroup.Text id="list_price">{priceUnit}</InputGroup.Text>
                     </InputGroup>

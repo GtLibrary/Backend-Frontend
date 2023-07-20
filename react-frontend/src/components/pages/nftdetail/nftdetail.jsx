@@ -13,6 +13,7 @@ import "./nftdetail.styles.scss";
 import ListModal from "./listmodal";
 import SendModal from "./sendmodal";
 import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
+import { ethers } from "ethers";
 
 const Nftdetail = () => {
   const { tokenaddress, tokenid } = useParams();
@@ -118,7 +119,7 @@ const Nftdetail = () => {
                 {nftprice == 0 ? (
                   <p className="action-price">Current Token is not listed.</p>
                 ): (
-                  <p className="action-price">Current Token Price: {nftprice} CC</p>
+                  <p className="action-price">Current Token Price: { ethers.utils.formatEther(nftprice)} AVAX</p>
                 )}
                 <div className="btn-area">
                 { tokenowner == account ? (

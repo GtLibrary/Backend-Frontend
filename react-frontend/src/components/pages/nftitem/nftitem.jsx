@@ -20,7 +20,7 @@ const Nftitem = (props) => {
           {/* <p>{data.tokenname}</p> */}
           <div className="detail-info">
             <p>{data.tokenname} #{data.tokenid}</p>
-            <p className="price">{data.token_price} CC</p>
+            <p className="price">{data.token_price} AVAX</p>
           </div>
           <div className="owner-detail">
             <p>Owner: {data.token_owner}</p>
