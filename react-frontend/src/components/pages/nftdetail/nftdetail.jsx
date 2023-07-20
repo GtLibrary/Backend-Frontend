@@ -108,7 +108,7 @@ const Nftdetail = () => {
           </div>
           <div className="col-md-7">
             <div className="detail-header">
-              <h5 className="item-collection" onClick={() => navigate(`/auctionhouse/collection/${tokenaddress}`)}>{tokenname}</h5>
+              <h5 className="item-collection" onClick={() => navigate(`/auctionhouse/collection/all/${tokenaddress}`)}>{tokenname}</h5>
               <h1 className="item-title">{tokenname} #{tokenid}</h1>
               <div className="item-owner">Owned By &nbsp;<b>{tokenowner == account? 'you': tokenowner}</b></div>
             </div>
