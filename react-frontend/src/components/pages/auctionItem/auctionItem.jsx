@@ -15,7 +15,7 @@ import "./auction.styles.scss";
 LoadingOverlay.propTypes = undefined;
 
 const AuctionItem = () => {
-  const ITEMS_PER_PAGE = 50;
+  const ITEMS_PER_PAGE = 25;
   const [currentPage, setCurrentPage] = useState(1);
   const [tokenSupply, setTokenSupply] = useState(1);
 
@@ -53,9 +53,14 @@ useEffect(() => {
     return [price, tokenId];
   };
   const getOwnerAsync = async (account) => {
+    //console.log("Account: " , account);
     return account;
   };
-
+  const getListingIdsAndPrice = async (indexId) => {
+    const tokenId = await auctionhouse_contract.methods.tokenOnSaleByIndex(tokenaddress, indexId).call();
+    const price = await auctionhouse_contract.methods.price(tokenaddress, tokenId).call();
+    return [price, tokenId];
+  };
 
   const getNftdata = async () => {
     setLoading(true);
@@ -84,7 +89,7 @@ useEffect(() => {
     } else if(view === "owner") {
       console.log("Account: ", account);
       tokensupply = await nft_contract.methods.balanceOf(account).call();
-      for (let i = start; i < end && i < tokensupply; i++) {
+      for (let i = start - 1; i < end - 1 && i < tokensupply; i++) {
         promises.push(
 	  getOwnerAsync(account),
           getOwnerIdsAndPrice(i),
@@ -92,12 +97,22 @@ useEffect(() => {
       }
       console.log("Viewing owner items.");
     } else if(view == "sale") {
-      // FIXME: Need to call ah.totalOnSale();
-      // FIXME: Need to call getIdsAndPriceOnSale() which needs to call ah.tokenOnSaleByIndex() and price();
-    } else if(view = "myonsale") {
-      // FIXME: Need to call ah.totalOnSaleByOwner();
-      // FIXME: Need to call getIdsAndPriceOnSaleByOwner() which needs to call ah.tokenOnSaleByOwnerAndIndex()
-      //         and price();
+      tokensupply = await auctionhouse_contract.methods.totalOnSale(tokenaddress).call();
+      console.log("TokenbSupply: " , tokensupply);
+      console.log("Start: " , start);
+      console.log("End: " , end);
+
+      for (let i = start - 1; i < end - 1 && i < tokensupply; i++) {
+        console.log("Promises being made...");
+        promises.push(
+          getOwnerAsync(account),
+          getListingIdsAndPrice(i),
+        );
+      }
+      console.log("Viewing onsale items.");
+    } else { // if(view = "myonsale") {
+      // FIXME: View is bad. --JRR
+      console.log("Unknown view....");
     }
 
     setTokenSupply(tokensupply);
