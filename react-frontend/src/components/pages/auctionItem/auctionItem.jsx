@@ -44,6 +44,7 @@ const AuctionItem = () => {
 
 useEffect(() => {
   const getIdsAndPriceAll = async (tokenid)  => {
+    console.log("All: ", tokenid);
     const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
     return [price, tokenid];
   };
@@ -77,12 +78,29 @@ useEffect(() => {
 
     if(view === "all") {
       tokensupply = await nft_contract.methods.totalSupply().call();
-      console.log("Viewing all items.");
+      console.log("Viewing all items,", tokensupply);
+      console.log("TokenbSupply: " , tokensupply);
+      console.log("Start: " , start);
+      console.log("End: " , end);
 
+      let j = 0;
       for (let i = start; i < end && i < tokensupply; i++) {
+        console.log("I: ", i);
         promises.push(
           nft_contract.methods.ownerOf(i).call(),
           getIdsAndPriceAll(i)
+        );
+        j = i;
+      }
+      //console.log("j: ", j);
+      //console.log("tokensupply: ", tokensupply);
+
+      // FIXME: It is odd that we have to do this.  --JRR
+      if(tokensupply == j + 1) {
+        console.log("The end");
+        promises.push(
+          nft_contract.methods.ownerOf(j+1).call(),
+          getIdsAndPriceAll(j+1)
         );
       }
 
@@ -98,9 +116,9 @@ useEffect(() => {
       console.log("Viewing owner items.");
     } else if(view == "sale") {
       tokensupply = await auctionhouse_contract.methods.totalOnSale(tokenaddress).call();
-      console.log("TokenbSupply: " , tokensupply);
-      console.log("Start: " , start);
-      console.log("End: " , end);
+      //console.log("TokenbSupply: " , tokensupply);
+      //console.log("Start: " , start);
+      //console.log("End: " , end);
 
       for (let i = start - 1; i < end - 1 && i < tokensupply; i++) {
         console.log("Promises being made...");
@@ -119,6 +137,7 @@ useEffect(() => {
 
     const results = await Promise.all(promises);
     for (let i = 0; i <results.length; i += 2) {
+      console.log("Item ", i, " is ", results[i + 1][1]);
       const element = {
         tokenname: tokenname,
         //tokenid: i / 2 + 1 + start,
@@ -328,7 +347,7 @@ useEffect(() => {
             <div className="product-list row">
               {list.map((item, index) => {
                 return <Nftitem data={item} key={index}></Nftitem>;
-              })}
+               })}
             </div>
           </div>
         </div>
