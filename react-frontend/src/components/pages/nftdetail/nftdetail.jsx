@@ -20,7 +20,7 @@ const Nftdetail = () => {
 
   const navigate = useNavigate();
   const provider_url = process.env.REACT_APP_PROVIDERURL;
-	const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
+  const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
 
   const [tokenname, setTokenname] = useState('');
   const [tokenowner, setTokenowner] = useState('');
@@ -31,7 +31,9 @@ const Nftdetail = () => {
   const [isshowsend, setIsshowsend] = useState(false);
   const [lists, setLists] = useState([]);
   const [offers, setoffers] = useState([]);
-	const [nftprice, setNftprice] = useState(0);
+  const [nftprice, setNftprice] = useState(0);
+
+  const [relicData, setRelicData] = useState(null);
   
   const web3 = new Web3(provider_url);
 
@@ -66,10 +68,17 @@ const Nftdetail = () => {
     // setoffers(offerdata);
   }
 
+  const getRelicData = async (relicid) => {
+    const url = `https://game.greatlibrary.io:4445/?relicid=${relicid}`;
+    const response = await axios.get(url);
+    setRelicData(response.data.damageScript);
+  }
+
   useEffect(() => {
     getDetailData();
     getlistingdata();
     getofferdata();
+    getRelicData(tokenid); 
   }, [isshowbuy, isshowlist, isshowsend]);
 
   return (
@@ -126,6 +135,13 @@ const Nftdetail = () => {
                         <button className="buy-nft" disabled={nftprice == 0 ? true: false} onClick={() => setIsshowbuy(true)}><i className="fa fa-shopping-cart"></i>&nbsp;Buy Now</button>
                     </>
                   )}
+                </div>
+              </div>
+              <p></p>
+              <div className="action-area">
+              <div className="action-title">On Damage Script</div>
+                <div className="action-content">
+		  <pre>{relicData}</pre>
                 </div>
               </div>
             </div>
