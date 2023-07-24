@@ -111,6 +111,11 @@ useEffect(() => {
 
     } else if(view === "owner") {
       console.log("Account: ", account);
+      if(typeof account === 'undefined') {
+    	setLoading(false);
+	return;
+      }
+
       tokensupply = await nft_contract.methods.balanceOf(account).call();
       for (let i = start - 1; i < end - 1 && i < tokensupply; i++) {
         promises.push(
