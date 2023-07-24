@@ -7,25 +7,34 @@ import { toast } from 'react-toastify';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
+import CC_abi from "../../../utils/contract/CultureCoin.json";
 
 function ListModal(props) {
 	const provider_url = process.env.REACT_APP_PROVIDERURL;
-    // const priceUnit = process.env.REACT_APP_NATIVECURRENCYNAME;
-    const priceUnit = "AVAX";
+    	// const priceUnit = process.env.REACT_APP_NATIVECURRENCYNAME;
+    	const priceUnit = "AVAX";
 	const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
+	const cultureCoinAddress = process.env.REACT_APP_CULTURECOINADDRESS;
 	const { account } = useWeb3React();
-    const { show, onHide,  tokenaddress, tokenid } = props;
+    	const { show, onHide,  tokenaddress, tokenid } = props;
 
 	const web3 = new Web3(window.ethereum);
 	
 	const [sellprice, setSellprice] = useState(0);
+	const [sellpricecc, setSellpricecc] = useState(0);
+	const [curdexrate, setCurdexrate] = useState(0);
 
 	useEffect(() => {
+
 		const loadcontractdata = async () => {
 			const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
 			const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
 			console.log("The price is: ", price);
 			setSellprice(price);
+
+		        const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+		        const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+			setCurdexrate(curdexrate);
 		};
 		loadcontractdata();
 	}, [show]);
@@ -34,6 +43,14 @@ function ListModal(props) {
 	    console.log("Setting price: ", priceInEther);
 	    try {
 		    setSellprice(ethers.utils.parseEther(priceInEther));
+
+		    console.log("priceInEther: ", priceInEther);
+		    console.log("curdexrate: ", curdexrate);
+
+		    const ccprice = ethers.utils.parseEther(priceInEther) / curdexrate;
+		    console.log("ccprice: ", ccprice);
+
+		    setSellpricecc(ccprice.toFixed(5));
 	    } catch (e) {
 	    }
 
@@ -86,7 +103,7 @@ function ListModal(props) {
 			</Modal.Header>
 			<Modal.Body>
                 <div className="modal-content-body">
-                    <Form.Label htmlFor="list-price">Set Price for listing</Form.Label>
+                    <Form.Label htmlFor="list-price">Set Price for listing (CC { sellpricecc }) </Form.Label>
                     <InputGroup className="mb-3" size="lg">
                         <Form.Control
                             id="list-price"
