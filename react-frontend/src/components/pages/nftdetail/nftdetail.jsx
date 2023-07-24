@@ -13,6 +13,7 @@ import "./nftdetail.styles.scss";
 import ListModal from "./listmodal";
 import SendModal from "./sendmodal";
 import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
+import CC_abi from "../../../utils/contract/CultureCoin.json";
 import { ethers } from "ethers";
 
 const Nftdetail = () => {
@@ -22,7 +23,8 @@ const Nftdetail = () => {
   const navigate = useNavigate();
   const provider_url = process.env.REACT_APP_PROVIDERURL;
   const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
-
+  const cultureCoinAddress = process.env.REACT_APP_CULTURECOINADDRESS;
+  
   const [tokenname, setTokenname] = useState('');
   const [tokenowner, setTokenowner] = useState('');
   const [nftowner, setNftowner] = useState('');
@@ -33,6 +35,7 @@ const Nftdetail = () => {
   const [lists, setLists] = useState([]);
   const [offers, setoffers] = useState([]);
   const [nftprice, setNftprice] = useState(0);
+  const [nftpriceCC, setNftpriceCC] = useState(0);
 
   const [relicData, setRelicData] = useState(null);
   
@@ -45,6 +48,7 @@ const Nftdetail = () => {
     } else if(tokenaddress == "0xD83EF3eDb656DB9502eB658dBc5831d2C345edAA") {
       contract_abi = draculaHero_abi;
     }
+
     const nft_contract = new web3.eth.Contract(contract_abi, tokenaddress);
     const token_name = await nft_contract.methods.name().call();
     const contractowner = await nft_contract.methods.owner().call();
@@ -52,6 +56,15 @@ const Nftdetail = () => {
     const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
     const price = await auctionhouse_contract.methods.price(tokenaddress, tokenid).call();
     setNftprice(price);
+
+    const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+    const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+    console.log("curdexrate: " , curdexrate);
+    console.log("price: " , price);
+    const priceCC = price / curdexrate + 0.00001;
+    console.log("priceCC: ", priceCC);
+    setNftpriceCC(web3.utils.toWei("" + priceCC.toFixed(18)));
+
     setTokenname(token_name);
     setNftowner(contractowner);
     setTokenowner(String(token_Owner));
@@ -119,7 +132,8 @@ const Nftdetail = () => {
                 {nftprice == 0 ? (
                   <p className="action-price">Current Token is not listed.</p>
                 ): (
-                  <p className="action-price">Current Token Price: { ethers.utils.formatEther(nftprice)} AVAX</p>
+                  <p className="action-price">Current Token Price: { ethers.utils.formatEther(nftprice)} AVAX 
+			({ parseFloat(ethers.utils.formatEther(nftpriceCC)).toFixed(6) } CC)</p>
                 )}
                 <div className="btn-area">
                 { tokenowner == account ? (

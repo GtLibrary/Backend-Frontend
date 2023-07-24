@@ -11,6 +11,7 @@ import { ethers } from "ethers";
 import draculaHero_abi from '../../../utils/contract/DraculaHero.json';
 import draculaRelics_abi from '../../../utils/contract/Relics.json';
 import AuctionHouse_abi from '../../../utils/contract/AuctionHouse.json';
+import CC_abi from "../../../utils/contract/CultureCoin.json";
 import "./auction.styles.scss";
 
 LoadingOverlay.propTypes = undefined;
@@ -26,6 +27,8 @@ const AuctionItem = () => {
   const provider_url = process.env.REACT_APP_PROVIDERURL;
   const web3 = new Web3(provider_url);
   const auctionhouse_address = process.env.REACT_APP_AUCTIONHOUSEADDRESS;
+  const cultureCoinAddress = process.env.REACT_APP_CULTURECOINADDRESS;
+
   const auctionhouse_contract = new web3.eth.Contract(AuctionHouse_abi, auctionhouse_address);
   let contract_abi = '';
   if(tokenaddress == "0x02819086274690fb27b940bec1268deD9D4DCC10"){
@@ -42,8 +45,11 @@ const AuctionItem = () => {
   const [list, setList] = useState([]);
   const [myDictionaryOfPrices, setMyDictionaryOfPrices] = useState({});
   const [loading, setLoading] = useState(false);
+  const [ccdexrate, setCCdexrate] = useState(0.0);
 
 useEffect(() => {
+  //setNftpriceCC(web3.utils.toWei("" + priceCC));
+
   const getIdsAndPriceAll = async (tokenid)  => {
     //console.log("All: ", tokenid);
     const owner = await nft_contract.methods.ownerOf(tokenid).call();
@@ -68,6 +74,11 @@ useEffect(() => {
 
   const getNftdata = async () => {
     setLoading(true);
+
+    const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+    const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+    console.log("curdexrate: " , curdexrate);
+    setCCdexrate(curdexrate);
 
     const tokenname = await nft_contract.methods.name().call();
 
@@ -155,6 +166,7 @@ useEffect(() => {
         token_owner: results[i + 1][2],
         token_price: results[i + 1][0],
         tokenid: results[i + 1][1],
+	token_pricecc: getCCPrice(results[i + 1][0], curdexrate),
       };
       temp.push(element);
     }
@@ -164,12 +176,25 @@ useEffect(() => {
     setLoading(false);
   };
   getNftdata();
+
+  const getCCPrice = (price, currate) => {
+    if(price == 0) {
+      return 0;
+    }
+    console.log("Price: ", price);
+    console.log("ccdexrate: ", ccdexrate);
+    const priceCC = web3.utils.toWei(price) / currate + 0.00001;
+    console.log("priceCC: ", parseFloat(priceCC).toFixed(5));
+    return parseFloat(priceCC).toFixed(5);
+  };
+
 }, [currentPage]);
 
   const handlePageChange = (newPage) => {
     console.log("In Handle page change: ", newPage);
     setCurrentPage(newPage);
   };
+
 
 
 /*
