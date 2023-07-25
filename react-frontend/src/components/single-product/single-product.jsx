@@ -333,6 +333,10 @@ const SingleProduct = ({ match }) => {
   };
 
   const onBuyBookmark = async () => {
+
+    console.log("bt_contract_address: ", bt_contract_address);
+    console.log("bmaddress: ", bm_listdata[0]["item_bmcontract_address"]);
+    console.log("bmaddress: ", bm_listdata);
     if (!account) {
       return;
     }

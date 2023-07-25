@@ -19,6 +19,8 @@ function BMdetailModal(props) {
 
 	const web3 = new Web3(window.ethereum);
 	const { bookmarkinfo, show } = props;
+
+	console.log("bookmarkinfo: ", bookmarkinfo);
 	
 	const curpricesymbol = process.env.REACT_APP_NATIVECURRENCYSYMBOL;
 	let _token_id, _class, _price
@@ -50,7 +52,8 @@ function BMdetailModal(props) {
 	const marketPlaceAddress = process.env.REACT_APP_MARKETPLACEADDRESS;
 	const cultureCoinAddress = process.env.REACT_APP_CULTURECOINADDRESS;
 	const hero_address = process.env.REACT_APP_HEROADDRESS;
-	const minimart_address = process.env.REACT_APP_MINIMARTADDRESS
+	const minimart_address = process.env.REACT_APP_MINIMARTADDRESS;
+	console.log("miniMart addr: ", minimart_address);
 	// const cc_initial_balance = process.env.REACT_APP_CC_INITIAL_BALANCE;
 	// const ccTotalSupplyStart = process.env.REACT_APP_CCTOTALSUPPLYSTART;
 
@@ -60,6 +63,10 @@ function BMdetailModal(props) {
 	const [dexrate, setDexrate] = useState(0);
 	const [contractowner, setContractowner] = useState('');
 	const [tosendaddress, setTosendaddress] = useState('');
+	const [actualprice, setActualprice] = useState('');
+	const [actualpricecc, setActualpricecc] = useState('');
+	const [bookmarkstate, setBookmarkstate] = useState('Unknown');
+
 	// const [tosendaddress, setTosendaddress] = useState('');
 	// const [sellerprice, setSellerprice] = useState(0);
 	// const [bookmarks, setBookmarks] = useState([]);
@@ -75,6 +82,11 @@ function BMdetailModal(props) {
 				const provider = new ethers.providers.Web3Provider(ethereum);
 				const signer = provider.getSigner();
 				try {
+					const globalweb3 = new Web3(provider_url);
+					const ccoin_contract = new globalweb3.eth.Contract(CC_abi, cultureCoinAddress);
+					const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+					setDexrate(globalweb3.utils.fromWei(curdexrate));
+
 					const bookTradable = new ethers.Contract(
 						contract_address,
 						bt_abi,
@@ -83,17 +95,45 @@ function BMdetailModal(props) {
 					const contract_owner = await bookTradable.owner();
 					setContractowner(contract_owner)
 					try {
-						const owner = await bookTradable.ownerOf(token_id + 1);					
+						console.log("Token_id: ", token_id);
+						console.log("Bm_id: ", bm_id);
+						console.log("bookmarkinfo.contract_address: ", bookmarkinfo.contract_address);
+						console.log("minimart_address: ", minimart_address);
+						console.log("dexrate: ", dexrate);
+						const owner = await bookTradable.ownerOf(bm_id);					
+						console.log("owner: ", owner);
+						const miniMart = new ethers.Contract(minimart_address, minimart_abi, signer);
+						const price = await miniMart.price(bookmarkinfo.contract_address,bm_id);
+						console.log("Actual price: ", price);
+						if(price > 0) {
+							setActualprice(ethers.utils.formatEther("" + price));
+							setActualpricecc(ethers.utils.formatEther("" + (price / dexrate)));
+							setBookmarkstate("Listed");
+						} else {
+							setActualprice("Not listed");
+							setActualpricecc("Not listed");
+							setBookmarkstate("Not Listed");
+						}
+
 						setNFTOwner(owner);
 					} catch (myerror) {
+						console.log("error: ", myerror);
 						setNFTOwner("");
+						if(bm_id == token_id + 1) {
+							console.log("batter up!");
+							setActualprice(bookmarkinfo.tokenprice);
+							setActualpricecc(bookmarkinfo.tokenprice / dexrate);
+							setBookmarkstate("Current");
+						} else {
+							setActualprice("Token not yet available. (See #" + (token_id + 1) + ")");
+							setActualpricecc("Token not yet available. (See #" + (token_id + 1) + ")");
+							setBookmarkstate("Future");
+						}
 					}
 					
-					const globalweb3 = new Web3(provider_url);
-					const ccoin_contract = new globalweb3.eth.Contract(CC_abi, cultureCoinAddress);
-					const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
-					setDexrate(globalweb3.utils.fromWei(curdexrate));
+
 				} catch (myerror) {
+					console.log("Big error....");
 					setNFTOwner("");
 				}
 				
@@ -139,6 +179,41 @@ function BMdetailModal(props) {
 		} catch (error) {
 			console.log(error)
 		}
+	};
+
+        const buyBookMarkMM = async () => {
+                try {
+                        const minimart_contract = new web3.eth.Contract(
+                                minimart_abi,
+                                minimart_address
+                        );
+                        await minimart_contract.methods.buy(contract_address, bm_id).send({
+                                from: user_wallet,
+                                value: web3.utils.toWei(String(actualprice))
+                        });
+                } catch (error) {
+                        console.log(error)
+                }
+        };
+	const buyBookMarkMMCC = async () => {
+		try {
+                        const minimart_contract = new web3.eth.Contract(
+                                minimart_abi,
+                                minimart_address
+                        );
+			const ccoin_contract = new web3.eth.Contract(CC_abi, cultureCoinAddress);
+                        const curdexrate = await ccoin_contract.methods.getDexCCRate().call();
+
+			var price = actualprice / web3.utils.fromWei(curdexrate) + 0.00001;
+
+                        await minimart_contract.methods.buyWithCC(contract_address, bm_id, web3.utils.toWei(String(actualprice))).send({
+                                from: user_wallet,
+                        });
+
+		} catch (myerror) {
+			console.log(myerror);
+		}
+
 	};
 
 	const buyBookMarkCC = async () => {
@@ -198,8 +273,7 @@ function BMdetailModal(props) {
 
 		try {
 			const miniMart = new ethers.Contract(minimart_address, minimart_abi, signer);
-			const price = await miniMart.getPrice(token_id);
-			const tx = await miniMart.sell(contract_address, token_id, price);
+			const tx = await miniMart.sell(contract_address, token_id, web3.utils.toWei(bookmarkprice));
 			await tx.wait();
 			console.log("NFT successfully listed for sale");
 		} catch (error) {
@@ -295,25 +369,53 @@ function BMdetailModal(props) {
 					<div style={{fontFamily: 'Crimson Text', fontSize: '18px'}}>
 						<p><label style={{ fontWeight: '600'}}>Bookmark ID:</label>  {tokenname} #{bm_id}</p>
 						<p><label style={{ fontWeight: '600'}}>Bookmark Token Contract Address:</label> {contract_address}</p>
-						<p><label style={{ fontWeight: '600'}}>Current Token Owner:</label> { NFTOwner === '' ? 'Unknown User' : NFTOwner }</p>
-						<p><label style={{ fontWeight: '600'}}>Current Token Price:</label> {tokenprice} {curpricesymbol}</p>
-						<p><label style={{ fontWeight: '600'}}>Current Token Price By CCoin:</label> {(tokenprice / dexrate).toFixed(3)} CC</p>
+						<p><label style={{ fontWeight: '600'}}>Current Token Owner:</label> { NFTOwner === '' ? 'Not Minted Yet' : NFTOwner }</p>
+						<p><label style={{ fontWeight: '600'}}>Token Price ({curpricesymbol}):</label> {actualprice}</p>
+						<p><label style={{ fontWeight: '600'}}>Token Price (CCoin):</label> {actualpricecc}</p>
 						<p><label style={{ fontWeight: '600'}}>Your Account:</label> {account}</p>
-						<button
-							type="button"
-							className="btn btn-primary btn-md"
-							onClick={() => buyBookMark()}
-						>
-							Buy "{tokenname}" Bookmark Now
-						</button>
-						&nbsp;
-						<button
-							type="button"
-							className="btn btn-primary btn-md"
-							onClick={() => buyBookMarkCC()}
-						>
-							Buy "{tokenname}" Bookmark with CC
-						</button>
+
+
+{ (bookmarkstate === "Current" || bookmarkstate === "Future") && (
+    <>
+        <button
+            type="button"
+            className="btn btn-primary btn-md"
+            onClick={() => buyBookMark()}
+        >
+            Buy #{token_id+1} Bookmark Now
+        </button>
+         
+        <button
+            type="button"
+            className="btn btn-primary btn-md"
+            onClick={() => buyBookMarkCC()}
+        >
+            Buy #{token_id+1} Bookmark with CC
+        </button>
+    </>
+)}
+{ (bookmarkstate === "Listed") && (
+    <>
+        <button
+            type="button"
+            className="btn btn-primary btn-md"
+            onClick={() => buyBookMarkMM()}
+        >
+            Buy #{bm_id} Bookmark Now
+        </button>
+         
+        <button
+            type="button"
+            className="btn btn-primary btn-md"
+            onClick={() => buyBookMarkMMCC()}
+        >
+            Buy #{bm_id} Bookmark with CC
+        </button>
+    </>
+)}
+
+
+
 						{ account === NFTOwner ? (
 							<>
 								<hr/>
@@ -322,18 +424,12 @@ function BMdetailModal(props) {
 									className="btn btn-danger btn-md"
 									onClick={() => sellBookMark()}
 									>
-									Sell "{tokenname}" Bookmark Now
+									Sell #{bm_id} Bookmark Now
 								</button>
+								&nbsp;
+								<input type="text" value={bookmarkprice} onChange={(e) => {setBookmarkprice(e.target.value)}}></input>
 								<br></br>
 								<div style={{marginTop: '20px'}}>
-									<button
-										type="button"
-										className="btn btn-danger btn-md"
-										onClick={() => setSellprice()}
-										>
-										Set Bookmark Price
-									</button>&nbsp;&nbsp;&nbsp;
-									<input type="text" value={bookmarkprice} onChange={(e) => {setBookmarkprice(e.target.value)}}></input>
 								</div>
 							</>
 						) : (
