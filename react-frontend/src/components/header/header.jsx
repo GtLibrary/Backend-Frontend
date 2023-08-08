@@ -21,6 +21,7 @@ const Header = () => {
               <Nav.Link href="/swap">Swap</Nav.Link>
               {/* <Nav.Link href="/marketplace">Marketplace</Nav.Link> */}
               <Nav.Link href="/auctionhouse">Auction House</Nav.Link>
+              <Nav.Link href="/xspaces">𝕏Spaces</Nav.Link>
               <Nav.Link href="/terms">Terms & Services</Nav.Link>
               <Nav.Link href="mailto:johnrraymond@greatlibrary.io">Contact Us</Nav.Link>
             </Nav>
