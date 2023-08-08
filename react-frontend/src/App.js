@@ -6,6 +6,7 @@ import Swap from "./components/pages/swap/swap";
 import Auctionhouse from "./components/pages/auctionhouse/auctionhouse";
 import AuctionItem from "./components/pages/auctionItem/auctionItem";
 import Nftdetail from "./components/pages/nftdetail/nftdetail";
+import XSpaces from "./components/pages/xspaces/xspaces";
 import Terms from "./components/pages/terms/terms";
 import SingleProduct from "./components/single-product/single-product";
 import { BrowserRouter } from "react-router-dom";
@@ -24,6 +25,10 @@ function App() {
           <Route path="/auctionhouse" element={<Auctionhouse />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/product/:id" element={<SingleProduct />} />
+          <Route path="/xspaces">
+	    <Route path=":insearchterm" element={<XSpaces />} />
+	    <Route path="" element={<XSpaces />} />
+	  </Route>
           <Route path="/auctionhouse/collection/:view/:tokenaddress" element={<AuctionItem />} />
           <Route path="/auctionhouse/detail/:tokenaddress/:tokenid" element={<Nftdetail />} />
           <Route path="*" element={<NotFound />} />
