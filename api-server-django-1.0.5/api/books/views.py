@@ -24,7 +24,7 @@ from api.aiprice.models import AIpricemodel
 from django.db.models import Q
 from api.wallet.serializers import WalletSerializer, WalletTransactionSerializer
 import openai
-from google.cloud import texttospeech
+#from google.cloud import texttospeech
 #import dotenv
 #dotenv.read_dotenv(os.path.join(os.path.join(os.path.dirname(os.path.dirname(__file__)), "."), '.env'))
 
@@ -126,6 +126,8 @@ def getdownloadaudiofile(request, pk):
 
 @api_view(['POST'])
 def getttsaudiofile(request, pk):
+    texttospeech = "Fixme"
+
     req_data = request.body.decode('utf-8')
     body = json.loads(req_data)
     bookdata = Books.objects.get(pk=pk)
