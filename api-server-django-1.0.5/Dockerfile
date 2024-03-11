@@ -10,6 +10,11 @@ COPY requirements.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
 
+RUN pip install debugpy
+RUN pip install web3
+RUN pip install python-dotenv
+
+
 COPY env.sample .env
 
 COPY . .
