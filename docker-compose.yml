@@ -1,0 +1,41 @@
+version: '3.4'
+
+services:
+  backendfrontend:
+    image: backendfrontend
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - 8000:8000
+
+  frontend:
+    build:
+      context: ./react-frontend
+      dockerfile: ../Dockerfile-frontend
+    volumes:
+      - ./react-frontend:/app  # Mount the frontend directory to the container for live-reloading
+      - /app/node_modules  # Keep node_modules on an anonymous volume
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+    command: npm start
+  
+  portal:
+    build:
+      context: ./react-dashboard-main
+      dockerfile: ../Dockerfile-react-dashboard-main
+    volumes:
+      - ./react-dashboard-main:/app  # Mount the frontend directory to the container for live-reloading
+      - /app/node_modules  # Keep node_modules on an anonymous volume
+    ports:
+      - "3001:3001"
+    environment:
+      - NODE_ENV=development
+      - PORT=3001
+    command: npm start
+
+volumes:
+  static_volume:
+  media_volume:
