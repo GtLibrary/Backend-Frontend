@@ -1,13 +1,17 @@
 version: '3.4'
 
 services:
-  backendfrontend:
-    image: backendfrontend
+  backend:
+    #image: backendfrontend
     build:
       context: .
       dockerfile: ./Dockerfile
+    volumes:
+      - ./api-server-django-1.0.5:/app/code  # Mount the backend directory to the container for live-reloading
+      - static_volume:/app/code/static  # Dedicated volume for Django static files
+      - media_volume:/app/code/media    # Dedicated volume for Django media files
     ports:
-      - 8000:8000
+      - 5005:5005
 
   frontend:
     build:
@@ -17,9 +21,10 @@ services:
       - ./react-frontend:/app  # Mount the frontend directory to the container for live-reloading
       - /app/node_modules  # Keep node_modules on an anonymous volume
     ports:
-      - "3000:3000"
+      - "3003:3003"
     environment:
       - NODE_ENV=development
+      - PORT=3003
     command: npm start
   
   portal:
@@ -33,6 +38,7 @@ services:
       - "3001:3001"
     environment:
       - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true 
       - PORT=3001
     command: npm start
 
