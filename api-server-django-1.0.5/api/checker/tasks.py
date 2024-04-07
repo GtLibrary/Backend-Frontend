@@ -23,11 +23,11 @@ def process_manuscript(manuscript, email):
     # Placeholder for the processing logic
     print(f"Processing manuscript for {email}")
 
-    #aux_results = aux_digest_manuscript(manuscript)
+    aux_results = aux_digest_manuscript(manuscript)
 
-    #aux_output = aux_summarize_results(aux_results, aux_results + ".csv")
+    aux_output = aux_summarize_results(aux_results, aux_results + ".csv")
 
-    aux_output = "/app/code/aux-chat-data/chatfkcfveyg.jsonl.csv.html"
+    #aux_output = "/app/code/aux-chat-data/chatfkcfveyg.jsonl.csv.html"
 
     email_results(aux_output, email)
 
