@@ -1,6 +1,28 @@
 version: '3.4'
 
+
+
 services:
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+  
+  celery:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./api-server-django-1.0.5/aux-chat-data:/app/code/aux-chat-data # This is where the actual data shows up.
+      - ./api-server-django-1.0.5/api:/app/code/api   # Mount the api do it gets picked up by celerly on re-up.
+      - ./api-server-django-1.0.5/core:/app/code/core
+    command: celery -A core worker --loglevel=info
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    depends_on:
+      - redis
+
   backend:
     #image: backendfrontend
     build:
@@ -12,6 +34,13 @@ services:
       - media_volume:/app/code/media    # Dedicated volume for Django media files
     ports:
       - 5005:5005
+    environment:
+      - DEBUG=1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - EMAIL_HOST_PASSWORD=${EMAIL_HOST_PASSWORD}
+    command: python manage.py runserver 0.0.0.0:5005
+    depends_on: 
+      - celery
 
   frontend:
     build:

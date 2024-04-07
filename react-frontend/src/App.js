@@ -9,10 +9,12 @@ import Nftdetail from "./components/pages/nftdetail/nftdetail";
 import XSpaces from "./components/pages/xspaces/xspaces";
 import Terms from "./components/pages/terms/terms";
 import SingleProduct from "./components/single-product/single-product";
+import ManuscriptCheckerPage from "./components/pages/checker/checker";
 import { BrowserRouter } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.scss";
+
 
 function App() {
   return (
@@ -24,11 +26,12 @@ function App() {
           <Route path="/swap" element={<Swap />} />
           <Route path="/auctionhouse" element={<Auctionhouse />} />
           <Route path="/terms" element={<Terms />} />
+          <Route path="/checker" element={<ManuscriptCheckerPage />} />
           <Route path="/product/:id" element={<SingleProduct />} />
           <Route path="/xspaces">
-	    <Route path=":insearchterm" element={<XSpaces />} />
-	    <Route path="" element={<XSpaces />} />
-	  </Route>
+	          <Route path=":insearchterm" element={<XSpaces />} />
+	          <Route path="" element={<XSpaces />} />
+	        </Route>
           <Route path="/auctionhouse/collection/:view/:tokenaddress" element={<AuctionItem />} />
           <Route path="/auctionhouse/detail/:tokenaddress/:tokenid" element={<Nftdetail />} />
           <Route path="*" element={<NotFound />} />

@@ -4,8 +4,15 @@ FROM python:3.8-slim
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
+    build-essential r-base pandoc 
+
+RUN Rscript -e "install.packages('ggplot2')"
+RUN Rscript -e "install.packages('tidyr')"
+RUN Rscript -e "install.packages('syuzhet')" 
+RUN Rscript -e "install.packages('rmarkdown')" 
+        
+RUN rm -rf /var/lib/apt/lists/*
+
 
 EXPOSE 8000
 
@@ -32,6 +39,7 @@ RUN pip install debugpy
 RUN pip install djangorestframework
 RUN pip install web3
 RUN pip install python-dotenv
+
 
 
 # Creates a non-root user with an explicit UID and adds permission to access the /app folder

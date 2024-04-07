@@ -19,6 +19,7 @@ from api.wallet.views import WalletInfo, transaction_detail, deposit_funds, tran
 from api.nft import views as nft_views
 from api.openaikey.views import save_openaikey, get_openaikey
 from api.aiprice.views import AIpriceSet, getaiprice
+from api.checker.views import check_manuscript
 
 router = routers.SimpleRouter(trailing_slash=False)
 
@@ -70,6 +71,7 @@ urlpatterns = [
     path('authorinfo/save', save_authorinfo),
     path('authorinfo/get', get_authorinfo),
     path("getadslist", getadslist),
+    path('checker', check_manuscript),
 
 
     url('^nft/', nft_views.nft, name='nft'),
