@@ -12,16 +12,204 @@ from django.core.mail import EmailMessage
 from django.core.files import File
 from django.conf import settings
 
+data_dir = "aux-chat-data"
+max_chars_per_segment = 200  # Example value is 200 ~ 50 words
 
+### Aux values.
 chunk_size = 200 * 8            # This is approximately 200 words.
 max_chunks = 600                # 120,000 words total
 
-data_dir = "aux-chat-data"
+def digest_manuscript(narrative_content):
+    segments = [narrative_content[i:i+max_chars_per_segment] for i in range(0, len(narrative_content), max_chars_per_segment)]
+
+    boilerplate = "Reduce Narrative (sentiment, pacing, plotting): "
+    responses = []
+    boilerbutt = "</end>"
+
+    # Assuming extracted_data is populated with the data structure from the updated parse_txt_files function
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, dir=data_dir, prefix="core", suffix=".jsonl") as jsonl_file:
+    #with open("babbage-train-plus.jsonl", 'w', encoding='utf-8') as jsonl_file:
+        for segment in segments:
+            prompt = boilerplate + segment + boilerbutt
+            completion = client.completions.create(
+                model="ft:davinci-002:the-great-library:autoreply:97Z2aqM2",
+                prompt=prompt,
+                max_tokens=70,
+                stop=["</s>", "\n"],
+                temperature=0
+            )
+            # Extract the text from the first (and presumably only) choice.
+            #print(completion)
+            text = completion.choices[0].text.strip()
+            responses.append(text)
+            print(json.dumps(
+                {
+                    "prompt": prompt,
+                    "completion": text
+                }        
+            ) + '\n')
+
+            jsonl_file.write(json.dumps(
+                {
+                    "prompt": prompt,
+                    "completion": text
+                }        
+            ) + '\n')
+    
+        return jsonl_file.name
+
+
+
+# Criteria lists
+sentiments = ['Positive', 'Neutral', 'Negative']
+pacings = ['Fast', 'Moderate', 'Slow']
+conflicts = ['Conflict Rising', 'Conflict Resolving']
+
+
+def clean_and_filter_dataset(file_path):
+    # Store the cleaned data
+    cleaned_data = []
+
+    with open(file_path, 'r', encoding='utf-8') as file:
+        for line in file:
+            try:
+                # Parse JSON line
+                entry = json.loads(line)
+
+                # Extract the completion text
+                completion_text = entry.get('completion', '').lower()
+
+                # Check if the completion text matches the criteria
+                if any(sentiment.lower() in completion_text for sentiment in sentiments) and \
+                   any(pacing.lower() in completion_text for pacing in pacings) and \
+                   any(conflict.lower() in completion_text for conflict in conflicts):
+                    # Create the structured label
+                    structured_label = "Reduced Narrative: " + \
+                                       next((sentiment for sentiment in sentiments if sentiment.lower() in completion_text), 'Unknown') + ", " + \
+                                       next((pacing for pacing in pacings if pacing.lower() in completion_text), 'Unknown') + ", " + \
+                                       next((conflict for conflict in conflicts if conflict.lower() in completion_text), 'Unknown') + "</s>" + \
+                                       next((conflict for conflict in conflicts if conflict.lower() in completion_text), 'Unknown') + "</s>" + \
+                                    next((conflict for conflict in conflicts if conflict.lower() in completion_text), 'Unknown') + "</s>"
+                    
+                    # Append to cleaned data
+                    cleaned_data.append({
+                        "prompt": entry['prompt'],
+                        "completion": structured_label
+                    })
+            except json.JSONDecodeError:
+                print(f"Error decoding JSON from line: {line}")
+                continue
+
+    return cleaned_data
+
+
+def save_cleaned_data(cleaned_data, output_path):
+    with open(output_path, 'w', encoding='utf-8') as file:
+        for entry in cleaned_data:
+            json.dump(entry, file)
+            file.write('\n')
+
+
+def clean_jsonl(file_path):
+    #file_path = 'babbage-train-plus.jsonl'
+    output_path = file_path + ".plusplus"        #'babbage-train-plus-plus.jsonl'
+
+    # Load, filter, and clean the dataset
+    cleaned_data = clean_and_filter_dataset(file_path)
+
+    # Save the cleaned data to a new file
+    save_cleaned_data(cleaned_data, output_path)
+
+    return output_path
+
+# Define the categories with their associated classes and corresponding numbers
+categories = {
+    "speed": {
+        "Fast": 1,
+        "Moderate": 0,
+        "Slow": -1
+    },
+    "sentiment": {
+        "Positive": 1,
+        "Neutral": 0,
+        "Negative": -1
+    },
+    "conflict": {
+        "Conflict Rising": 1,
+        "Conflict Resolving": -1
+    }
+}
+
+def summarize_results(jsonl_filepath, csv_filepath):
+    #if __name__ == "__main__":
+    #jsonl_filepath = "babbage-train-plus.jsonl"  # Update this with the path to your .jsonl file
+    #csv_filepath = "babbage.csv"  # Name and path for the output CSV file
+    process_jsonl_file_to_csv(jsonl_filepath, csv_filepath)
+
+    os.system("pwd")
+    # Construct the command string
+    command = (
+        f"""Rscript -e "rmarkdown::render('./api/checker/summary.Rmd', """
+        f"""output_file='{csv_filepath}.html', """
+        f"""params=list(babbage_csv_file='{csv_filepath}'))\""""
+    )
+    print(command)
+    os.system(command)
+
+    return f"{csv_filepath}.html"
+
+
+def parse_completion(completion):
+    # Initialize the results with default values
+    results = {"sent": 0, "speed": 0, "conflict": 0}
+
+    print(completion)
+
+    # Check for each keyword in the completion string and update results
+    for category, options in categories.items():
+        print("cate: " + str(category) + " options: " + str(options))
+        for option, value in options.items():
+            if option in completion:
+                if category == "speed":
+                    results["speed"] = value
+                elif category == "sentiment":
+                    results["sent"] = value
+                elif category == "conflict":
+                    results["conflict"] = value
+                break  # Stop searching after the first match in each category
+
+    return results
+
+def process_jsonl_file_to_csv(jsonl_filepath, csv_filepath):
+    with open(jsonl_filepath, 'r') as jsonl_file, open(csv_filepath, 'w', newline='') as csv_file:
+        csv_writer = csv.writer(csv_file)
+        # Write the header
+        csv_writer.writerow(["sent", "speed", "conflict"])
+        
+        for line in jsonl_file:
+            data = json.loads(line)
+            completion = data.get("completion", "")
+            # Parse the completion value to categorize and assign numbers
+            results = parse_completion(completion)
+
+            print("results")
+            print(results)
+            # Write the parsed data to the CSV file
+            csv_writer.writerow([results["sent"], results["speed"], results["conflict"]])
+
+
 
 @shared_task
 def process_manuscript(manuscript, email):
     # Placeholder for the processing logic
     print(f"Processing manuscript for {email}")
+
+    digest_file = digest_manuscript(manuscript)
+    print(digest_file)
+
+    clean_results = clean_jsonl(digest_file)
+
+    output = summarize_results(clean_results, clean_results + ".csv")
 
     aux_results = aux_digest_manuscript(manuscript)
 
@@ -29,10 +217,10 @@ def process_manuscript(manuscript, email):
 
     #aux_output = "/app/code/aux-chat-data/chatfkcfveyg.jsonl.csv.html"
 
-    email_results(aux_output, email)
+    email_results(output, aux_output, email)
 
 
-def email_results(aux_output, email):
+def email_results(output, aux_output, email):
     print(f"In email_results {email} gets {aux_output} using {settings.EMAIL_HOST_PASSWORD}")
 
     # Create email message
@@ -43,6 +231,10 @@ def email_results(aux_output, email):
         to=[email],
     )
 
+    # Attach the output file
+    with open(output, 'rb') as f:
+        email_message.attach(filename=output, content=f.read(), mimetype='text/html')  # Adjust mimetype if necessary
+
     # Attach the aux_output file
     with open(aux_output, 'rb') as f:
         email_message.attach(filename=aux_output, content=f.read(), mimetype='text/html')  # Adjust mimetype if necessary
@@ -50,7 +242,7 @@ def email_results(aux_output, email):
     # Send the email
     email_message.send(fail_silently=False)
 
-def parse_completion(completion):
+def aux_parse_completion(completion):
     # Split the completion string into numbers, removing "Reduced Narrative: " and "</s>"
     completion = completion.replace("</s>", "")
     numbers = completion.replace("Reduced Narrative: ", "").split(", ")
@@ -71,7 +263,7 @@ def aux_summarize_results(jsonl_filepath, csv_filepath):
             completion = data.get("completion", "")
             #print(completion)
             # Parse the completion value to extract numbers
-            numbers = parse_completion(completion)
+            numbers = aux_parse_completion(completion)
             # Write the parsed numbers to the CSV file
             csv_writer.writerow(numbers)
     
@@ -88,6 +280,8 @@ def aux_summarize_results(jsonl_filepath, csv_filepath):
     )
     print(command)
     os.system(command)
+
+    return f"{csv_filepath}.html"
 
 ############
 # The data handlers fort aux metrics.
@@ -167,7 +361,7 @@ def handle_conversation(i, file_handle, digest_file):
 
 
 # Predefined categories for each metric
-categories = {
+aux_categories = {
     "clarity_of_expression": ["Clear", "Unclear"],
     "appropriateness_of_diction": ["Appropriate", "Inappropriate"],
     "engagement_and_interest": ["Engaging", "Disengaging"],
@@ -219,7 +413,7 @@ def aux_digest_manuscript(manuscript):
                     # Initialize the narrative collection
                     narrative_collected = False
                     generated_narrative = []
-                    metrics = {key: "" for key in categories.keys()}
+                    metrics = {key: "" for key in aux_categories.keys()}
 
                     for line in lines:
                         if line.strip() == "---":  # Check for the delimiter to stop narrative collection
@@ -229,7 +423,7 @@ def aux_digest_manuscript(manuscript):
                         if not narrative_collected:
                             generated_narrative.append(line.strip())
                         else:
-                            for metric, values in categories.items():
+                            for metric, values in aux_categories.items():
 
                                 if metric.replace("_", " ") in line.lower():
                                     
