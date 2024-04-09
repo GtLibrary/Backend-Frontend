@@ -30,7 +30,7 @@ def check_manuscript(request):
 
 def check_quota(email):                         # Defines the quota first...
     # Define the quota limit and timeframe
-    quota_limit = 300       # FIXME: Add these to the .env
+    quota_limit = 3       # FIXME: Add these to the .env
     quota_days = 3
     timeframe_start = timezone.now() - timedelta(days=quota_days)
 
