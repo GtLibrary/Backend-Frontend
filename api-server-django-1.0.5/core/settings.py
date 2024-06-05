@@ -48,12 +48,12 @@ CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 ALLOWED_HOSTS = env("DJANGO_ALLOWED_HOSTS", default="*").split(" ")
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.mail.yahoo.com'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.mail.yahoo.com')
 EMAIL_USE_TLS = True
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'johnrraymond'
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', "NO PASSWORD SET")
-DEFAULT_FROM_EMAIL = 'johnrraymond@yahoo.com'
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'johnrraymond')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'NO PASSWORD SET')
+DEFAULT_FROM_EMAIL = os.environ.get('DEFAULT_FROM_EMAIL', 'johnrraymond@yahoo.com')
 
 # Application definition
 

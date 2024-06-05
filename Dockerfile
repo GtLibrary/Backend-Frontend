@@ -4,12 +4,13 @@ FROM python:3.8-slim
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    build-essential r-base pandoc 
+    build-essential r-base pandoc libpq-dev
 
 RUN Rscript -e "install.packages('ggplot2')"
 RUN Rscript -e "install.packages('tidyr')"
 RUN Rscript -e "install.packages('syuzhet')" 
 RUN Rscript -e "install.packages('rmarkdown')" 
+RUN Rscript -e "install.packages('reticulate')" 
         
 RUN rm -rf /var/lib/apt/lists/*
 

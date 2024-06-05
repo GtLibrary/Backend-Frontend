@@ -28,7 +28,7 @@ const ManuscriptCheckerPage = () => {
       alert("Please fill all required fields and agree to the terms.");
       return;
     }
-    
+
     // Assuming you have a backend endpoint to handle the submission
     const formData = new FormData();
     formData.append('manuscript', manuscript);
@@ -40,11 +40,11 @@ const ManuscriptCheckerPage = () => {
       const checkurl = process.env.REACT_APP_API + `checker`;
 
       await axios.post(checkurl, formData, { headers: { 'Content-Type': 'multipart/form-data' } });
-      
+
       // Payment with CultureCoin
       // Replace with your method for payment or token transfer
       // await contract.methods.transfer(/* Recipient Address */, /* Amount */).send({ from: account });
-      
+
       alert('Submission successful!');
     } catch (error) {
       console.error('Submission failed:', error);
@@ -53,43 +53,43 @@ const ManuscriptCheckerPage = () => {
   };
 
   return (
-<Layout>
-<div style={{minHeight: "80vh"}}>
-    <p></p>
-<form onSubmit={handleSubmit} className="form-container">
-  <h2 className="form-title">Beta Manuscript Checker</h2>
-  <div className="input-group">
-    <textarea 
-  value={manuscript} 
-  onChange={e => setManuscript(e.target.value)} 
-  required 
-  className="form-input" 
-  placeholder="Paste your manuscript here."
-  rows="10" // Adjust the number of rows as needed
-></textarea>
+    <Layout>
+      <div style={{ minHeight: "80vh" }}>
+        <p></p>
+        <form onSubmit={handleSubmit} className="form-container">
+          <h2 className="form-title">Beta Manuscript Checker</h2>
+          <div className="input-group">
+            <textarea
+              value={manuscript}
+              onChange={e => setManuscript(e.target.value)}
+              required
+              className="form-input"
+              placeholder="Paste your manuscript here."
+              rows="10" // Adjust the number of rows as needed
+            ></textarea>
 
-  </div>
-  <div className="input-group">
-    <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Your Email" required className="form-input"/>
-  </div>
-  <div className="checkbox-group">
-    <label className="form-checkbox">
-      <input type="checkbox" checked={agreeToTerms} onChange={e => setAgreeToTerms(e.target.checked)} required />
-      Agree to Terms
-    </label>
-  </div>
-  <div className="checkbox-group">
-    <label className="form-checkbox">
-      <input type="checkbox" checked={signUpForNewsletter} onChange={e => setSignUpForNewsletter(e.target.checked)} />
-      Sign Up for Newsletter
-    </label>
-  </div>
-  <div className="submit-group">
-    <button type="submit" className="submit-button">Submit <span style={{ textDecoration: "line-through" }}>& Pay</span></button>
-  </div>
-</form>
-</div>
-</Layout>
+          </div>
+          <div className="input-group">
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Your Email" required className="form-input" />
+          </div>
+          <div className="checkbox-group">
+            <label className="form-checkbox">
+              <input type="checkbox" checked={agreeToTerms} onChange={e => setAgreeToTerms(e.target.checked)} required />
+              Agree to Terms (Text may be used to train further models)
+            </label>
+          </div>
+          <div className="checkbox-group">
+            <label className="form-checkbox">
+              <input type="checkbox" checked={signUpForNewsletter} onChange={e => setSignUpForNewsletter(e.target.checked)} />
+              Sign Up for Newsletter
+            </label>
+          </div>
+          <div className="submit-group">
+            <button type="submit" className="submit-button">Submit <span style={{ textDecoration: "line-through" }}>& Pay</span></button>
+          </div>
+        </form>
+      </div>
+    </Layout>
   );
 };
 

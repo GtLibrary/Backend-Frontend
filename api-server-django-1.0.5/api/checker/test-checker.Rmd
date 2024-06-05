@@ -1,0 +1,67 @@
+---
+title: "Enhanced Narrative Analysis"
+author: "John R Raymond"
+date: "2024-03-29"
+output: html_document
+params:
+  aux_babbage_csv_file: null
+  chat_code_file: "C:\\github\\Backend-Frontend\\api-server-django-1.0.5\\api\\checker\\ChatAPI.py"
+---
+
+```{r setup, include=TRUE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+### Testing
+
+```{r}
+
+library(reticulate)
+
+# Check if 'openai' is already installed
+if (!py_module_available("openai")) {
+  cat("openai is not installed. Installing now...\n")
+  
+  # Install the 'openai' package
+  py_install("openai")
+} else {
+  cat("openai is already installed.\n")
+}
+
+#chat_code_file = "C:\\github\\Backend-Frontend\\api-server-django-1.0.5\\api\\checker\\ChatAPI.py"
+
+print(getwd())
+
+if(TRUE){
+# Read the entire Python file into a single string
+chat_code <- readLines(params$chat_code_file, warn = FALSE)
+chat_code_string <- paste(chat_code, collapse = "\n")
+
+py_run_string(chat_code_string)
+chat_api_instance <- py$ChatAPI("ExampleAssistant", "Please follow the instructions carefully.")
+
+chat_output <- capture.output(chat_api_instance$chat("This is your prompt. What do you do?", "explain.txt"))
+}
+
+#chat_output <- "foo"
+
+```
+```{r results='asis', echo=FALSE}
+
+library(knitr)
+
+# Read the Markdown content from the file
+md_content <- readLines("explain.txt")
+
+# Check for an empty file to avoid errors
+if (length(md_content) == 0) {
+    cat("No content in Markdown file. Please email johnrraymond@greatlibrary.io for help.")
+} else {
+    # Use cat to print the content and convert it to Markdown
+    cat(md_content, sep = "\n")
+}
+
+```
+
+

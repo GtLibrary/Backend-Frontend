@@ -1,20 +1,18 @@
 ---
 title: "Enhanced Narrative Analysis"
-author: "John R Raymond"
+author: "The Great Library, John R Raymond"
 date: "2024-03-29"
 output: html_document
 params:
   aux_babbage_csv_file: null
+  chat_code_file: "C:\\github\\Backend-Frontend\\api-server-django-1.0.5\\api\\checker\\ChatAPI.py"
 ---
 
-```{r setup, include=TRUE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 
-```
-
-```{r additional_setup, echo=FALSE}
-
 aux_babbage_csv_file <- "Unknown"
+
 
 # Check if 'aux_babbage_csv_file' parameter is set
 if (is.null(params$aux_babbage_csv_file)) {
@@ -65,6 +63,8 @@ fine_plots <- function (raw_values, title = "Syuzhet Plot", legend_pos = "top",
           ylab = "Scaled Sentiment", col = "red")
       graphics::par(mfrow = c(1, 1))
     }
+    
+    #invisible()
 }
 
 # Load necessary libraries
@@ -73,9 +73,64 @@ library(tidyr)
 library(syuzhet)
 
 
+library(reticulate)
+
+instructions <- "prompt:
+  description: >
+    Provide an in-depth analysis of the graphical representations for the first three principal components (PC1, PC2, and PC3) from a dataset focused on text analysis criteria. The analysis should interpret the trends shown in each graph, the significance of contributing attributes, and what these imply about text quality and style.
+
+  input_data: >
+    Graph details for each principal component:
+    - {Attribute: 'Clarity of Expression', Coefficient: float}
+    - {Attribute: 'Appropriateness of Diction', Coefficient: float}
+    - {Attribute: 'Engagement and Interest', Coefficient: float}
+    - {Attribute: 'Use of Cliché', Coefficient: float}
+    - {Attribute: 'Narrative Flow', Coefficient: float}
+    - {Attribute: 'Stylistic Elegance', Coefficient: float}
+    - {Attribute: 'Aesthetic Appeal', Coefficient: float}
+
+  step_one: >
+    Extract the PC loadings.
+
+  step_two: >
+    Determine if a high value each graph is good or bad.
+
+  output_expectation: >
+    The response should offer a comprehensive and coherent explanation of the graphs for PC1, PC2, and PC3, highlighting the roles and impacts of various text analysis attributes. Each component's graph should be clearly described to assist in understanding their implications for text quality assessments.
+
+  warning: >
+    It is vitally important that you get the signs right. If The loading are negative then we must make the oppostite inference about larger values on the graph, etc.  
+
+"
+
+
+# Check if 'openai' is already installed
+if (!py_module_available("openai")) {
+  cat("openai is not installed. Installing now...\n")
+  
+  # Install the 'openai' package
+  py_install("openai")
+} else {
+  cat("openai is already installed.\n")
+}
+
+
+
+# Read the entire Python file into a single string
+chat_code <- readLines(params$chat_code_file, warn = FALSE)
+chat_code_string <- paste(chat_code, collapse = "\n")
+
+py_run_string(chat_code_string)
+chat_api_instance <- py$ChatAPI("ExampleAssistant", instructions)
+
+
+
 # Load the data
 data <- read.csv(file_path, header = TRUE)
 head(data)
+
+
+
 
 # Function to calculate and plot DCT for each narrative metric
 plot_dct_for_metric <- function(metric_data, title, color) {
@@ -110,32 +165,45 @@ metrics_colors <- list(
 
 metric_name <- "Aesthetic Appeal"
 # Iterate through each metric and plot
+
+```
+
+
+```{r simple_plots, echo=FALSE}
+
 for(metric_name in names(metrics_colors)) {
   metric_data <- as.numeric(data[,gsub(" ", "_", tolower(metric_name))])
-  print(head(metric_data))
-  plot <- plot_dct_for_metric(metric_data, metric_name, metrics_colors[[metric_name]])
-  print(plot)
+  #print(head(metric_data))
+  #plot <- plot_dct_for_metric(metric_data, metric_name, metrics_colors[[metric_name]])
+  #print(plot)
   
-  print(fine_plots(metric_data, title=metric_name, plot_mask=1))
+  fine_plots(metric_data, title=metric_name, plot_mask=1)
 }
 
 
 ```
 
 
-```{r factors_analysis}
+# Principal Component Analysis (PCA) for Dimentionality Reduction
+
+By using this statistical technique we are able express most of the variability in the quality of the underlying text using just three variables. yet, in order to understand the graphs, you need to know what these graphs measure, and to do that you need to understand the following Principal Components. 
+
+(Don't worry if the numbers don't mean anything to you. This report explains their meaning in simple English.) 
+
+
+```{r factors_analysis, echo=FALSE}
 
 # Perform PCA
 pca_result <- prcomp(data, scale. = TRUE)
 
 # Examine the summary of the PCA results to see the importance of the components
-summary(pca_result)
+# summary(pca_result)
 
 # Extracting the scores of the first two principal components
 scores <- pca_result$x[, 1:2]
 
 # Optionally, we can visualize the first two principal components
-ggplot(data = as.data.frame(scores), aes(x = PC1, y = PC2)) +
+pcas_plot <- ggplot(data = as.data.frame(scores), aes(x = PC1, y = PC2)) +
   geom_point() +
   theme_minimal() +
   labs(title = "PCA: First Two Principal Components",
@@ -143,15 +211,37 @@ ggplot(data = as.data.frame(scores), aes(x = PC1, y = PC2)) +
        y = "Second Principal Component (PC2)")
 
 # To look at the contribution of each original variable to the principal components
-loadings <- pca_result$rotation[, 1:6]
+loadings <- pca_result$rotation[, 1:3]
 
 # View the loadings
-print(loadings)
+loadings_str <- capture.output(print(loadings))
+loadings_str <- paste(loadings_str, collapse="\n")
+
+explain_file <- paste0(file_path, ".explain.txt")
+
+capture.output(chat_api_instance$chat(loadings_str, explain_file))
+
+```
+
+```{r results='asis', echo=FALSE}
+library(knitr)
+
+# Read the Markdown content from the file
+md_content <- readLines(explain_file)
+
+# Check for an empty file to avoid errors
+if (length(md_content) == 0) {
+    cat("No content in Markdown file. Please email johnrraymond@greatlibrary.io for help.")
+} else {
+    # Use cat to print the content and convert it to Markdown
+    cat(md_content, sep = "\n")
+}
 
 ```
 
 
-```{r loadings}
+
+```{r loadings, echo=FALSE}
 
 # Calculate the variance explained by each principal component
 variance_explained <- pca_result$sdev^2
@@ -164,7 +254,7 @@ variance_df <- data.frame(PC = 1:length(variance_explained), Variance = variance
 # Plot the variance explained by each principal component
 library(ggplot2)
 
-ggplot(variance_df, aes(x = PC, y = Variance)) +
+unused_plot <- ggplot(variance_df, aes(x = PC, y = Variance)) +
   geom_bar(stat = "identity", fill = 'steelblue') +
   theme_minimal() +
   labs(title = "Variance Explained by Each Principal Component",
@@ -174,7 +264,7 @@ ggplot(variance_df, aes(x = PC, y = Variance)) +
 # Cumulative Variance Explained Plot
 variance_df$CumulativeVariance <- cumsum(variance_explained_percent)
 
-ggplot(variance_df, aes(x = PC, y = CumulativeVariance)) +
+unused_plot <- ggplot(variance_df, aes(x = PC, y = CumulativeVariance)) +
   geom_line(color = 'steelblue') + geom_point(color = 'red') +
   theme_minimal() +
   labs(title = "Cumulative Variance Explained by Principal Components",
@@ -183,31 +273,31 @@ ggplot(variance_df, aes(x = PC, y = CumulativeVariance)) +
 
 ```
 
-```{r scores}
+```{r scores, echo=FALSE}
 
 # Extract the PCA scores
 pca_scores <- pca_result$x
 
-head(pca_scores)
-head(pca_scores[, 1])
+#head(pca_scores)
+#head(pca_scores[, 1])
 metric_name <- paste("Principal Component", 1)
-metric_name
+#metric_name
 
 pc_colors <- c("red", "green", "blue", "pink", "orange", "brown" ,"purple")
-pc_colors
+#pc_colors
 
 # You can adjust this loop to match the number of principal components you're interested in
 #for(i in 1:ncol(pca_scores)) {
-for(i in 1:4) {
+for(i in 1:3) {
   pc_data <- pca_scores[, i]
   metric_name <- paste("Principal Component", i, 
                        " explains ", as.integer(variance_explained_percent[i]), "%")
   
   # Use the provided plotting function for each principal component
-  print(head(pc_data))
+  #print(head(pc_data))
   plot_dct <- plot_dct_for_metric(pc_data, metric_name, 
                                   pc_colors[i])
-  print(plot_dct)
+  #print(plot_dct)
   
   # Assuming fine_plots is another plotting function you wish to use
   print(fine_plots(pc_data, title = metric_name, plot_mask = 1))

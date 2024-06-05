@@ -197,6 +197,21 @@ def process_jsonl_file_to_csv(jsonl_filepath, csv_filepath):
             # Write the parsed data to the CSV file
             csv_writer.writerow([results["sent"], results["speed"], results["conflict"]])
 
+@shared_task
+def process_tester():
+
+    csv_filepath = "tester"
+
+    os.system("ls -al ./api/checker/chatapi.py")
+
+    # Construct the command string
+    command = (
+        f"""Rscript -e "rmarkdown::render('./api/checker/test-checker.Rmd', """
+        f"""output_file='{csv_filepath}.html', """
+        f"""params=list(aux_babbage_csv_file='{csv_filepath}', chat_code_file='chatapi.py'))\""""
+    )
+    print(command)
+    os.system(command)
 
 
 @shared_task
@@ -276,7 +291,7 @@ def aux_summarize_results(jsonl_filepath, csv_filepath):
     command = (
         f"""Rscript -e "rmarkdown::render('./api/checker/aux-summary.Rmd', """
         f"""output_file='{csv_filepath}.html', """
-        f"""params=list(aux_babbage_csv_file='{csv_filepath}'))\""""
+        f"""params=list(aux_babbage_csv_file='{csv_filepath}', chat_code_file='chatapi.py'))\""""
     )
     print(command)
     os.system(command)
@@ -331,7 +346,7 @@ os.makedirs(data_dir, exist_ok=True)
 
 def from_file_digest(digest_file):
     try:
-        return digest_file.read(chunk_size);
+        return digest_file.read(chunk_size)
     except:
         print("File ran out. We are done. Exiting.")
 

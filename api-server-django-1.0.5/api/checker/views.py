@@ -4,7 +4,7 @@ from django.http import JsonResponse
 from django.utils import timezone
 from datetime import timedelta
 from .models import Submission
-from .tasks import process_manuscript  # Import your Celery task
+from .tasks import process_manuscript, process_tester  # Import your Celery task
 
 import os
 
@@ -18,7 +18,11 @@ def check_manuscript(request):
         if check_quota(email):
             return JsonResponse({"error": "Submission quota exceeded"}, status=429)
 
+        #os.system("pwd")
+        #os.system("ls -al ./api/checker/chatapi.py")
+        
         process_manuscript.delay(manuscript, email)
+        #process_tester.delay()
 
         # Record the submission attempt
         Submission.objects.create(email=email)
