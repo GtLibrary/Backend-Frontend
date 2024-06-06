@@ -4,11 +4,13 @@ from django.http import JsonResponse
 from django.utils import timezone
 from datetime import timedelta
 from .models import Submission
-from .tasks import process_manuscript, process_tester  # Import your Celery task
+from .tasks import process_manuscript  # Import your Celery task
+from rest_framework.decorators import api_view
 
 import os
 
 @csrf_exempt
+@api_view(['POST'])
 def check_manuscript(request):
     if request.method == 'POST':
         email = request.POST.get('email')
